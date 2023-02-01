@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <router-link to="/">主页</router-link>
-    <router-link to="/login">登录</router-link>
     <router-view></router-view>
   </div>
 </template>
@@ -13,4 +11,9 @@
 </script>
 
 <style>
+
+  html,body,#app {
+    height:100%;
+  }
+
 </style>
