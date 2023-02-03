@@ -20,8 +20,8 @@
                         <el-input v-model="loginForm.password"></el-input>
                     </el-form-item>
                     <el-form-item label="验证码" prop="captcha" style="width: 380px">
-                        <el-input v-model="loginForm.captcha" style="width: 172px;float: left"></el-input>
-                        <el-image :src="require" class="codeImage"></el-image>
+                        <el-input v-model="loginForm.captcha" style="width: 150px;float: left"></el-input>
+                        <el-image :src="captchaImg" class="captchaImage" @click="getCaptcha"></el-image>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
@@ -54,7 +54,8 @@
                         { required: true, message: '请输入验证码', trigger: 'blur' },
                         { min: 4, max: 4, message: '长度为4个字符', trigger: 'blur' }
                     ]
-                }
+                },
+                captchaImg : null
             }
         },
         methods: {
@@ -70,7 +71,16 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+            },
+            getCaptcha(){
+                this.$axios.get('/captcha').then(res => {
+                    console.log(res.data)
+                    this.captchaImg = res.data.data.captchaImg
+                })
             }
+        },
+        created() {
+            this.getCaptcha();
         }
     }
 </script>

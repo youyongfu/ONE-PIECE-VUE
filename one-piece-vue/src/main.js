@@ -16,6 +16,10 @@ Vue.use(VueRouter);
 //引入router实例
 import router from "./router";
 
+//引入axios
+import axios from './axios'
+Vue.prototype.$axios = axios
+
 //关闭生产提示
 Vue.config.productionTip = false
 
