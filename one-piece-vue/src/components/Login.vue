@@ -4,7 +4,8 @@
             <el-col :xl="6" :lg="7">
                 <h2>欢迎来到one-piece管理系统</h2>
                 <el-image :src="require('@/assets/fm.jpeg')" style="height: 180px;width: 250px"></el-image>
-                <p>为什么遇到如此强大的敌人你也不愿逃跑？那是因为身后，有至爱之人。</p>
+                <p>为什么遇到如此强大的敌人你也不愿逃跑？</p>
+                <p>那是因为身后，有至爱之人。</p>
             </el-col>
 
             <el-col :span="1">
@@ -17,7 +18,7 @@
                         <el-input v-model="loginForm.username"></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password" style="width: 380px">
-                        <el-input v-model="loginForm.password"></el-input>
+                        <el-input v-model="loginForm.password" type="password"></el-input>
                     </el-form-item>
                     <el-form-item label="验证码" prop="captcha" style="width: 380px">
                         <el-input v-model="loginForm.captcha" style="width: 150px;float: left"></el-input>
@@ -34,6 +35,7 @@
 </template>
 
 <script>
+    import qs from 'qs'
     export default {
         name: "Login",
         data() {
@@ -41,7 +43,8 @@
                 loginForm: {
                     username: '',
                     password: '',
-                    captcha: ''
+                    captcha: '',
+                    token: ''
                 },
                 rules: {
                     username: [
@@ -52,7 +55,7 @@
                     ],
                     captcha: [
                         { required: true, message: '请输入验证码', trigger: 'blur' },
-                        { min: 4, max: 4, message: '长度为4个字符', trigger: 'blur' }
+                        { min: 5, max: 5, message: '长度为5个字符', trigger: 'blur' }
                     ]
                 },
                 captchaImg : null
@@ -62,7 +65,12 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        this.$axios.post('/login?'+ qs.stringify(this.loginForm)).then(res => {
+                            console.log(res)
+                            const jwt = res.headers['authorization']
+                            this.$store.commit('SET_TOKEN', jwt)
+                            this.$router.push("/home")
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -76,6 +84,7 @@
                 this.$axios.get('/captcha').then(res => {
                     console.log(res.data)
                     this.captchaImg = res.data.data.captchaImg
+                    this.loginForm.token = res.data.data.token
                 })
             }
         },

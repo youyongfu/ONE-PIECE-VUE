@@ -39,7 +39,7 @@ request.interceptors.response.use(
             error.massage = error.response.data.msg
         }
 
-        if (error.response.status === 401) {
+        if (error.response.status === 500) {
             router.push("/login")
         }
 
