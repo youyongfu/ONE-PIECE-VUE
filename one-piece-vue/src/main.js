@@ -3,6 +3,9 @@ import Vue from 'vue'
 //引入App
 import App from './App.vue'
 
+//引入store
+import store from './store'
+
 //引入Element-ui
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -24,8 +27,9 @@ Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
 new Vue({
-  //解析App模板
-  render: h => h(App),
   //使用路由
   router,
+  store,
+  //解析App模板
+  render: h => h(App),
 }).$mount('#app')
