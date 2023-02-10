@@ -69,7 +69,7 @@
                             console.log(res)
                             const jwt = res.headers['authorization']
                             this.$store.commit('SET_TOKEN', jwt)
-                            this.$router.push("/home")
+                            this.$router.push("/index")
                         })
                     } else {
                         console.log('error submit!!');
