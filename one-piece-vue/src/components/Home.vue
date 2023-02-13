@@ -1,37 +1,37 @@
 <template>
     <el-container>
-        <el-header>
-            <strong>ONE-PIECE后台管理系统</strong>
-            <div class="header-avatar">
-                <!-- 头像-->
-                <el-avatar size="medium" :src="userInfo.avatar"></el-avatar>
-                <!-- 个人中心-->
-                <el-dropdown>
-                    <!--  用户名-->
-                    <span class="el-dropdown-link">
-                        {{userInfo.username}} <i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
-                    <!--  用户下拉选择框-->
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
-                            <router-link to="/userCenter">
-                                个人中心
-                            </router-link></el-dropdown-item>
-                        <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div>
-        </el-header>
+
+        <el-aside width="200px">
+            <SideMenu></SideMenu>
+        </el-aside>
+
         <el-container>
-            <!--  右侧菜单栏-->
-            <el-aside width="200px">
-                <SideMenu></SideMenu>
-            </el-aside>
-            <el-container>
-                <el-main>
-                    <router-view></router-view>
-                </el-main>
-            </el-container>
+            <el-header>
+                <strong>ONE-PIECE后台管理系统</strong>
+                <div class="header-avatar">
+                    <!-- 头像-->
+                    <el-avatar size="medium" :src="userInfo.avatar"></el-avatar>
+                    <el-dropdown>
+                        <!--  用户名-->
+						<span class="el-dropdown-link">
+                            {{userInfo.username}}
+                            <i class="el-icon-arrow-down el-icon--right"></i>
+						</span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>
+                                <router-link to="/userCenter">个人中心</router-link>
+                            </el-dropdown-item>
+                            <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+
+            </el-header>
+            <el-main>
+                <div style="margin: 0 15px;">
+                    <router-view/>
+                </div>
+            </el-main>
         </el-container>
     </el-container>
 </template>
@@ -83,7 +83,6 @@
         margin: 0;
         height: 100%;
     }
-
     .header-avatar {
         float: right;
         width: 210px;
@@ -91,26 +90,25 @@
         justify-content: space-around;
         align-items: center;
     }
-
     .el-dropdown-link {
         cursor: pointer;
     }
-
     .el-header {
         background-color: #17B3A3;
         color: #333;
         text-align: center;
         line-height: 60px;
     }
-
     .el-aside {
         background-color: #D3DCE6;
         color: #333;
         line-height: 200px;
     }
-
     .el-main {
         color: #333;
         padding: 0;
+    }
+    a {
+        text-decoration: none;
     }
 </style>
