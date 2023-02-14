@@ -18,24 +18,24 @@ import UserCenter from "../components/sys/UserCenter";
 const routes = [
     {
         path : '/home',
-        name : Home,
+        name : 'Home',
         component : Home,
         children: [
             {
                 path : '/index',
-                name : Index,
+                name : 'Index',
                 component : Index
             },
             {
                 path : '/userCenter',
-                name : UserCenter,
+                name : 'UserCenter',
                 component : UserCenter
             },
         ]
     },
     {
         path : '/login',
-        name : Login,
+        name : 'Login',
         component : Login
     },
 ]

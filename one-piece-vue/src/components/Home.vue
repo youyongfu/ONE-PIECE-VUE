@@ -28,6 +28,7 @@
 
             </el-header>
             <el-main>
+                <Tab></Tab>
                 <div style="margin: 0 15px;">
                     <router-view/>
                 </div>
@@ -38,11 +39,13 @@
 
 <script>
     import SideMenu from "./inc/SideMenu";
+    import Tab from "./inc/Tab";
 
     export default {
         name: "Home",
         components:{
-            SideMenu
+            SideMenu,
+            Tab
         },
         data(){
             return{
