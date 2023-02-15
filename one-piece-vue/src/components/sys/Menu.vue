@@ -7,13 +7,7 @@
             </el-form-item>
         </el-form>
 
-        <el-table
-                :data="tableData"
-                style="width: 100%;margin-bottom: 20px;"
-                row-key="id"
-                border
-                default-expand-all
-                :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table :data="tableData" style="width: 100%;margin-bottom: 20px;" row-key="id" border default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
 
             <el-table-column prop="name" label="名称" sortable width="180"></el-table-column>
 
