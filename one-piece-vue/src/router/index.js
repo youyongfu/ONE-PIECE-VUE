@@ -17,7 +17,7 @@ import UserCenter from "../components/sys/UserCenter";
 //路由
 const routes = [
     {
-        path : '/home',
+        path : '/',
         name : 'Home',
         component : Home,
         children: [
@@ -52,7 +52,13 @@ router.beforeEach((to, from, next) => {
     //是否已获取导航信息状态
     var hasNav = store.state.menu.hasNav;
 
-    if(to.path == "/login" || to.path == "/"){
+    var token = store.state.token;
+
+    if(to.path == "/login"){
+        //登录页放行
+        next()
+    }else if(token){
+        // 存在token信息放行
         next()
     }else if(!hasNav){
         //获取导航
@@ -67,21 +73,32 @@ router.beforeEach((to, from, next) => {
             //状态为已获取导航信息
             store.commit('SET_HASNAV', true)
 
-            // 动态绑定路由
+            //获取路由
             var newRoutes = router.options.routes
+
+            //遍历路由，找到Home路由
+            var homeRoute;
+            newRoutes.map(item =>{
+                if(item.name === 'Home'){
+                    homeRoute = item;
+                }
+            })
+
+            // 动态绑定路由
             res.data.data.menuList.forEach(menu => {
                 if (menu.children) {
                     menu.children.forEach(e => {
                         // 导航转成路由
                         let route = menuToRoute(e)
-                        // 把路由添加到路由管理中
                         if (route) {
-                            newRoutes[0].children.push(route)
+                            //Home路由添加子路由
+                            homeRoute.children.push(route)
                         }
-
                     })
                 }
             })
+
+            //把路由添加到路由管理中
             router.addRoutes(newRoutes)
         })
     }
@@ -107,7 +124,6 @@ const menuToRoute = (menu) => {
     route.component = () => import('@/components/' + menu.component +'.vue')
     return route
 }
-
 
 //暴露路由对象
 export default router;
