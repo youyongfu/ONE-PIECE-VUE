@@ -38,8 +38,8 @@
 </template>
 
 <script>
-    import SideMenu from "./inc/SideMenu";
-    import Tab from "./inc/Tab";
+    import SideMenu from "../components/inc/SideMenu";
+    import Tab from "../components/inc/Tab";
 
     export default {
         name: "Home",

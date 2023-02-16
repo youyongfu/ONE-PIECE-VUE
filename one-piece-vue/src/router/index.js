@@ -9,10 +9,10 @@ import axios from "../axios";
 import store from "../store";
 
 //引入组件
-import Home from '../components/Home.vue'
-import Login from '../components/Login.vue'
-import Index from '../components/Index.vue'
-import UserCenter from "../components/sys/UserCenter";
+import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'
+import Index from '../views/Index.vue'
+import UserCenter from "../views/sys/UserCenter";
 
 //路由
 const routes = [
@@ -121,7 +121,7 @@ const menuToRoute = (menu) => {
             title: menu.name
         }
     }
-    route.component = () => import('@/components/' + menu.component +'.vue')
+    route.component = () => import('@/views/' + menu.component +'.vue')
     return route
 }
 
