@@ -153,7 +153,8 @@
                     label: 'name'
                 },
                 roleTreeData: [],
-                treeCheckedKeys: []
+                treeCheckedKeys: [],
+                checkStrictly: true
             }
         },
         created(){
@@ -275,6 +276,26 @@
                     });
                     this.roleDialogFormVisible = false;
                     this.resetForm(formName);
+                })
+            },
+            //重置密码
+            repassHandle(id, username) {
+                this.$confirm('将重置用户【' + username + '】的密码, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.post("/sys/user/repass", id).then(res => {
+                        console.log(res);
+                        this.$message({
+                            showClose: true,
+                            message: '密码重置成功',
+                            type: 'success',
+                            onClose: () => {
+                                this.getUserList();
+                            }
+                        });
+                    })
                 })
             }
         }
