@@ -107,6 +107,18 @@
             </div>
         </el-dialog>
 
+        <!-- 分配角色对话框 -->
+        <el-dialog title="分配角色" :visible.sync="roleDialogFormVisible" width="600px">
+            <el-form :model="roleForm">
+                <el-tree :data="roleTreeData" show-checkbox ref="roleTree" :check-strictly=checkStrictly node-key="id" :default-expand-all=true :props="defaultProps"></el-tree>
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="roleDialogFormVisible=false">取 消</el-button>
+                <el-button type="primary" @click="submitRoleForm('roleForm')">确 定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -134,10 +146,19 @@
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
                 },
+                roleDialogFormVisible: false,
+                roleForm: {},
+                defaultProps: {
+                    children: 'children',
+                    label: 'name'
+                },
+                roleTreeData: [],
+                treeCheckedKeys: []
             }
         },
         created(){
             this.getUserList()
+            this.getRoleList()
         },
         methods: {
             //获取用户列表
@@ -151,6 +172,12 @@
                     this.size = res.data.data.size
                     this.current = res.data.data.current
                     this.total = res.data.data.total
+                })
+            },
+            //获取角色列表
+            getRoleList(){
+                this.$axios.get('sys/role/list').then(res =>{
+                    this.roleTreeData = res.data.data;
                 })
             },
             //条数改变触发
@@ -224,6 +251,31 @@
                         });
                     })
                 }).catch(() => {});
+            },
+            //打开分配角色
+            roleHandle(id){
+                this.roleDialogFormVisible = true;
+                this.$axios.get("/sys/user/info/" + id).then(res => {
+                    this.$refs.roleTree.setCheckedKeys(res.data.data.roleIds)
+                    this.roleForm = res.data.data;
+                })
+            },
+            //提交分配角色
+            submitRoleForm(formName){
+                var roleIds = this.$refs.roleTree.getCheckedKeys();
+                this.$axios.post("/sys/user/role/" + this.roleForm.id,roleIds).then(res => {
+                    console.log(res);
+                    this.$message({
+                        showClose: true,
+                        message: '分配角色成功',
+                        type: 'success',
+                        onClose:() => {
+                            this.getRoleList()
+                        }
+                    });
+                    this.roleDialogFormVisible = false;
+                    this.resetForm(formName);
+                })
             }
         }
     }

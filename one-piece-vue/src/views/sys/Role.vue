@@ -91,14 +91,14 @@
 
         </el-dialog>
 
-        <!-- 分配权限-->
+        <!-- 分配权限对话框 -->
         <el-dialog title="分配权限" :visible.sync="permDialogVisible" width="600px">
             <el-form :model="permForm">
                 <el-tree :data="permTreeData" show-checkbox ref="permTree" :default-expand-all=true node-key="id" :check-strictly=true :props="defaultProps"></el-tree>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="resetForm('editForm')">重置</el-button>
+                <el-button @click="permDialogVisible=false">取消</el-button>
                 <el-button type="primary" @click="submitPermForm('permForm')">提交</el-button>
 			</span>
         </el-dialog>
@@ -142,7 +142,7 @@
         },
         created(){
             this.getRoleList(),
-            this. getMenuList()
+            this.getMenuList()
         },
         methods: {
             //获取角色列表
