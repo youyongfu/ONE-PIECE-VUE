@@ -91,6 +91,19 @@
 
         </el-dialog>
 
+        <!-- 分配权限-->
+        <el-dialog title="分配权限" :visible.sync="permDialogVisible" width="600px">
+            <el-form :model="permForm">
+                <el-tree :data="permTreeData" show-checkbox ref="permTree" :default-expand-all=true node-key="id" :check-strictly=true :props="defaultProps"></el-tree>
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="resetForm('editForm')">重置</el-button>
+                <el-button type="primary" @click="submitPermForm('permForm')">提交</el-button>
+			</span>
+        </el-dialog>
+
+
     </div>
 </template>
 
@@ -118,10 +131,18 @@
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
                 },
+                permDialogVisible: false,
+                permForm: {},
+                defaultProps: {
+                    children: 'children',
+                    label: 'name'
+                },
+                permTreeData: []
             }
         },
         created(){
-            this.getRoleList()
+            this.getRoleList(),
+            this. getMenuList()
         },
         methods: {
             //获取角色列表
@@ -136,6 +157,12 @@
                     this.size = res.data.data.size
                     this.current = res.data.data.current
                     this.total = res.data.data.total
+                })
+            },
+            //获取菜单列表
+            getMenuList(){
+                this.$axios.get('sys/menu/list').then(res =>{
+                    this.permTreeData = res.data.data;
                 })
             },
             //条数改变触发
@@ -209,6 +236,31 @@
                         });
                     })
                 }).catch(() => {});
+            },
+            //打开分配权限
+            permHandle(id){
+                this.permDialogVisible = true;
+                this.$axios.get("/sys/role/info/" + id).then(res => {
+                    this.$refs.permTree.setCheckedKeys(res.data.data.menuIds)
+                    this.permForm = res.data.data;
+                })
+            },
+            //提交分配权限
+            submitPermForm(formName){
+                var menuIds = this.$refs.permTree.getCheckedKeys();
+                this.$axios.post("/sys/role/perm/" + this.permForm.id,menuIds).then(res => {
+                    console.log(res);
+                    this.$message({
+                        showClose: true,
+                        message: '分配权限成功',
+                        type: 'success',
+                        onClose:() => {
+                            this.getRoleList()
+                        }
+                    });
+                    this.permDialogVisible = false;
+                    this.resetForm(formName);
+                })
             }
         }
     }
