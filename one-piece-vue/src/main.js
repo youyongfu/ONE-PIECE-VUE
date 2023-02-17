@@ -23,6 +23,12 @@ import router from "./router";
 import axios from './axios'
 Vue.prototype.$axios = axios
 
+//引入过滤器js
+import filter from './common/filter'
+Object.keys(filter).forEach(key=>{
+  Vue.filter(key,filter[key])
+})
+
 //关闭生产提示
 Vue.config.productionTip = false
 
@@ -33,3 +39,6 @@ new Vue({
   //解析App模板
   render: h => h(App),
 }).$mount('#app')
+
+
+

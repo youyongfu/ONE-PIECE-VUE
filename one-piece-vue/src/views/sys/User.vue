@@ -2,7 +2,7 @@
     <div>
         <el-form :inline="true">
             <el-form-item>
-                <el-input placeholder="用户名" clearable></el-input>
+                <el-input v-model="searchForm.name" placeholder="用户名" clearable></el-input>
             </el-form-item>
 
             <el-form-item>
@@ -43,7 +43,9 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="createdTime" width="200" label="创建时间" ></el-table-column>
+            <el-table-column prop="createdTime" width="200" label="创建时间" >
+                <template slot-scope="scope">{{scope.row.createdTime | formatDate('yyyy-MM-dd')}}</template>
+            </el-table-column>
 
             <el-table-column prop="icon" width="260px" label="操作">
                 <template slot-scope="scope">
@@ -61,6 +63,17 @@
             </el-table-column>
 
         </el-table>
+
+        <!-- 分页-->
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[10, 20, 50, 100]"
+                :current-page="current"
+                :page-size="size"
+                :total="total">
+        </el-pagination>
 
         <!--新增对话框-->
         <el-dialog title="提示" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
@@ -102,10 +115,14 @@
         name: "User",
         data() {
             return {
+                searchForm: {},
                 tableData: [],
                 dialogVisible: false,
                 editForm: {
                 },
+                total: 0,
+                size: 10,
+                current: 1,
                 editFormRules: {
                     username: [
                         {required: true, message: '请输入用户名称', trigger: 'blur'}
@@ -125,9 +142,28 @@
         methods: {
             //获取用户列表
             getUserList() {
-                this.$axios.get('sys/user/list').then(res => {
-                    this.tableData = res.data.data;
+                this.$axios.get('sys/user/listPage',{params: {
+                        keyword: JSON.stringify(this.searchForm),
+                        current: this.current,
+                        size: this.size
+                }}).then(res => {
+                    this.tableData = res.data.data.records;
+                    this.size = res.data.data.size
+                    this.current = res.data.data.current
+                    this.total = res.data.data.total
                 })
+            },
+            //条数改变触发
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.size = val
+                this.getUserList()
+            },
+            //页数改变触发
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.current = val
+                this.getUserList()
             },
             //重置
             resetForm(formName) {
@@ -194,5 +230,10 @@
 </script>
 
 <style scoped>
+
+    .el-pagination {
+        float: right;
+        margin-top: 22px;
+    }
 
 </style>
