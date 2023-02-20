@@ -22,7 +22,7 @@
             </template>
 
             <router-link :to="childMenu.path" v-for="childMenu in menu.children" :key="childMenu.name">
-                <el-menu-item :index="childMenu.perms" @click="addTab(item)">
+                <el-menu-item :index="childMenu.perms" @click="addTab(childMenu)">
                     <template slot="title">
                         <i :class="childMenu.icon"></i>
                         <span slot="title">{{childMenu.name}}</span>
