@@ -29,6 +29,9 @@ Object.keys(filter).forEach(key=>{
   Vue.filter(key,filter[key])
 })
 
+// eslint-disable-next-line no-unused-vars
+import global from './globalFun'
+
 //关闭生产提示
 Vue.config.productionTip = false
 

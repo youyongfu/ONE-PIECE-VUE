@@ -73,6 +73,9 @@ router.beforeEach((to, from, next) => {
             //状态为已获取导航信息
             store.commit('SET_HASNAV', true)
 
+            //保持权限信息
+            store.commit('SET_PERMLIST', res.data.data.permList)
+
             //获取路由
             var newRoutes = router.options.routes
 

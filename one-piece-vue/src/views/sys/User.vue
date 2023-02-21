@@ -10,7 +10,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="dialogVisible = true">新增</el-button>
+                <el-button type="primary" @click="dialogVisible = true" v-if="hasAuth('sys:user:save')">新增</el-button>
             </el-form-item>
         </el-form>
 
@@ -49,16 +49,16 @@
 
             <el-table-column prop="icon" width="260px" label="操作">
                 <template slot-scope="scope">
-                    <el-button type="text" @click="roleHandle(scope.row.id)">分配角色</el-button>
-                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" @click="roleHandle(scope.row.id)" v-if="hasAuth('sys:user:role')">分配角色</el-button>
+                    <el-divider direction="vertical" v-if="hasAuth('sys:user:role')"></el-divider>
 
-                    <el-button type="text" @click="repassHandle(scope.row.id, scope.row.username)">重置密码</el-button>
-                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" @click="repassHandle(scope.row.id, scope.row.username)" v-if="hasAuth('sys:user:repass')">重置密码</el-button>
+                    <el-divider direction="vertical" v-if="hasAuth('sys:user:repass')"></el-divider>
 
-                    <el-button type="text" @click="editHandle(scope.row.id)">编辑</el-button>
-                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:user:update')">编辑</el-button>
+                    <el-divider direction="vertical" v-if="hasAuth('sys:user:update')"></el-divider>
 
-                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)">删除</el-button>
+                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:user:delete')">删除</el-button>
                 </template>
             </el-table-column>
 

@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default({
     state: {
         menuList: [],
+        permList:[],
         hasNav:false,
         editableTabsValue: 'Index',
         editableTabs: [{
@@ -17,6 +18,10 @@ export default({
         //保存导航信息
         SET_MENULIST: (state, menuList) => {
             state.menuList = menuList
+        },
+        //保存权限信息
+        SET_PERMLIST: (state, permList) => {
+            state.permList = permList
         },
         //保存是否已获取导航信息状态
         SET_HASNAV: (state, hasNav) => {
