@@ -13,11 +13,11 @@
                 <el-button type="primary" @click="dialogVisible = true" v-if="hasAuth('sys:role:save')">新增</el-button>
             </el-form-item>
             <el-form-item>
-                <el-button type="danger" slot="reference">批量删除</el-button>
+                <el-button type="danger" @click="deleteHandle()" :disabled="delBtlStatu" v-if="hasAuth('sys:role:delete')">批量删除</el-button>
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe>
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe @selection-change="handleSelectionChange">
 
             <el-table-column type="selection" width="55"></el-table-column>
 
@@ -113,6 +113,8 @@
         data() {
             return {
                 searchForm: {},
+                delBtlStatu: true,
+                multipleSelection: [],
                 tableData: [],
                 dialogVisible: false,
                 total: 0,
@@ -217,14 +219,32 @@
                 })
                 this.dialogVisible = true
             },
+            //复选框勾选
+            handleSelectionChange(val) {
+                console.log(val)
+                this.multipleSelection = val;
+                this.delBtlStatu = val.length == 0
+            },
             //删除
             deleteHandle(id){
-                this.$confirm('此操作将删除该角色, 是否继续?', '提示', {
+                this.$confirm('此操作将删除角色, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post("/sys/role/delete/" + id).then(res => {
+
+                    var ids = [];
+                    if(id){
+                        //单个删除
+                        ids.push(id);
+                    }else{
+                        //批量删除
+                        this.multipleSelection.forEach(row => {
+                            ids.push(row.id)
+                        })
+                    }
+
+                    this.$axios.post("/sys/role/delete", ids).then(res => {
                         console.log(res)
                         this.$message({
                             showClose: true,

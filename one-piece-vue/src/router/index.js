@@ -52,15 +52,14 @@ router.beforeEach((to, from, next) => {
     //是否已获取导航信息状态
     var hasNav = store.state.menu.hasNav;
 
-    var token = store.state.token;
+    var token = localStorage.getItem("token");
 
     if(to.path == "/login"){
         //登录页放行
         next()
-    }else if(token){
-        // 存在token信息放行
-        next()
-    }else if(!hasNav){
+    }else if(!token){
+        next({path: '/login'})
+    }else if(token && !hasNav){
         //获取导航
         axios.get("sys/menu/nav",{
             headers: {
