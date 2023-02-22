@@ -113,6 +113,9 @@ router.beforeEach((to, from, next) => {
         })
     }
 
+    if(to.path == "/userCenter"){
+        store.commit("addTab",{name:'个人中心',perms: 'UserCenter'});
+    }
     next()
 })
 

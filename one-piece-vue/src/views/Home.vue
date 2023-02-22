@@ -19,7 +19,9 @@
 						</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
-                                <router-link to="/userCenter">个人中心</router-link>
+                                <router-link to="/userCenter">
+                                    <template @tab-remove="removeTab" @click="this.$store.commit('addTab',{name:'个人中心',perms: 'UserCenter'})">个人中心</template>
+                                </router-link>
                             </el-dropdown-item>
                             <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
                         </el-dropdown-menu>

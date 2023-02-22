@@ -37,7 +37,7 @@
             removeTab(targetName) {
                 let tabs = this.editableTabs;
                 let activeName = this.editableTabsValue;
-                if (activeName === 'Index') {
+                if (activeName === 'Index' || targetName === 'Index') {
                     return;
                 }
                 if (activeName === targetName) {
