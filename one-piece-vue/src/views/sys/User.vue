@@ -105,7 +105,7 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="resetForm('editForm')">取 消</el-button>
+                <el-button @click="resetForm('editForm')">重置</el-button>
                 <el-button type="primary" @click="submitForm('editForm')">确 定</el-button>
             </div>
         </el-dialog>
@@ -118,7 +118,7 @@
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click="roleDialogFormVisible=false">取 消</el-button>
-                <el-button type="primary" @click="submitRoleForm('roleForm')">确 定</el-button>
+                <el-button type="primary" @click="submitRoleForm()">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -201,7 +201,7 @@
             //重置
             resetForm(formName) {
                 this.$refs[formName].resetFields();
-                this.editForm = {}
+                this.editForm = {};
             },
             //关闭对话框
             handleClose() {
@@ -285,7 +285,7 @@
                 })
             },
             //提交分配角色
-            submitRoleForm(formName){
+            submitRoleForm(){
                 var roleIds = this.$refs.roleTree.getCheckedKeys();
                 this.$axios.post("/sys/user/role/" + this.roleForm.id,roleIds).then(res => {
                     console.log(res);
@@ -298,7 +298,6 @@
                         }
                     });
                     this.roleDialogFormVisible = false;
-                    this.resetForm(formName);
                 })
             },
             //重置密码

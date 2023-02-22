@@ -1,5 +1,5 @@
 <template>
-    <div id="app"></div>
+    <el-image :src="require('@/assets/fm2.jpg')" style="height: 610px;width: 1270px"></el-image>
 </template>
 
 <script>

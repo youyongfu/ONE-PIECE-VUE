@@ -99,7 +99,7 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="permDialogVisible=false">取消</el-button>
-                <el-button type="primary" @click="submitPermForm('permForm')">提交</el-button>
+                <el-button type="primary" @click="submitPermForm()">提交</el-button>
 			</span>
         </el-dialog>
 
@@ -266,7 +266,7 @@
                 })
             },
             //提交分配权限
-            submitPermForm(formName){
+            submitPermForm(){
                 var menuIds = this.$refs.permTree.getCheckedKeys();
                 this.$axios.post("/sys/role/perm/" + this.permForm.id,menuIds).then(res => {
                     console.log(res);
@@ -279,7 +279,6 @@
                         }
                     });
                     this.permDialogVisible = false;
-                    this.resetForm(formName);
                 })
             }
         }

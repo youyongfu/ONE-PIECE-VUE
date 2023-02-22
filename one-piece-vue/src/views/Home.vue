@@ -88,7 +88,7 @@
     }
     .header-avatar {
         float: right;
-        width: 210px;
+        width: 150px;
         display: flex;
         justify-content: space-around;
         align-items: center;
