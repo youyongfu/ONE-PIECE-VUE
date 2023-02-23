@@ -10,7 +10,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="dialogVisible = true" v-if="hasAuth('sys:user:save')">新增</el-button>
+                <el-button type="primary" @click="addStatu" v-if="hasAuth('sys:user:save')">新增</el-button>
             </el-form-item>
             <el-form-item>
                 <el-button type="danger" @click="deleteHandle()"  :disabled="delBtlStatu" v-if="hasAuth('sys:user:delete')">批量删除</el-button>
@@ -38,6 +38,8 @@
             <el-table-column prop="email" label="邮箱"></el-table-column>
 
             <el-table-column prop="phone" label="手机号"></el-table-column>
+
+            <el-table-column prop="city" label="城市"></el-table-column>
 
             <el-table-column prop="statu" label="状态">
                 <template slot-scope="scope">
@@ -96,6 +98,12 @@
                     <el-input v-model="editForm.phone" autocomplete="off"></el-input>
                 </el-form-item>
 
+                <el-form-item label="城市"  prop="city" label-width="100px">
+                    <v-distpicker @province = "changeProvince($event,'province')"  :province="placeholders.province"
+                                  @city = "changeCity($event,'city')" :city="placeholders.city"
+                                  @area = "changeArea($event,'area')" :area="placeholders.area"></v-distpicker>
+                </el-form-item>
+
                 <el-form-item label="状态"  prop="statu" label-width="100px">
                     <el-radio-group v-model="editForm.statu">
                         <el-radio :label="0">禁用</el-radio>
@@ -126,6 +134,7 @@
 </template>
 
 <script>
+    import VDistpicker from "v-distpicker";
     export default {
         name: "User",
         data() {
@@ -159,7 +168,12 @@
                 },
                 roleTreeData: [],
                 treeCheckedKeys: [],
-                checkStrictly: true
+                checkStrictly: true,
+                placeholders: {
+                    province: '',
+                    city: '',
+                    area: '',
+                }
             }
         },
         created(){
@@ -208,10 +222,18 @@
                 this.resetForm('editForm')
                 this.dialogVisible = false
             },
+            //新增
+            addStatu(){
+                this.dialogVisible = true
+                this.placeholders.province = ''
+                this.placeholders.city = ''
+                this.placeholders.area = ''
+            },
             //提交
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.editForm.city = this.placeholders.province + "-" + this.placeholders.city + "-" + this.placeholders.area
                         this.$axios.post('/sys/user/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             console.log(res)
                             this.$message({
@@ -235,6 +257,16 @@
             editHandle(id){
                 this.$axios.get('/sys/user/info/' + id).then(res => {
                     this.editForm = res.data.data;
+                    if(this.editForm.city){
+                        let citys =(this.editForm.city || "").split('-')
+                        this.placeholders.province = citys[0]
+                        this.placeholders.city = citys[1]
+                        this.placeholders.area = citys[2]
+                    }else {
+                        this.placeholders.province = ''
+                        this.placeholders.city = ''
+                        this.placeholders.area = ''
+                    }
                 })
                 this.dialogVisible = true
             },
@@ -319,8 +351,28 @@
                         });
                     })
                 })
-            }
-        }
+            },
+            //省选择
+            changeProvince(event,value){
+                console.log(value)
+                this.placeholders.province = event.value
+                this.placeholders.city = ''
+                this.placeholders.area = ''
+            },
+            //市选择
+            changeCity(event,value){
+                console.log(value)
+                this.placeholders.city = event.value
+                this.placeholders.area = ''
+            },
+            //区选择
+            changeArea(event,value){
+                console.log(value)
+                this.placeholders.area = event.value
+            },
+
+        },
+        components:{VDistpicker}
     }
 </script>
 

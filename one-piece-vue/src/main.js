@@ -32,6 +32,10 @@ Object.keys(filter).forEach(key=>{
 // eslint-disable-next-line no-unused-vars
 import global from './globalFun'
 
+//引入地区选择器
+import VDistpicker from "v-distpicker";
+Vue.component('v-distpicker',VDistpicker);
+
 //关闭生产提示
 Vue.config.productionTip = false
 
