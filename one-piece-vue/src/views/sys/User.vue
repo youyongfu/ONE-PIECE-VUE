@@ -156,6 +156,9 @@
                     email: [
                         {required: true, message: '请输入邮箱', trigger: 'blur'}
                     ],
+                    phone: [
+                        {required: true, message: '请输入手机号', trigger: 'blur'}
+                    ],
                     statu: [
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
@@ -238,7 +241,7 @@
                             console.log(res)
                             this.$message({
                                 showClose: true,
-                                message: '提交成功',
+                                message: res.data.msg,
                                 type: 'success',
                                 onClose:() => {
                                     this.getUserList()
