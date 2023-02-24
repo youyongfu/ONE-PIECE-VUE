@@ -10,7 +10,16 @@
                 <strong>ONE-PIECE后台管理系统</strong>
                 <div class="header-avatar">
                     <!-- 头像-->
-                    <el-avatar size="medium" :src="userInfo.avatar"></el-avatar>
+                    <el-avatar size="medium">
+                        <el-upload
+                                class="avatar-uploader"
+                                action=""
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess"
+                                :before-upload="beforeAvatarUpload">
+                            <img  :src="userInfo.avatar" style="width: 36px;height: 35px">
+                        </el-upload>
+                    </el-avatar>
                     <el-dropdown>
                         <!--  用户名-->
 						<span class="el-dropdown-link">
@@ -77,6 +86,34 @@
                     this.$store.commit("resetState");
                     this.$router.push("/login");
                 })
+            },
+            //上传头像校验
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    return false;
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    return false;
+                }
+
+                //上传头像
+                var data = new FormData;
+                data.append("file",file)
+                this.$axios({
+                        method: 'Post',
+                        url:"/file/uploadAvatar",
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                        data : data
+                }).then(res =>{
+                    this.userInfo.avatar = res.data.data;
+                })
+            },
+            handleAvatarSuccess(){
             }
         }
     }
