@@ -86,7 +86,7 @@
             <el-form :model="editForm" :rules="editFormRules" ref="editForm">
 
                 <el-form-item label="用户名" prop="username" label-width="100px">
-                    <el-input v-model="editForm.username" autocomplete="off"></el-input>
+                    <el-input v-model="editForm.username" autocomplete="off" :disabled="editForm.id != null"></el-input>
                     <el-alert title="初始密码为888888" :closable="false" type="info" style="line-height: 12px;"></el-alert>
                 </el-form-item>
 
@@ -113,7 +113,7 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="resetForm('editForm')">重置</el-button>
+                <el-button @click="handleClose">取消</el-button>
                 <el-button type="primary" @click="submitForm('editForm')">确 定</el-button>
             </div>
         </el-dialog>

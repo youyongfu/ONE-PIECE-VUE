@@ -64,6 +64,7 @@
                             </template>
                         </template>
                     </el-select>
+                    <el-alert title="未选择上级菜单，则默认为添加一级菜单" :closable="false" type="info" style="line-height: 12px;"></el-alert>
                 </el-form-item>
 
                 <el-form-item label="菜单名称" prop="name" label-width="100px">
@@ -124,9 +125,6 @@
                 dialogVisible: false,
                 editForm: {},
                 editFormRules: {
-                    parentId: [
-                        {required: true, message: '请选择上级菜单', trigger: 'blur'}
-                    ],
                     name: [
                         {required: true, message: '请输入名称', trigger: 'blur'}
                     ],
