@@ -20,7 +20,7 @@ import store from "../store";
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Index from '../views/Index.vue'
-import UserCenter from "../views/sys/UserCenter";
+import UserCenter from "../views/authority/UserCenter";
 
 //路由
 const routes = [

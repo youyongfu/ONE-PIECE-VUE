@@ -11,14 +11,7 @@
                 <div class="header-avatar">
                     <!-- 头像-->
                     <el-avatar size="medium">
-                        <el-upload
-                                class="avatar-uploader"
-                                action=""
-                                :show-file-list="false"
-                                :on-success="handleAvatarSuccess"
-                                :before-upload="beforeAvatarUpload">
-                            <img  :src="userInfo.avatar" style="width: 36px;height: 35px">
-                        </el-upload>
+                        <img :src="userInfo.avatar">
                     </el-avatar>
                     <el-dropdown>
                         <!--  用户名-->
@@ -29,8 +22,18 @@
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
                                 <router-link to="/userCenter">
-                                    <template @tab-remove="removeTab" @click="this.$store.commit('addTab',{name:'个人中心',perms: 'UserCenter'})">个人中心</template>
+                                    <template @tab-remove="removeTab" @click="this.$store.commit('addTab',{name:'密码修改',perms: 'UserCenter'})">密码修改</template>
                                 </router-link>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <el-upload
+                                        class="avatar-uploader"
+                                        action=""
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                        上传头像
+                                </el-upload>
                             </el-dropdown-item>
                             <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
                         </el-dropdown-menu>
@@ -79,13 +82,19 @@
             },
             //登出
             logout(){
-                this.$axios.post("/logout").then(res =>{
-                    console.log(res);
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    this.$store.commit("resetState");
-                    this.$router.push("/login");
-                })
+                this.$confirm('确定退出系统吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.post("/logout").then(res =>{
+                        console.log(res);
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        this.$store.commit("resetState");
+                        this.$router.push("/login");
+                    })
+                }).catch(() => {});
             },
             //上传头像校验
             beforeAvatarUpload(file) {

@@ -30,7 +30,7 @@ export default({
         //添加标签
         addTab(state, menu) {
             if(menu.perms === 'UserCenter'){
-                menu.name = '个人中心'
+                menu.name = '密码修改'
             }
             //判断标签是否已打开
             let index = state.editableTabs.findIndex(e => e.name === menu.perms)
