@@ -7,7 +7,7 @@
             </el-form-item>
         </el-form>
 
-        <el-table :data="tableData" style="width: 100%;margin-bottom: 20px;" row-key="id" border default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table :data="tableData" :load="getChildrenList" lazy style="width: 100%;margin-bottom: 20px;" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
 
             <el-table-column prop="name" label="名称" sortable width="180"></el-table-column>
 
@@ -33,6 +33,17 @@
             </el-table-column>
 
         </el-table>
+
+        <!-- 分页-->
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[10, 20, 50, 100]"
+                :current-page="current"
+                :page-size="size"
+                :total="total">
+        </el-pagination>
 
         <!--新增对话框-->
         <el-dialog title="提示" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
@@ -89,6 +100,9 @@
         data() {
             return {
                 tableData:[],
+                total: 0,
+                size: 10,
+                current: 1,
                 dialogVisible: false,
                 editForm: {},
                 editFormRules: {
@@ -105,11 +119,36 @@
             this.getDictMenu()
         },
         methods: {
-            //获取菜单列表
+            //获取数据字典列表
             getDictMenu(){
-                this.$axios.get('sys/dict/list').then(res =>{
+                this.$axios.get('sys/dict/listPage',{params: {
+                        current: this.current,
+                        size: this.size
+                }}).then(res =>{
                     this.tableData = res.data.data;
+                    this.tableData = res.data.data.records;
+                    this.size = res.data.data.size
+                    this.current = res.data.data.current
+                    this.total = res.data.data.total
                 })
+            },
+            //获取子菜单
+            getChildrenList(tree,treeNode,resolve){
+                this.$axios.get('sys/dict/getChildrenList/'+ tree.id).then(res =>{
+                    resolve(res.data.data);
+                })
+            },
+            //条数改变触发
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.size = val
+                this.getUserList()
+            },
+            //页数改变触发
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.current = val
+                this.getUserList()
             },
             //重置
             resetForm(formName) {
@@ -176,5 +215,10 @@
 </script>
 
 <style scoped>
+
+    .el-pagination {
+        float: right;
+        margin-top: 22px;
+    }
 
 </style>
