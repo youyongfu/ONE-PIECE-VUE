@@ -2,6 +2,15 @@
     <div>
 
         <el-form :inline="true">
+
+            <el-form-item>
+                <el-input v-model="searchForm.name" placeholder="名称" clearable></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button @click="getTreeDict">搜索</el-button>
+            </el-form-item>
+
             <el-form-item>
                 <el-button type="primary" @click="dialogVisible = true" v-if="hasAuth('sys:dict:save')">新增</el-button>
             </el-form-item>
@@ -103,6 +112,7 @@
                 total: 0,
                 size: 10,
                 current: 1,
+                searchForm: {},
                 dialogVisible: false,
                 editForm: {},
                 editFormRules: {
@@ -122,6 +132,7 @@
             //获取数据字典列表
             getTreeDict(){
                 this.$axios.get('sys/dict/listPage',{params: {
+                        keyword: JSON.stringify(this.searchForm),
                         current: this.current,
                         size: this.size
                 }}).then(res =>{
