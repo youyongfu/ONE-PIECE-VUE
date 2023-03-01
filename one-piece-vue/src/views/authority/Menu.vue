@@ -183,13 +183,13 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getUserList()
+                this.getTreeMenu()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getUserList()
+                this.getTreeMenu()
             },
             //重置
             resetForm(formName) {

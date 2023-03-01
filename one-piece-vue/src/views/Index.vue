@@ -1,5 +1,5 @@
 <template>
-    <el-image :src="require('@/assets/fm2.jpg')" style="height: 610px;width: 1270px"></el-image>
+    <el-image :src="require('@/assets/fm2.jpg')" style="height: 600px;width: 1270px"></el-image>
 </template>
 
 <script>

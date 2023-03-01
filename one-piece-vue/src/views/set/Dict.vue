@@ -116,11 +116,11 @@
             }
         },
         created(){
-            this.getDictMenu()
+            this.getTreeDict()
         },
         methods: {
             //获取数据字典列表
-            getDictMenu(){
+            getTreeDict(){
                 this.$axios.get('sys/dict/listPage',{params: {
                         current: this.current,
                         size: this.size
@@ -142,13 +142,13 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getUserList()
+                this.getTreeDict()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getUserList()
+                this.getTreeDict()
             },
             //重置
             resetForm(formName) {
@@ -171,7 +171,7 @@
                                 message: '提交成功',
                                 type: 'success',
                                 onClose:() => {
-                                    this.getDictMenu()
+                                    this.getTreeDict()
                                 }
                             });
                             this.resetForm('editForm')
@@ -204,7 +204,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getDictMenu()
+                                this.getTreeDict()
                             }
                         });
                     })
