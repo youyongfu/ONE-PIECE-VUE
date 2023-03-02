@@ -66,7 +66,7 @@
 
                 <el-form-item label="上级菜单" prop="parentId">
                     <el-select v-model="editForm.parentId" placeholder="请选择上级菜单">
-                        <template v-for="item in tableData">
+                        <template v-for="item in treeData">
                             <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
                             <template v-for="child in item.children">
                                 <el-option :label="child.name" :value="child.id" :key="child.name">
@@ -133,6 +133,7 @@
         data() {
             return {
                 tableData:[],
+                treeData:[],
                 dialogVisible: false,
                 total: 0,
                 size: 10,
@@ -158,11 +159,18 @@
             }
         },
         created(){
+            this.getListMenu()
             this.getTreeMenu()
         },
         methods: {
-            //获取菜单列表
+            //获取树形菜单
             getTreeMenu(){
+                this.$axios.get('sys/menu/list').then(res =>{
+                    this.treeData = res.data.data;
+                })
+            },
+            //获取菜单列表
+            getListMenu(){
                 this.$axios.get('sys/menu/listPage',{params: {
                         current: this.current,
                         size: this.size
@@ -183,13 +191,13 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getTreeMenu()
+                this.getListMenu()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getTreeMenu()
+                this.getListMenu()
             },
             //重置
             resetForm(formName) {
@@ -212,7 +220,7 @@
                                 message: '提交成功',
                                 type: 'success',
                                 onClose:() => {
-                                    this.getTreeMenu()
+                                    this.getListMenu()
                                 }
                             });
                             this.resetForm('editForm')
@@ -228,6 +236,9 @@
             editHandle(id){
                 this.$axios.get('/sys/menu/info/' + id).then(res => {
                     this.editForm = res.data.data;
+                    if(this.editForm.parentId === 0){
+                        this.editForm.parentId = "";
+                    }
                 })
                 this.dialogVisible = true
             },
@@ -245,7 +256,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getTreeMenu()
+                                this.getListMenu()
                             }
                         });
                     })
