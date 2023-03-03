@@ -100,6 +100,26 @@
                 this.$nextTick(() => {
                     this.$refs.EditOrganization.init(id);
                 });
+            },
+            //删除
+            deleteHandle(id){
+                this.$confirm('此操作将删除该组织, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.post("/sys/organization/delete/" + id).then(res => {
+                        console.log(res)
+                        this.$message({
+                            showClose: true,
+                            message: '删除成功',
+                            type: 'success',
+                            onClose:() => {
+                                this.getOrganizationList()
+                            }
+                        });
+                    })
+                }).catch(() => {});
             }
         }
     }
