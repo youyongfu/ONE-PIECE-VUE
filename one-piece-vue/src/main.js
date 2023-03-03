@@ -36,6 +36,13 @@ import global from './globalFun'
 import VDistpicker from "v-distpicker";
 Vue.component('v-distpicker',VDistpicker);
 
+//引入富文本框
+import { ElementTiptapPlugin } from 'element-tiptap';
+import 'element-tiptap/lib/index.css';
+Vue.use(ElementTiptapPlugin, {
+  lang: 'zh', // 设置语言为中文
+});
+
 //关闭生产提示
 Vue.config.productionTip = false
 
