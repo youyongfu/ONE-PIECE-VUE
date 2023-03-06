@@ -3,7 +3,7 @@
         <el-form :inline="true">
 
             <el-form-item>
-                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:devilnut:save')">新增</el-button>
+                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:weapon:save')">新增</el-button>
             </el-form-item>
         </el-form>
 
@@ -13,26 +13,19 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
-            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+            <el-table-column prop="level" label="级别" width="120"></el-table-column>
 
-            <el-table-column prop="category" label="类别" width="120">
-                <template slot-scope="scope">
-                    <p v-show="scope.row.category == 1">超人系</p>
-                    <p v-show="scope.row.category == 2">自然系</p>
-                    <p v-show="scope.row.category == 3">动物系</p>
-                    <p v-show="scope.row.category == 4">衍生系</p>
-                </template>
-            </el-table-column>
+            <el-table-column prop="cost" label="价值" width="120"></el-table-column>
 
-            <el-table-column prop="properties" label="性质" width="120"></el-table-column>
+            <el-table-column prop="point" label="特点" width="120"></el-table-column>
 
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
 
-                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:devilnut:update')">编辑</el-button>
-                    <el-divider direction="vertical" v-if="hasAuth('sys:devilnut:update')"></el-divider>
+                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:weapon:update')">编辑</el-button>
+                    <el-divider direction="vertical" v-if="hasAuth('sys:weapon:update')"></el-divider>
 
-                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:devilnut:delete')">删除</el-button>
+                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:weapon:delete')">删除</el-button>
                 </template>
             </el-table-column>
 
@@ -49,16 +42,16 @@
                 :total="total">
         </el-pagination>
 
-        <EditDevilnut title="编辑果实" v-if="dialogVisible" ref="EditDevilnut"/>
+        <EditWeapon title="编辑武器" v-if="dialogVisible" ref="EditWeapon"/>
     </div>
 </template>
 
 <script>
-    import EditDevilnut from "../data/EditDevilnut";
+    import EditWeapon from "../data/EditWeapon";
 
     export default {
-        name: "Devilnut",
-        components:{EditDevilnut},
+        name: "Weapon",
+        components:{EditWeapon},
         data() {
             return {
                 searchForm: {},
@@ -75,7 +68,7 @@
         methods: {
             //获取列表
             getList() {
-                this.$axios.get('sys/devilnut/listPage', {params: {
+                this.$axios.get('sys/weapon/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
                         size: this.size
@@ -103,17 +96,17 @@
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditDevilnut.init(id);
+                    this.$refs.EditWeapon.init(id);
                 });
             },
             //删除
             deleteHandle(id){
-                this.$confirm('此操作将删除该果实, 是否继续?', '提示', {
+                this.$confirm('此操作将删除该武器, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post("/sys/devilnut/delete/" + id).then(res => {
+                    this.$axios.post("/sys/weapon/delete/" + id).then(res => {
                         console.log(res)
                         this.$message({
                             showClose: true,

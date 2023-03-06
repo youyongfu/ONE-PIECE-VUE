@@ -9,38 +9,26 @@
                     <el-step title="基本信息"></el-step>
                     <el-step title="图片"></el-step>
                     <el-step title="介绍"></el-step>
-                    <el-step title="招式"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
 
-                        <el-form-item label="类别" prop="category" label-width="100px">
-                            <el-select v-model="editForm.category" placeholder="请选择">
-                                <el-option
-                                        v-for="item in categorys"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-
                         <el-form-item label="名称" prop="name" label-width="100px">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
-                            <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
+                        <el-form-item label="级别" prop="level" label-width="100px">
+                            <el-input v-model="editForm.level" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="别名" prop="alias" label-width="100px">
-                            <el-input v-model="editForm.alias" autocomplete="off"></el-input>
+                        <el-form-item label="价值" prop="cost" label-width="100px">
+                            <el-input v-model="editForm.cost" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="性质" prop="properties" label-width="100px">
-                            <el-input v-model="editForm.properties" autocomplete="off"></el-input>
+                        <el-form-item label="特点" prop="point" label-width="100px">
+                            <el-input v-model="editForm.point" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-tab-pane>
 
@@ -61,9 +49,6 @@
                         <el-tiptap v-model="editForm.introduce" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
 
-                    <el-tab-pane label="招式">
-                        <el-tiptap v-model="editForm.move" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
                 </el-tabs>
 
                 <el-form-item>
@@ -93,7 +78,7 @@
     } from 'element-tiptap';
 
     export default {
-        name: "EditDevilnut",
+        name: "EditWeapon",
         data() {
             return {
                 selectLabel:"basicInfo",
@@ -128,22 +113,16 @@
             }
         },
         created(){
-            this.getCategorys()
+
         },
         methods: {
-            //获取类别
-            getCategorys(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"DEVILNUT"}}).then(res =>{
-                    this.categorys = res.data.data;
-                })
-            },
             // 窗口初始化方法
             init(id) {
                 this.activeNumber = 1;
                 this.$nextTick(() => {
                     if(id){
-                        this.$axios.get('/sys/devilnut/info/' + id).then(res => {
-                            this.editForm = res.data.data.devilnut;
+                        this.$axios.get('/sys/weapon/info/' + id).then(res => {
+                            this.editForm = res.data.data.weapon;
                             this.fileList = res.data.data.fileList;
                             if(this.editForm.parentId === 0){
                                 this.editForm.parentId = "";
@@ -151,7 +130,7 @@
                         })
                     }
                     this.open = true;
-                    this.title = "编辑果实";
+                    this.title = "编辑武器";
                 });
             },
             //选项卡选中事件
@@ -178,7 +157,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.editForm.picture = this.signData.toString();
-                        this.$axios.post('/sys/devilnut/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
+                        this.$axios.post('/sys/weapon/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             console.log(res)
                             this.$message({
                                 showClose: true,
