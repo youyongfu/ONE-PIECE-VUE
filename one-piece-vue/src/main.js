@@ -43,6 +43,10 @@ Vue.use(ElementTiptapPlugin, {
   lang: 'zh', // 设置语言为中文
 });
 
+//引入下拉加载更多
+import VueLoadMore from 'vuejs-loadmore'
+Vue.use(VueLoadMore);
+
 //关闭生产提示
 Vue.config.productionTip = false
 
