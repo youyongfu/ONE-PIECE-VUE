@@ -3,7 +3,7 @@
         <el-form :inline="true">
 
             <el-form-item>
-                <el-button type="primary" @click="editOrganization(null)" v-if="hasAuth('sys:organization:save')">新增</el-button>
+                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:devilnut:save')">新增</el-button>
             </el-form-item>
         </el-form>
 
@@ -13,21 +13,26 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
+            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+
+            <el-table-column prop="category" label="类别" width="120">
+                <template slot-scope="scope">
+                    <p v-show="scope.row.category == 1">超人系</p>
+                    <p v-show="scope.row.category == 2">自然系</p>
+                    <p v-show="scope.row.category == 3">动物系</p>
+                    <p v-show="scope.row.category == 4">衍生系</p>
+                </template>
+            </el-table-column>
+
             <el-table-column prop="properties" label="性质" width="120"></el-table-column>
-
-            <el-table-column prop="birth" label="诞生时间" width="120"></el-table-column>
-
-            <el-table-column prop="station" label="驻地" width="120"></el-table-column>
-
-            <el-table-column prop="supremePower" label="最高权力" width="120"></el-table-column>
 
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
 
-                    <el-button type="text" @click="editOrganization(scope.row.id)" v-if="hasAuth('sys:organization:update')">编辑</el-button>
+                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:devilnut:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:organization:update')"></el-divider>
 
-                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:organization:delete')">删除</el-button>
+                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:devilnut:delete')">删除</el-button>
                 </template>
             </el-table-column>
 
@@ -44,16 +49,16 @@
                 :total="total">
         </el-pagination>
 
-        <EditOrganization title="编辑组织" v-if="dialogVisible" ref="EditOrganization"/>
+        <EditDevilnut title="编辑果实" v-if="dialogVisible" ref="EditDevilnut"/>
     </div>
 </template>
 
 <script>
-    import EditOrganization from "../data/EditOrganization";
+    import EditDevilnut from "../data/EditDevilnut";
 
     export default {
-        name: "Organization",
-        components:{EditOrganization},
+        name: "Devilnut",
+        components:{EditDevilnut},
         data() {
             return {
                 searchForm: {},
@@ -65,12 +70,12 @@
             }
         },
         created(){
-            this.getOrganizationList()
+            this.getList()
         },
         methods: {
-            //获取组织列表
-            getOrganizationList() {
-                this.$axios.get('sys/organization/listPage', {params: {
+            //获取列表
+            getList() {
+                this.$axios.get('sys/devilnut/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
                         size: this.size
@@ -86,36 +91,36 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getOrganizationList()
+                this.getList()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getOrganizationList()
+                this.getList()
             },
-            //编辑组织
-            editOrganization(id){
+            //编辑
+            editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditOrganization.init(id);
+                    this.$refs.EditDevilnut.init(id);
                 });
             },
             //删除
             deleteHandle(id){
-                this.$confirm('此操作将删除该组织, 是否继续?', '提示', {
+                this.$confirm('此操作将删除该果实, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post("/sys/organization/delete/" + id).then(res => {
+                    this.$axios.post("/sys/devilnut/delete/" + id).then(res => {
                         console.log(res)
                         this.$message({
                             showClose: true,
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getOrganizationList()
+                                this.getList()
                             }
                         });
                     })

@@ -7,53 +7,44 @@
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
-                    <el-step title="组织标志"></el-step>
-                    <el-step title="组织历史"></el-step>
+                    <el-step title="图片"></el-step>
+                    <el-step title="介绍"></el-step>
+                    <el-step title="招式"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
 
-                        <el-form-item label="上级组织" prop="parentId">
-                            <el-select v-model="editForm.parentId" placeholder="请选择上级组织">
-                                <template v-for="item in treeData">
-                                    <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                    <template v-for="child in item.children">
-                                        <el-option :label="child.name" :value="child.id" :key="child.name">
-                                            <span>{{ "- " + child.name }}</span>
-                                        </el-option>
-                                    </template>
-                                </template>
+                        <el-form-item label="类别" prop="category" label-width="100px">
+                            <el-select v-model="editForm.category" placeholder="请选择">
+                                <el-option
+                                        v-for="item in categorys"
+                                        :key="item.value"
+                                        :label="item.name"
+                                        :value="item.value">
+                                </el-option>
                             </el-select>
                         </el-form-item>
 
-                        <el-form-item label="中文名" prop="name" label-width="100px">
+                        <el-form-item label="名称" prop="name" label-width="100px">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="英文名" prop="foreignName" label-width="100px">
+                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
                             <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="别名" prop="alias" label-width="100px">
+                            <el-input v-model="editForm.alias" autocomplete="off"></el-input>
                         </el-form-item>
 
                         <el-form-item label="性质" prop="properties" label-width="100px">
                             <el-input v-model="editForm.properties" autocomplete="off"></el-input>
                         </el-form-item>
-
-                        <el-form-item label="诞生时间" prop="birth" label-width="100px">
-                            <el-input v-model="editForm.birth" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="驻地" prop="station" label-width="100px">
-                            <el-input v-model="editForm.station" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="最高权力" prop="supremePower" label-width="100px">
-                            <el-input v-model="editForm.supremePower" autocomplete="off"></el-input>
-                        </el-form-item>
                     </el-tab-pane>
 
-                    <el-tab-pane label="标志">
+                    <el-tab-pane label="图片">
                         <el-upload
                                 action=""
                                 :before-upload="handleFile"
@@ -65,8 +56,13 @@
                             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
                         </el-upload>
                     </el-tab-pane>
-                    <el-tab-pane label="历史">
-                        <el-tiptap v-model="editForm.history" :extensions="extensions"></el-tiptap>
+
+                    <el-tab-pane label="介绍">
+                        <el-tiptap v-model="editForm.introduce" :extensions="extensions"></el-tiptap>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="招式">
+                        <el-tiptap v-model="editForm.move" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -97,7 +93,7 @@
     } from 'element-tiptap';
 
     export default {
-        name: "EditOrganization",
+        name: "EditDevilnut",
         data() {
             return {
                 selectLabel:"basicInfo",
@@ -110,10 +106,9 @@
                 },
                 editFormRules: {
                     name: [
-                        {required: true, message: '请输入组织名称', trigger: 'blur'}
+                        {required: true, message: '请输入名称', trigger: 'blur'}
                     ]
                 },
-                treeData:[],
                 fileList:[],
                 signData:[],
                 extensions: [
@@ -129,25 +124,26 @@
                     new BulletList(),
                     new OrderedList(),
                 ],
+                categorys: []
             }
         },
         created(){
-            this.getTreeOrganization()
+            this.getCategorys()
         },
         methods: {
-            //获取树形组织
-            getTreeOrganization(){
-                this.$axios.get('sys/organization/tree').then(res =>{
-                    this.treeData = res.data.data;
+            //获取类别
+            getCategorys(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"DEVILNUT"}}).then(res =>{
+                    this.categorys = res.data.data;
                 })
             },
             // 窗口初始化方法
             init(id) {
                 this.activeNumber = 1;
                 this.$nextTick(() => {
-                    if(id != ""){
-                        this.$axios.get('/sys/organization/info/' + id).then(res => {
-                            this.editForm = res.data.data.organization;
+                    if(id){
+                        this.$axios.get('/sys/devilnut/info/' + id).then(res => {
+                            this.editForm = res.data.data.devilnut;
                             this.fileList = res.data.data.fileList;
                             if(this.editForm.parentId === 0){
                                 this.editForm.parentId = "";
@@ -181,8 +177,8 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.editForm.sign = this.signData.toString();
-                        this.$axios.post('/sys/organization/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
+                        this.editForm.picture = this.signData.toString();
+                        this.$axios.post('/sys/devilnut/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             console.log(res)
                             this.$message({
                                 showClose: true,
