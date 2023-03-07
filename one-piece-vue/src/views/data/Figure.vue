@@ -3,7 +3,7 @@
         <el-form :inline="true">
 
             <el-form-item>
-                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:islands:save')">新增</el-button>
+                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:figure:save')">新增</el-button>
             </el-form-item>
         </el-form>
 
@@ -13,17 +13,33 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
-            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+            <el-table-column prop="birth" label="生日" width="120">
+                <template slot-scope="scope">{{scope.row.birth | formatDate('yyyy-MM-dd')}}</template>
+            </el-table-column>
 
-            <el-table-column prop="seat" label="位置" width="120"></el-table-column>
+            <el-table-column prop="age" label="年龄" width="120"></el-table-column>
+
+            <el-table-column prop="blood" label="血型" width="120"></el-table-column>
+
+            <el-table-column prop="height" label="身高" width="120"></el-table-column>
+
+            <el-table-column prop="sex" label="性别" width="120">
+                <template slot-scope="scope">
+                    <p v-show="scope.row.sex == 1">男</p>
+                    <p v-show="scope.row.sex == 2">女</p>
+                    <p v-show="scope.row.sex == 3">人妖</p>
+                </template>
+            </el-table-column>
+
+            <el-table-column prop="bounty" label="悬赏金" width="120"></el-table-column>
 
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
 
-                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:islands:update')">编辑</el-button>
-                    <el-divider direction="vertical" v-if="hasAuth('sys:islands:update')"></el-divider>
+                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:figure:update')">编辑</el-button>
+                    <el-divider direction="vertical" v-if="hasAuth('sys:weapon:update')"></el-divider>
 
-                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:islands:delete')">删除</el-button>
+                    <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:figure:delete')">删除</el-button>
                 </template>
             </el-table-column>
 
@@ -40,16 +56,16 @@
                 :total="total">
         </el-pagination>
 
-        <EditIslands title="编辑岛屿" v-if="dialogVisible" ref="EditIslands"/>
+        <EditFigure title="编辑人物" v-if="dialogVisible" ref="EditFigure"/>
     </div>
 </template>
 
 <script>
-    import EditIslands from "../data/EditIslands";
+    import EditFigure from "../data/EditFigure";
 
     export default {
-        name: "Islands",
-        components:{EditIslands},
+        name: "Figure",
+        components:{EditFigure},
         data() {
             return {
                 searchForm: {},
@@ -66,7 +82,7 @@
         methods: {
             //获取列表
             getList() {
-                this.$axios.get('sys/islands/listPage', {params: {
+                this.$axios.get('sys/figure/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
                         size: this.size
@@ -94,17 +110,17 @@
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditIslands.init(id);
+                    this.$refs.EditFigure.init(id);
                 });
             },
             //删除
             deleteHandle(id){
-                this.$confirm('此操作将删除该岛屿, 是否继续?', '提示', {
+                this.$confirm('此操作将删除该人物, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post("/sys/islands/delete/" + id).then(res => {
+                    this.$axios.post("/sys/figure/delete/" + id).then(res => {
                         console.log(res)
                         this.$message({
                             showClose: true,
