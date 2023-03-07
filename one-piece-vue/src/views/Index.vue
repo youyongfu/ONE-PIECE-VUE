@@ -1,5 +1,5 @@
 <template>
-    <el-image :src="require('@/assets/fm2.jpg')" style="height: 600px;width: 1270px"></el-image>
+    <el-empty description="ONE-PIECE后台管理系统"></el-empty>
 </template>
 
 <script>
