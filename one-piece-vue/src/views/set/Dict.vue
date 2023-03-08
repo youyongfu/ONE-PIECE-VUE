@@ -2,17 +2,17 @@
     <div>
 
         <el-form :inline="true">
-
+            <!--搜索-->
             <el-form-item>
                 <el-input v-model="searchForm.name" placeholder="名称" clearable></el-input>
             </el-form-item>
-
             <el-form-item>
                 <el-button @click="getTreeDict">搜索</el-button>
             </el-form-item>
 
+            <!-- 操作按钮-->
             <el-form-item>
-                <el-button type="primary" @click="dialogVisible = true" v-if="hasAuth('sys:dict:save')">新增</el-button>
+                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:dict:save')">新增</el-button>
             </el-form-item>
         </el-form>
 
@@ -54,75 +54,26 @@
                 :total="total">
         </el-pagination>
 
-        <!--新增对话框-->
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
-
-            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
-
-                <el-form-item label="上级数据字典" prop="parentId">
-                    <el-select v-model="editForm.parentId" placeholder="请选择上级数据字典">
-                        <template v-for="item in tableData">
-                            <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                            <template v-for="child in item.children">
-                                <el-option :label="child.name" :value="child.id" :key="child.name">
-                                    <span>{{ "- " + child.name }}</span>
-                                </el-option>
-                            </template>
-                        </template>
-                    </el-select>
-                    <el-alert title="未选择上级数据字典，则默认为添加一级数据字典" :closable="false" type="info" style="line-height: 12px;"></el-alert>
-                </el-form-item>
-
-                <el-form-item label="字典名称" prop="name" label-width="100px">
-                    <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                </el-form-item>
-
-                <el-form-item label="字典编码" prop="code" label-width="100px">
-                    <el-input v-model="editForm.code" autocomplete="off"></el-input>
-                </el-form-item>
-
-                <el-form-item label="字典值" prop="value" label-width="100px">
-                    <el-input v-model="editForm.value" autocomplete="off"></el-input>
-                </el-form-item>
-
-                <el-form-item label="状态" prop="statu" label-width="100px">
-                    <el-radio-group v-model="editForm.statu">
-                        <el-radio :label=0>禁用</el-radio>
-                        <el-radio :label=1>正常</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
-                    <el-button @click="resetForm('editForm')">重置</el-button>
-                </el-form-item>
-            </el-form>
-
-        </el-dialog>
+        <DictEdit title="编辑数据字典" v-if="dialogVisible" ref="DictEdit"/>
 
     </div>
 </template>
 
 <script>
+
+    import DictEdit from "../set/DictEdit";
+
     export default {
         name: "Dict",
+        components:{DictEdit},
         data() {
             return {
-                tableData:[],
-                total: 0,
-                size: 10,
-                current: 1,
-                searchForm: {},
-                dialogVisible: false,
-                editForm: {},
-                editFormRules: {
-                    name: [
-                        {required: true, message: '请输入名称', trigger: 'blur'}
-                    ],
-                    statu: [
-                        {required: true, message: '请选择状态', trigger: 'blur'}
-                    ]
-                },
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
@@ -161,45 +112,12 @@
                 this.current = val
                 this.getTreeDict()
             },
-            //重置
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
-                this.editForm = {}
-            },
-            //关闭对话框
-            handleClose() {
-                this.resetForm('editForm')
-                this.dialogVisible = false
-            },
-            //提交
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.$axios.post('/sys/dict/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
-                            console.log(res)
-                            this.$message({
-                                showClose: true,
-                                message: '提交成功',
-                                type: 'success',
-                                onClose:() => {
-                                    this.getTreeDict()
-                                }
-                            });
-                            this.resetForm('editForm')
-                            this.dialogVisible = false
-                        })
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
             //编辑
             editHandle(id){
-                this.$axios.get('/sys/dict/info/' + id).then(res => {
-                    this.editForm = res.data.data;
-                })
-                this.dialogVisible = true
+                this.dialogVisible = true;
+                this.$nextTick(() => {
+                    this.$refs.DictEdit.init(id);
+                });
             },
             //删除
             deleteHandle(id){
