@@ -92,7 +92,7 @@
                 multipleSelection: [],      //复选框勾选数据
                 tableData: [],              //列表数据
                 total: 0,                   //总条数
-                size: 10,                   //条数
+                size: 10,                   //每页显示条数
                 current: 1,                 //页数
                 dialogVisible: false,       //是否显示编辑对话框
                 roleDialogFormVisible: false,   //是否显示分配角色对话框
