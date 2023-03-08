@@ -1,12 +1,30 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view v-if="isRouterShow"></router-view>
   </div>
 </template>
 
 <script>
   export default {
     name : 'App',
+    provide(){
+      return{
+        reload: this.reload
+      }
+    },
+    data(){
+        return{
+          isRouterShow: true
+        }
+    },
+    methods:{
+        reload(){
+            this.isRouterShow = false;
+            this.$nextTick(() => {
+                this.isRouterShow = true;
+            });
+        }
+    },
     //监听路由跳转
     watch: {
       $route(to, from) {

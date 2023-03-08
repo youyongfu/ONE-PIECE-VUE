@@ -113,9 +113,10 @@
                 //上传头像
                 var data = new FormData;
                 data.append("file",file)
+                data.append("type","headSculpture")
                 this.$axios({
                         method: 'Post',
-                        url:"/file/uploadAvatar",
+                        url:"/sys/user/uploadAvatar",
                         headers: { 'Content-Type': 'multipart/form-data' },
                         data : data
                 }).then(res =>{
