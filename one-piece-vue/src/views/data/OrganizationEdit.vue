@@ -54,17 +54,31 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="标志">
-                        <el-upload
-                                action=""
-                                :before-upload="handleFile"
-                                :on-remove="handleRemove"
-                                :file-list="fileList"
-                                list-type="picture"
-                                multiple style="text-align: center">
-                            <el-button size="small" type="primary">点击上传</el-button>
-                            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
+                        <el-upload action="#" list-type="picture-card" :file-list="fileShowList" :on-change="handleFile" :auto-upload="false">
+                            <i slot="default" class="el-icon-plus"></i>
+                            <div slot="file" slot-scope="{file}">
+                                <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                                <span class="el-upload-list__item-actions">
+                                    <!-- 预览-->
+                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                                        <i class="el-icon-zoom-in"></i>
+                                    </span>
+                                    <!-- 下载-->
+                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+                                        <i class="el-icon-download"></i>
+                                    </span>
+                                    <!-- 移除-->
+                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+                                        <i class="el-icon-delete"></i>
+                                    </span>
+                                </span>
+                            </div>
                         </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                                <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
                     </el-tab-pane>
+
                     <el-tab-pane label="历史">
                         <el-tiptap v-model="editForm.history" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
@@ -81,8 +95,10 @@
 
 <script>
 
+    //引入富文本框控件
     import {
         // 罗列出需要的功能按钮
+        ElementTiptap,
         Doc,
         Text,
         Paragraph,
@@ -90,75 +106,103 @@
         Bold,
         Underline,
         Italic,
+        Image,
         Strike,
         ListItem,
         BulletList,
         OrderedList,
+        TodoItem,
+        TodoList,
+        HorizontalRule,
+        Fullscreen,
+        Preview,
+        CodeBlock,
+        TextColor
     } from 'element-tiptap';
 
     export default {
-        name: "EditOrganization",
+        name: "OrganizationEdit",
+        inject:['reload'],
+        components: {'el-tiptap': ElementTiptap,},
         data() {
             return {
-                selectLabel:"basicInfo",
-                activeNumber:1,
-                title: "",
-                open: false,
-                tabPosition: 'left',
-                editForm: {
-                    sign : ""
+                title: "",                         //对话框标题
+                open: false,                      //是否显示对话框
+                activeNumber:1,                   //步骤条高亮显示位置
+                selectLabel:"basicInfo",          //选项卡高亮显示位置
+                tabPosition: 'left',              //选项卡位置
+                editForm: {                         //编辑内容
+                    fileIds:""                     //上传文件id列表
                 },
-                editFormRules: {
+                editFormRules: {                  //校验规则
                     name: [
                         {required: true, message: '请输入组织名称', trigger: 'blur'}
                     ]
                 },
-                treeData:[],
-                fileList:[],
-                signData:[],
-                extensions: [
+                treeData:[],                    //组织信息列表
+                extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
                     new Paragraph(),
-                    new Heading({ level: 5 }), // 支持多级标题，设置为5级
-                    new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
-                    new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
-                    new Italic(),
-                    new Strike(),
+                    new Heading({ level: 3 }),
+                    new Bold({ bubble: true }),             // 在气泡菜单中渲染菜单按钮
+                    new Image({
+                        // 图片的上传方法，返回一个 Promise<url>
+                        uploadRequest (file) {
+                            console.log(file)
+                        }
+                    }),
+                    new Underline(),        // 下划线
+                    new Italic(),           // 斜体
+                    new Strike(),           // 删除线
+                    new HorizontalRule(),   // 华丽的分割线
                     new ListItem(),
-                    new BulletList(),
-                    new OrderedList(),
+                    new BulletList(),       // 无序列表
+                    new OrderedList(),      // 有序列表
+                    new TodoItem(),
+                    new TodoList(),
+                    new Fullscreen(),
+                    new Preview(),
+                    new CodeBlock(),
+                    new TextColor()
                 ],
+                deleteFileId: [],                //移除文件id
+                fileList: [],                   //上传文件列表
+                fileShowList: [],                   //上传文件展示列表
+                dialogImageUrl: '',             //图片地址
+                dialogVisible: false,           //是否显示图片
+                disabled: false                 //是否显示图片按钮
             }
         },
         created(){
             this.getTreeOrganization()
         },
         methods: {
+            // 窗口初始化方法
+            init(id) {
+                this.activeNumber = 1;
+                this.$nextTick(() => {
+                    if(id){
+                        //获取组织信息
+                        this.$axios.get('/sys/organization/info/' + id).then(res => {
+                            this.editForm = res.data.data.organization;         //组织信息
+                            this.fileShowList = res.data.data.fileList;             //上传文件展示信息
+                            if(this.editForm.parentId === "0"){                   //若无上级组织，parentId设为空
+                                this.editForm.parentId = "";
+                            }
+                        })
+                    }
+                    this.open = true;
+                    this.title = "编辑组织信息";
+                });
+            },
             //获取树形组织
             getTreeOrganization(){
                 this.$axios.get('sys/organization/tree').then(res =>{
                     this.treeData = res.data.data;
                 })
             },
-            // 窗口初始化方法
-            init(id) {
-                this.activeNumber = 1;
-                this.$nextTick(() => {
-                    if(id != ""){
-                        this.$axios.get('/sys/organization/info/' + id).then(res => {
-                            this.editForm = res.data.data.organization;
-                            this.fileList = res.data.data.fileList;
-                            if(this.editForm.parentId === 0){
-                                this.editForm.parentId = "";
-                            }
-                        })
-                    }
-                    this.open = true;
-                    this.title = "编辑组织";
-                });
-            },
-            //选项卡选中事件
+            //选项卡选中事件-步骤条联动
             handleClick(tab,event){
                 console.log(event)
                 this.activeNumber = parseInt(tab.index) + 1
@@ -174,38 +218,45 @@
                 this.open = false;
                 this.activeNumber = 1;
                 this.selectLabel = "basicInfo";
+                this.fileShowList = [];
                 this.fileList = [];
-                this.signData = [];
+                this.deleteFileId = [];
             },
             //提交
-            submitForm(formName) {
+            async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.editForm.sign = this.signData.toString();
+
+                        if(this.editForm.id){
+                            this.editForm.fileIds = this.deleteFileId.toString();
+                        }
+                        //保存组织信息
                         this.$axios.post('/sys/organization/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
-                            console.log(res)
                             this.$message({
                                 showClose: true,
                                 message: '提交成功',
                                 type: 'success',
                                 onClose:() => {
-
+                                    this.saveFile(res.data.data.id);
+                                    this.handleClose();
+                                    this.reload();
                                 }
                             });
-                            this.resetForm('editForm')
-                            this.open = false;
-                            this.activeNumber = 1;
-                            this.selectLabel = "basicInfo";
                         })
+
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
             },
-            //上传图片
+            //上传文件校验
             handleFile(file) {
-                const isJPG = file.type === 'image/jpeg';
+                console.log("上传文件")
+                let fileName = file.name;
+                let index = fileName.lastIndexOf(".");
+                let type = fileName.substring(index+1);
+                const isJPG = type === 'jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
@@ -216,34 +267,55 @@
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                     return false;
                 }
-
-                //上传头像
-                var data = new FormData;
-                data.append("file",file)
-                this.$axios({
-                    method: 'Post',
-                    url:"/file/uploadFile",
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    data : data
-                }).then(res =>{
-                    this.fileList.push(res.data.data);
-                    this.signData.push(res.data.data.id);
+                this.fileList.push(file.raw);
+                this.fileShowList.push(file);
+            },
+            //上传文件
+            saveFile(id){
+                this.fileList.forEach(file =>{
+                    var data = new FormData;
+                    data.append("file",file)
+                    data.append("type","organization")
+                    data.append("id",id)
+                    this.$axios({
+                        method: 'Post',
+                        url:"/file/uploadFileAndRecord",
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                        data : data
+                    }).then(res =>{
+                       console.log(res)
+                    })
                 })
             },
-            //删除图片
+            //删除文件
             handleRemove(file){
-                var index = this.fileList.findIndex(item => {
+                this.deleteFileId.push(file.id);            //添加要删除的文件id
+
+                var index = index = this.fileShowList.findIndex(item => {
                     if (item.id == file.id){
                         return true;
                     }
                 })
-                this.fileList.splice(index, 1)
-                index = this.signData.findIndex(item => {
+                this.fileShowList.splice(index, 1)
+
+                index = this.fileList.findIndex(item => {
                     if (item.id == file.id){
                         return true;
                     }
                 })
-                this.signData.splice(index, 1)
+                if(index != -1){
+                    this.fileList.splice(index, 1)
+                }
+
+            },
+            //图片预览
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            //图片下载
+            handleDownload(file) {
+                console.log(file);
             }
         }
     }

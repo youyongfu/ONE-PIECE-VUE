@@ -1,9 +1,9 @@
 <template>
     <div>
         <el-form :inline="true">
-
+            <!-- 操作按钮-->
             <el-form-item>
-                <el-button type="primary" @click="editOrganization(null)" v-if="hasAuth('sys:organization:save')">新增</el-button>
+                <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:organization:save')">新增</el-button>
             </el-form-item>
         </el-form>
 
@@ -24,7 +24,7 @@
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
 
-                    <el-button type="text" @click="editOrganization(scope.row.id)" v-if="hasAuth('sys:organization:update')">编辑</el-button>
+                    <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:organization:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:organization:update')"></el-divider>
 
                     <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:organization:delete')">删除</el-button>
@@ -44,24 +44,24 @@
                 :total="total">
         </el-pagination>
 
-        <EditOrganization title="编辑组织" v-if="dialogVisible" ref="EditOrganization"/>
+        <OrganizationEdit title="编辑组织信息" v-if="dialogVisible" ref="OrganizationEdit"/>
     </div>
 </template>
 
 <script>
-    import EditOrganization from "../data/EditOrganization";
+    import OrganizationEdit from "../data/OrganizationEdit";
 
     export default {
         name: "Organization",
-        components:{EditOrganization},
+        components:{OrganizationEdit},
         data() {
             return {
-                searchForm: {},
-                tableData: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                dialogVisible: false,
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
@@ -95,10 +95,10 @@
                 this.getOrganizationList()
             },
             //编辑组织
-            editOrganization(id){
+            editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditOrganization.init(id);
+                    this.$refs.OrganizationEdit.init(id);
                 });
             },
             //删除
