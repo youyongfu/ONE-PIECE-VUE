@@ -120,6 +120,17 @@
         TextColor
     } from 'element-tiptap';
 
+    import request from "@/axios";
+    // 富文本框上传图片
+    export const fileUploadImage = data => request({
+        url: "/file/uploadFile", // path路径
+        method: 'POST', // 请求方法
+        headers: { // 请求头
+            'Content-Type': 'multipart/form-data' // 上传文件所要求的格式formdata
+        },
+        data // 请求体
+    })
+
     export default {
         name: "OrganizationEdit",
         inject:['reload'],
@@ -149,7 +160,12 @@
                     new Image({
                         // 图片的上传方法，返回一个 Promise<url>
                         uploadRequest (file) {
-                            console.log(file)
+                            var data = new FormData;
+                            data.append("file",file)
+                            data.append("type","organization")
+                            return fileUploadImage(data).then(res =>{
+                                return res.data.data.url;
+                            })
                         }
                     }),
                     new Underline(),        // 下划线
