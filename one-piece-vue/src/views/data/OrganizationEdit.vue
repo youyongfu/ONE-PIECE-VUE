@@ -8,7 +8,9 @@
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
                     <el-step title="组织标志"></el-step>
-                    <el-step title="组织历史"></el-step>
+                    <el-step title="成立背景"></el-step>
+                    <el-step title="组织经历"></el-step>
+                    <el-step title="组织文化"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
@@ -32,24 +34,32 @@
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="英文名" prop="foreignName" label-width="100px">
+                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
                             <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="性质" prop="properties" label-width="100px">
-                            <el-input v-model="editForm.properties" autocomplete="off"></el-input>
+                        <el-form-item label="性质" prop="nature" label-width="100px">
+                            <el-input v-model="editForm.nature" autocomplete="off"></el-input>
                         </el-form-item>
 
                         <el-form-item label="诞生时间" prop="birth" label-width="100px">
                             <el-input v-model="editForm.birth" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="驻地" prop="station" label-width="100px">
-                            <el-input v-model="editForm.station" autocomplete="off"></el-input>
+                        <el-form-item label="领导者" prop="leader" label-width="100px">
+                            <el-input v-model="editForm.leader" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="最高权力" prop="supremePower" label-width="100px">
-                            <el-input v-model="editForm.supremePower" autocomplete="off"></el-input>
+                        <el-form-item label="总部" prop="headquarters" label-width="100px">
+                            <el-input v-model="editForm.headquarters" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="初次登场" prop="debut" label-width="100px">
+                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="简介" prop="synopsis" label-width="100px">
+                            <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
                     </el-tab-pane>
 
@@ -79,8 +89,16 @@
                         </el-dialog>
                     </el-tab-pane>
 
-                    <el-tab-pane label="历史">
-                        <el-tiptap v-model="editForm.history" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="成立背景">
+                        <el-tiptap v-model="editForm.background" :extensions="extensions"></el-tiptap>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="组织经历">
+                        <el-tiptap v-model="editForm.experience" :extensions="extensions"></el-tiptap>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="组织文化">
+                        <el-tiptap v-model="editForm.civilization" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -201,7 +219,10 @@
                     if(id){
                         //获取组织信息
                         this.$axios.get('/sys/organization/info/' + id).then(res => {
-                            this.editForm = res.data.data.organization;         //组织信息
+                            this.editForm = res.data.data.organization;              //组织基本信息
+                            this.editForm.background = res.data.data.background     //组织背景
+                            this.editForm.experience = res.data.data.experience     //组织经历
+                            this.editForm.civilization = res.data.data.civilization     //组织文化
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                             if(this.editForm.parentId === "0"){                   //若无上级组织，parentId设为空
                                 this.editForm.parentId = "";
