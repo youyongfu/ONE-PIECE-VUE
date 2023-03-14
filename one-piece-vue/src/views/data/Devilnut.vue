@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :inline="true">
-
+            <!-- 操作按钮-->
             <el-form-item>
                 <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:devilnut:save')">新增</el-button>
             </el-form-item>
@@ -12,6 +12,8 @@
             <el-table-column type="selection" width="55"></el-table-column>
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
+
+            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
 
             <el-table-column prop="alias" label="别名" width="120"></el-table-column>
 
@@ -24,14 +26,15 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="properties" label="性质" width="120"></el-table-column>
+            <el-table-column prop="nature" label="性质" width="120"></el-table-column>
 
+            <el-table-column prop="eater" label="食用者" width="150"></el-table-column>
+
+            <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
-
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:devilnut:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:devilnut:update')"></el-divider>
-
                     <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:devilnut:delete')">删除</el-button>
                 </template>
             </el-table-column>
@@ -49,32 +52,32 @@
                 :total="total">
         </el-pagination>
 
-        <EditDevilnut title="编辑果实" v-if="dialogVisible" ref="EditDevilnut"/>
+        <DevilnutEdit title="编辑果实信息" v-if="dialogVisible" ref="DevilnutEdit"/>
     </div>
 </template>
 
 <script>
-    import EditDevilnut from "../data/EditDevilnut";
+    import DevilnutEdit from "../data/DevilnutEdit";
 
     export default {
         name: "Devilnut",
-        components:{EditDevilnut},
+        components:{DevilnutEdit},
         data() {
             return {
-                searchForm: {},
-                tableData: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                dialogVisible: false,
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
-            this.getList()
+            this.listPage()
         },
         methods: {
-            //获取列表
-            getList() {
+            //获取
+            listPage() {
                 this.$axios.get('sys/devilnut/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
@@ -91,19 +94,19 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getList()
+                this.listPage()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getList()
+                this.listPage()
             },
             //编辑
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditDevilnut.init(id);
+                    this.$refs.DevilnutEdit.init(id);
                 });
             },
             //删除
@@ -120,7 +123,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getList()
+                                this.listPage()
                             }
                         });
                     })
