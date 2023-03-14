@@ -7,9 +7,11 @@
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
-                    <el-step title="果实图鉴"></el-step>
-                    <el-step title="果实能力"></el-step>
-                    <el-step title="果实招式"></el-step>
+                    <el-step title="船只图片"></el-step>
+                    <el-step title="船只背景"></el-step>
+                    <el-step title="船只外观"></el-step>
+                    <el-step title="船只功能"></el-step>
+                    <el-step title="船只经历"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
@@ -28,18 +30,32 @@
                             <el-input v-model="editForm.alias" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="分类" prop="category" label-width="100px">
-                            <el-radio-group v-model="editForm.category">
-                                <el-radio v-for="item in devilnutCategory" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                            </el-radio-group>
+                        <el-form-item label="型号" prop="model" label-width="100px">
+                            <el-input v-model="editForm.model" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="性质" prop="nature" label-width="100px">
-                            <el-input v-model="editForm.nature" autocomplete="off"></el-input>
+                        <el-form-item label="建造日" prop="bulidDate" label-width="100px">
+                            <el-input v-model="editForm.bulidDate" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="食用者" prop="eater" label-width="100px">
-                            <el-input v-model="editForm.eater" autocomplete="off"></el-input>
+                        <el-form-item label="全长" prop="length" label-width="100px">
+                            <el-input v-model="editForm.length" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="总高" prop="height" label-width="100px">
+                            <el-input v-model="editForm.height" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="设计者" prop="designer" label-width="100px">
+                            <el-input v-model="editForm.designer" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="制造者" prop="producer" label-width="100px">
+                            <el-input v-model="editForm.producer" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="使用者" prop="user" label-width="100px">
+                            <el-input v-model="editForm.user" autocomplete="off"></el-input>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
@@ -47,7 +63,7 @@
                         </el-form-item>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实图鉴">
+                    <el-tab-pane label="船只图片">
                         <el-upload action="#" list-type="picture-card" :file-list="fileShowList" :on-change="handleFile" :auto-upload="false">
                             <i slot="default" class="el-icon-plus"></i>
                             <div slot="file" slot-scope="{file}">
@@ -73,12 +89,20 @@
                         </el-dialog>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实能力">
-                        <el-tiptap v-model="editForm.ability" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="船只背景">
+                        <el-tiptap v-model="editForm.background" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实招式">
-                        <el-tiptap v-model="editForm.move" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="船只外观">
+                        <el-tiptap v-model="editForm.appearance" :extensions="extensions"></el-tiptap>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="船只功能">
+                        <el-tiptap v-model="editForm.function" :extensions="extensions"></el-tiptap>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="船只经历">
+                        <el-tiptap v-model="editForm.experience" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -130,7 +154,7 @@
     })
 
     export default {
-        name: "DevilnutEdit",
+        name: "ShippingEdit",
         inject:['reload'],
         components: {'el-tiptap': ElementTiptap,},
         data() {
@@ -160,7 +184,7 @@
                         uploadRequest (file) {
                             var data = new FormData;
                             data.append("file",file)
-                            data.append("type","devilnut")
+                            data.append("type","shipping")
                             return fileUploadImage(data).then(res =>{
                                 return res.data.data.url;
                             })
@@ -199,15 +223,17 @@
                 this.$nextTick(() => {
                     if(id){
                         //获取组织信息
-                        this.$axios.get('/sys/devilnut/info/' + id).then(res => {
-                            this.editForm = res.data.data.devilnut;              //组织基本信息
-                            this.editForm.ability = res.data.data.ability     //果实能力
-                            this.editForm.move = res.data.data.move     //果实招式
+                        this.$axios.get('/sys/shipping/info/' + id).then(res => {
+                            this.editForm = res.data.data.shipping;              //组织基本信息
+                            this.editForm.background = res.data.data.background     //船只背景
+                            this.editForm.appearance = res.data.data.appearance     //船只外观
+                            this.editForm.function = res.data.data.function         //船只功能
+                            this.editForm.experience = res.data.data.experience     //船只经历
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                         })
                     }
                     this.open = true;
-                    this.title = "编辑果实信息";
+                    this.title = "编辑船只信息";
                 });
             },
             //选项卡选中事件-步骤条联动
@@ -245,7 +271,7 @@
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
                         //保存组织信息
-                        this.$axios.post('/sys/devilnut/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
+                        this.$axios.post('/sys/shipping/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             this.$message({
                                 showClose: true,
                                 message: '提交成功',
@@ -289,7 +315,7 @@
                 this.fileList.forEach(file =>{
                     var data = new FormData;
                     data.append("file",file)
-                    data.append("type","devilnut")
+                    data.append("type","shipping")
                     data.append("id",id)
                     this.$axios({
                         method: 'Post',

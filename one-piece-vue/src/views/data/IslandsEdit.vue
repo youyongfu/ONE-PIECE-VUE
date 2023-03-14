@@ -7,14 +7,28 @@
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
-                    <el-step title="果实图鉴"></el-step>
-                    <el-step title="果实能力"></el-step>
-                    <el-step title="果实招式"></el-step>
+                    <el-step title="组织标志"></el-step>
+                    <el-step title="历史"></el-step>
+                    <el-step title="地理环境"></el-step>
+                    <el-step title="登场人物"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
+
+                        <el-form-item label="所属区域" prop="parentId">
+                            <el-select v-model="editForm.parentId" placeholder="请选择所属区域">
+                                <template v-for="item in treeData">
+                                    <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
+                                    <template v-for="child in item.children">
+                                        <el-option :label="child.name" :value="child.id" :key="child.name">
+                                            <span>{{ "- " + child.name }}</span>
+                                        </el-option>
+                                    </template>
+                                </template>
+                            </el-select>
+                        </el-form-item>
 
                         <el-form-item label="名称" prop="name" label-width="100px">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
@@ -28,18 +42,16 @@
                             <el-input v-model="editForm.alias" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="分类" prop="category" label-width="100px">
-                            <el-radio-group v-model="editForm.category">
-                                <el-radio v-for="item in devilnutCategory" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                            </el-radio-group>
+                        <el-form-item label="地理位置" prop="position" label-width="100px">
+                            <el-input v-model="editForm.position" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="性质" prop="nature" label-width="100px">
-                            <el-input v-model="editForm.nature" autocomplete="off"></el-input>
+                        <el-form-item label="特征" prop="characteristic" label-width="100px">
+                            <el-input v-model="editForm.characteristic" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="食用者" prop="eater" label-width="100px">
-                            <el-input v-model="editForm.eater" autocomplete="off"></el-input>
+                        <el-form-item label="气候条件" prop="climate" label-width="100px">
+                            <el-input v-model="editForm.climate" autocomplete="off"></el-input>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
@@ -47,7 +59,7 @@
                         </el-form-item>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实图鉴">
+                    <el-tab-pane label="标志">
                         <el-upload action="#" list-type="picture-card" :file-list="fileShowList" :on-change="handleFile" :auto-upload="false">
                             <i slot="default" class="el-icon-plus"></i>
                             <div slot="file" slot-scope="{file}">
@@ -73,12 +85,16 @@
                         </el-dialog>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实能力">
-                        <el-tiptap v-model="editForm.ability" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="历史">
+                        <el-tiptap v-model="editForm.source" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实招式">
-                        <el-tiptap v-model="editForm.move" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="地理环境">
+                        <el-tiptap v-model="editForm.geography" :extensions="extensions"></el-tiptap>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="登场人物">
+                        <el-tiptap v-model="editForm.appearances" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -130,7 +146,7 @@
     })
 
     export default {
-        name: "DevilnutEdit",
+        name: "IslandsEdit",
         inject:['reload'],
         components: {'el-tiptap': ElementTiptap,},
         data() {
@@ -160,7 +176,7 @@
                         uploadRequest (file) {
                             var data = new FormData;
                             data.append("file",file)
-                            data.append("type","devilnut")
+                            data.append("type","islands")
                             return fileUploadImage(data).then(res =>{
                                 return res.data.data.url;
                             })
@@ -182,15 +198,14 @@
                 ],
                 deleteFileId: [],                //移除文件id
                 fileList: [],                   //上传文件列表
-                fileShowList: [],               //上传文件展示列表
+                fileShowList: [],                   //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false,                 //是否显示图片按钮
-                devilnutCategory: []                   //果实分类
+                disabled: false                 //是否显示图片按钮
             }
         },
         created(){
-            this.getDevilnutCategory()
+            this.getTreeOrganization()
         },
         methods: {
             // 窗口初始化方法
@@ -199,16 +214,26 @@
                 this.$nextTick(() => {
                     if(id){
                         //获取组织信息
-                        this.$axios.get('/sys/devilnut/info/' + id).then(res => {
-                            this.editForm = res.data.data.devilnut;              //组织基本信息
-                            this.editForm.ability = res.data.data.ability     //果实能力
-                            this.editForm.move = res.data.data.move     //果实招式
+                        this.$axios.get('/sys/islands/info/' + id).then(res => {
+                            this.editForm = res.data.data.islands;              //组织基本信息
+                            this.editForm.source = res.data.data.source     //历史
+                            this.editForm.geography = res.data.data.geography     //地理环境
+                            this.editForm.appearances = res.data.data.appearances     //登场人物
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
+                            if(this.editForm.parentId === "0"){                   //若无上级组织，parentId设为空
+                                this.editForm.parentId = "";
+                            }
                         })
                     }
                     this.open = true;
-                    this.title = "编辑果实信息";
+                    this.title = "编辑岛屿信息";
                 });
+            },
+            //获取树形组织
+            getTreeOrganization(){
+                this.$axios.get('sys/islands/tree').then(res =>{
+                    this.treeData = res.data.data;
+                })
             },
             //选项卡选中事件-步骤条联动
             handleClick(tab,event){
@@ -230,12 +255,6 @@
                 this.fileList = [];
                 this.deleteFileId = [];
             },
-            //获取果实分类
-            getDevilnutCategory(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"DEVILNUT_CATEGORY"}}).then(res =>{
-                    this.devilnutCategory = res.data.data;
-                })
-            },
             //提交
             async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -245,7 +264,7 @@
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
                         //保存组织信息
-                        this.$axios.post('/sys/devilnut/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
+                        this.$axios.post('/sys/islands/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             this.$message({
                                 showClose: true,
                                 message: '提交成功',
@@ -289,7 +308,7 @@
                 this.fileList.forEach(file =>{
                     var data = new FormData;
                     data.append("file",file)
-                    data.append("type","devilnut")
+                    data.append("type","islands")
                     data.append("id",id)
                     this.$axios({
                         method: 'Post',
@@ -305,7 +324,6 @@
             handleRemove(file){
                 this.deleteFileId.push(file.id);            //添加要删除的文件id
 
-                //将该图片从上传文件展示列表移除
                 var index = index = this.fileShowList.findIndex(item => {
                     if (item.id == file.id){
                         return true;
@@ -313,7 +331,6 @@
                 })
                 this.fileShowList.splice(index, 1)
 
-                //将该图片从上传文件列表移除
                 index = this.fileList.findIndex(item => {
                     if (item.id == file.id){
                         return true;
@@ -322,6 +339,7 @@
                 if(index != -1){
                     this.fileList.splice(index, 1)
                 }
+
             },
             //图片预览
             handlePictureCardPreview(file) {

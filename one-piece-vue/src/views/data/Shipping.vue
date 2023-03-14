@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :inline="true">
-
+            <!-- 操作按钮-->
             <el-form-item>
                 <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:shipping:save')">新增</el-button>
             </el-form-item>
@@ -13,18 +13,29 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
+            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
+
+            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+
             <el-table-column prop="model" label="型号" width="120"></el-table-column>
 
-            <el-table-column prop="height" label="总高" width="120"></el-table-column>
+            <el-table-column prop="bulidDate" label="建造日" width="120"></el-table-column>
 
-            <el-table-column prop="weight" label="全长" width="120"></el-table-column>
+            <el-table-column prop="length" label="全长" width="150"></el-table-column>
 
+            <el-table-column prop="height" label="总高" width="150"></el-table-column>
+
+            <el-table-column prop="designer" label="设计者" width="150"></el-table-column>
+
+            <el-table-column prop="producer" label="制造者" width="150"></el-table-column>
+
+            <el-table-column prop="user" label="使用者" width="150"></el-table-column>
+
+            <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
-
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:shipping:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:shipping:update')"></el-divider>
-
                     <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:shipping:delete')">删除</el-button>
                 </template>
             </el-table-column>
@@ -42,32 +53,32 @@
                 :total="total">
         </el-pagination>
 
-        <EditShipping title="编辑船只" v-if="dialogVisible" ref="EditShipping"/>
+        <ShippingEdit title="编辑船只信息" v-if="dialogVisible" ref="ShippingEdit"/>
     </div>
 </template>
 
 <script>
-    import EditShipping from "../data/EditShipping";
+    import ShippingEdit from "../data/ShippingEdit";
 
     export default {
         name: "Shipping",
-        components:{EditShipping},
+        components:{ShippingEdit},
         data() {
             return {
-                searchForm: {},
-                tableData: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                dialogVisible: false,
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
-            this.getList()
+            this.listPage()
         },
         methods: {
-            //获取列表
-            getList() {
+            //获取
+            listPage() {
                 this.$axios.get('sys/shipping/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
@@ -84,19 +95,19 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getList()
+                this.listPage()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getList()
+                this.listPage()
             },
             //编辑
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditShipping.init(id);
+                    this.$refs.ShippingEdit.init(id);
                 });
             },
             //删除
@@ -113,7 +124,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getList()
+                                this.listPage()
                             }
                         });
                     })

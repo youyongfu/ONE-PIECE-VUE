@@ -7,9 +7,9 @@
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
-                    <el-step title="果实图鉴"></el-step>
-                    <el-step title="果实能力"></el-step>
-                    <el-step title="果实招式"></el-step>
+                    <el-step title="武器图片"></el-step>
+                    <el-step title="来历"></el-step>
+                    <el-step title="造型"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
@@ -24,22 +24,20 @@
                             <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="别名" prop="alias" label-width="100px">
-                            <el-input v-model="editForm.alias" autocomplete="off"></el-input>
+                        <el-form-item label="级别" prop="level" label-width="100px">
+                            <el-input v-model="editForm.level" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="分类" prop="category" label-width="100px">
-                            <el-radio-group v-model="editForm.category">
-                                <el-radio v-for="item in devilnutCategory" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                            </el-radio-group>
+                        <el-form-item label="价值" prop="money" label-width="100px">
+                            <el-input v-model="editForm.money" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="性质" prop="nature" label-width="100px">
-                            <el-input v-model="editForm.nature" autocomplete="off"></el-input>
+                        <el-form-item label="铸造者" prop="foundry" label-width="100px">
+                            <el-input v-model="editForm.foundry" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="食用者" prop="eater" label-width="100px">
-                            <el-input v-model="editForm.eater" autocomplete="off"></el-input>
+                        <el-form-item label="使用者" prop="user" label-width="100px">
+                            <el-input v-model="editForm.user" autocomplete="off"></el-input>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
@@ -47,7 +45,7 @@
                         </el-form-item>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实图鉴">
+                    <el-tab-pane label="武器图片">
                         <el-upload action="#" list-type="picture-card" :file-list="fileShowList" :on-change="handleFile" :auto-upload="false">
                             <i slot="default" class="el-icon-plus"></i>
                             <div slot="file" slot-scope="{file}">
@@ -73,12 +71,12 @@
                         </el-dialog>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实能力">
-                        <el-tiptap v-model="editForm.ability" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="来历">
+                        <el-tiptap v-model="editForm.origin" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
 
-                    <el-tab-pane label="果实招式">
-                        <el-tiptap v-model="editForm.move" :extensions="extensions"></el-tiptap>
+                    <el-tab-pane label="造型">
+                        <el-tiptap v-model="editForm.modelling" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -130,7 +128,7 @@
     })
 
     export default {
-        name: "DevilnutEdit",
+        name: "WeaponEdit",
         inject:['reload'],
         components: {'el-tiptap': ElementTiptap,},
         data() {
@@ -160,7 +158,7 @@
                         uploadRequest (file) {
                             var data = new FormData;
                             data.append("file",file)
-                            data.append("type","devilnut")
+                            data.append("type","weapon")
                             return fileUploadImage(data).then(res =>{
                                 return res.data.data.url;
                             })
@@ -199,15 +197,15 @@
                 this.$nextTick(() => {
                     if(id){
                         //获取组织信息
-                        this.$axios.get('/sys/devilnut/info/' + id).then(res => {
-                            this.editForm = res.data.data.devilnut;              //组织基本信息
-                            this.editForm.ability = res.data.data.ability     //果实能力
-                            this.editForm.move = res.data.data.move     //果实招式
+                        this.$axios.get('/sys/weapon/info/' + id).then(res => {
+                            this.editForm = res.data.data.weapon;              //组织基本信息
+                            this.editForm.origin = res.data.data.origin     //来历
+                            this.editForm.modelling = res.data.data.modelling     //造型
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                         })
                     }
                     this.open = true;
-                    this.title = "编辑果实信息";
+                    this.title = "编辑武器信息";
                 });
             },
             //选项卡选中事件-步骤条联动
@@ -245,7 +243,7 @@
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
                         //保存组织信息
-                        this.$axios.post('/sys/devilnut/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
+                        this.$axios.post('/sys/weapon/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             this.$message({
                                 showClose: true,
                                 message: '提交成功',
@@ -289,7 +287,7 @@
                 this.fileList.forEach(file =>{
                     var data = new FormData;
                     data.append("file",file)
-                    data.append("type","devilnut")
+                    data.append("type","weapon")
                     data.append("id",id)
                     this.$axios({
                         method: 'Post',

@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :inline="true">
-
+            <!-- 操作按钮-->
             <el-form-item>
                 <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:islands:save')">新增</el-button>
             </el-form-item>
@@ -13,9 +13,15 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
+            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
+
             <el-table-column prop="alias" label="别名" width="120"></el-table-column>
 
-            <el-table-column prop="seat" label="位置" width="120"></el-table-column>
+            <el-table-column prop="position" label="地理位置" width="120"></el-table-column>
+
+            <el-table-column prop="characteristic" label="特征" width="150"></el-table-column>
+
+            <el-table-column prop="climate" label="气候条件" width="120"></el-table-column>
 
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
@@ -40,32 +46,32 @@
                 :total="total">
         </el-pagination>
 
-        <EditIslands title="编辑岛屿" v-if="dialogVisible" ref="EditIslands"/>
+        <IslandsEdit title="编辑岛屿信息" v-if="dialogVisible" ref="IslandsEdit"/>
     </div>
 </template>
 
 <script>
-    import EditIslands from "../data/EditIslands";
+    import IslandsEdit from "../data/IslandsEdit";
 
     export default {
         name: "Islands",
-        components:{EditIslands},
+        components:{IslandsEdit},
         data() {
             return {
-                searchForm: {},
-                tableData: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                dialogVisible: false,
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
-            this.getList()
+            this.listPage()
         },
         methods: {
             //获取列表
-            getList() {
+            listPage() {
                 this.$axios.get('sys/islands/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
@@ -82,19 +88,19 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getList()
+                this.listPage()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getList()
+                this.listPage()
             },
-            //编辑
+            //编辑组织
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditIslands.init(id);
+                    this.$refs.IslandsEdit.init(id);
                 });
             },
             //删除
@@ -111,7 +117,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getList()
+                                this.listPage()
                             }
                         });
                     })

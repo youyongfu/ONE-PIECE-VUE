@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :inline="true">
-
+            <!-- 操作按钮-->
             <el-form-item>
                 <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:weapon:save')">新增</el-button>
             </el-form-item>
@@ -13,18 +13,21 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
+            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
+
             <el-table-column prop="level" label="级别" width="120"></el-table-column>
 
-            <el-table-column prop="cost" label="价值" width="120"></el-table-column>
+            <el-table-column prop="money" label="价值" width="120"></el-table-column>
 
-            <el-table-column prop="point" label="特点" width="120"></el-table-column>
+            <el-table-column prop="foundry" label="铸造者" width="150"></el-table-column>
 
+            <el-table-column prop="user" label="使用者" width="150"></el-table-column>
+
+            <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
-
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:weapon:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:weapon:update')"></el-divider>
-
                     <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:weapon:delete')">删除</el-button>
                 </template>
             </el-table-column>
@@ -42,32 +45,32 @@
                 :total="total">
         </el-pagination>
 
-        <EditWeapon title="编辑武器" v-if="dialogVisible" ref="EditWeapon"/>
+        <WeaponEdit title="编辑武器信息" v-if="dialogVisible" ref="WeaponEdit"/>
     </div>
 </template>
 
 <script>
-    import EditWeapon from "../data/EditWeapon";
+    import WeaponEdit from "../data/WeaponEdit";
 
     export default {
         name: "Weapon",
-        components:{EditWeapon},
+        components:{WeaponEdit},
         data() {
             return {
-                searchForm: {},
-                tableData: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                dialogVisible: false,
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
-            this.getList()
+            this.listPage()
         },
         methods: {
-            //获取列表
-            getList() {
+            //获取
+            listPage() {
                 this.$axios.get('sys/weapon/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
@@ -84,19 +87,19 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getList()
+                this.listPage()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getList()
+                this.listPage()
             },
             //编辑
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditWeapon.init(id);
+                    this.$refs.WeaponEdit.init(id);
                 });
             },
             //删除
@@ -113,7 +116,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getList()
+                                this.listPage()
                             }
                         });
                     })
