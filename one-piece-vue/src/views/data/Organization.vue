@@ -13,13 +13,17 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
-            <el-table-column prop="properties" label="性质" width="120"></el-table-column>
+            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
+
+            <el-table-column prop="nature" label="性质" width="120"></el-table-column>
 
             <el-table-column prop="birth" label="诞生时间" width="120"></el-table-column>
 
-            <el-table-column prop="station" label="驻地" width="120"></el-table-column>
+            <el-table-column prop="leader" label="领导者" width="150"></el-table-column>
 
-            <el-table-column prop="supremePower" label="最高权力" width="120"></el-table-column>
+            <el-table-column prop="headquarters" label="总部" width="120"></el-table-column>
+
+            <el-table-column prop="debut" label="初次登场" width="170"></el-table-column>
 
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">

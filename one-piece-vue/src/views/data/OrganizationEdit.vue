@@ -30,7 +30,7 @@
                             </el-select>
                         </el-form-item>
 
-                        <el-form-item label="中文名" prop="name" label-width="100px">
+                        <el-form-item label="名称" prop="name" label-width="100px">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
                         </el-form-item>
 
