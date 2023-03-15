@@ -2,7 +2,6 @@
     <div>
         <!-- 添加或修改业务对话框 -->
         <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body>
-
             <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
 
                 <el-steps :active="activeNumber" align-center>
@@ -17,132 +16,169 @@
                     <el-step title="对战记录"></el-step>
                 </el-steps>
 
-                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
+                <div class="dialogDiv">
+                    <el-tabs class="dialogDiv" :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
 
-                    <el-tab-pane label="基本信息" name="basicInfo">
+                        <el-tab-pane label="基本信息" name="basicInfo">
 
-                        <el-form-item label="名称" prop="name" label-width="100px">
-                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="名称" prop="name" label-width="100px">
+                                <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
-                            <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="外文名" prop="foreignName" label-width="100px">
+                                <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="别名" prop="alias" label-width="100px">
-                            <el-input v-model="editForm.alias" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="别名" prop="alias" label-width="100px">
+                                <el-input v-model="editForm.alias" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="性别" prop="sex" label-width="100px">
-                            <el-radio-group v-model="editForm.sex">
-                                <el-radio v-for="item in figureSex" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
+                            <el-form-item label="性别" prop="sex" label-width="100px">
+                                <el-radio-group v-model="editForm.sex">
+                                    <el-radio v-for="item in figureSex" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
 
-                        <el-form-item label="生日" prop="birth" label-width="100px">
-                            <el-date-picker v-model="editForm.birth" type="date" placeholder="选择日期">
-                            </el-date-picker>
-                        </el-form-item>
+                            <el-form-item label="生日" prop="birth" label-width="100px">
+                                <el-date-picker v-model="editForm.birth" type="date" placeholder="选择日期">
+                                </el-date-picker>
+                            </el-form-item>
 
-                        <el-form-item label="年龄" prop="age" label-width="100px">
-                            <el-input v-model="editForm.age" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="年龄" prop="age" label-width="100px">
+                                <el-input v-model="editForm.age" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="血型" prop="blood" label-width="100px">
-                            <el-input v-model="editForm.blood" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="血型" prop="blood" label-width="100px">
+                                <el-input v-model="editForm.blood" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="身高" prop="height" label-width="100px">
-                            <el-input v-model="editForm.height" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="身高" prop="height" label-width="100px">
+                                <el-input v-model="editForm.height" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="悬赏金" prop="bounty" label-width="100px">
-                            <el-input v-model="editForm.bounty" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="悬赏金" prop="bounty" label-width="100px">
+                                <el-input v-model="editForm.bounty" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="初次登场" prop="debut" label-width="100px">
-                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="初次登场" prop="debut" label-width="100px">
+                                <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="职位" prop="position" label-width="100px">
-                            <el-input v-model="editForm.position" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="职位" prop="position" label-width="100px">
+                                <el-input v-model="editForm.position" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="饮食习惯" prop="eatingHabits" label-width="100px">
-                            <el-input v-model="editForm.eatingHabits" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="饮食习惯" prop="eatingHabits" label-width="100px">
+                                <el-input v-model="editForm.eatingHabits" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="霸气" prop="overbearing" label-width="100px">
-                            <el-input v-model="editForm.overbearing" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="霸气" prop="overbearing" label-width="100px">
+                                <el-input v-model="editForm.overbearing" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="星座" prop="constellation" label-width="100px">
-                            <el-input v-model="editForm.constellation" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="星座" prop="constellation" label-width="100px">
+                                <el-input v-model="editForm.constellation" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="正义观" prop="justiceView" label-width="100px">
-                            <el-input v-model="editForm.justiceView" autocomplete="off"></el-input>
-                        </el-form-item>
+                            <el-form-item label="正义观" prop="justiceView" label-width="100px">
+                                <el-input v-model="editForm.justiceView" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                        <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
-                        </el-form-item>
-                    </el-tab-pane>
+                            <el-form-item label="恶魔果实" prop="devilnutIds" label-width="100px">
+                                <el-select v-model="editForm.devilnutIds" filterable multiple placeholder="请选择">
+                                    <el-option v-for="item in devilnutOptions" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
 
-                    <el-tab-pane label="角色图片">
-                        <el-upload action="#" list-type="picture-card" :file-list="fileShowList" :on-change="handleFile" :auto-upload="false">
-                            <i slot="default" class="el-icon-plus"></i>
-                            <div slot="file" slot-scope="{file}">
-                                <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-                                <span class="el-upload-list__item-actions">
-                                    <!-- 预览-->
-                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                                        <i class="el-icon-zoom-in"></i>
-                                    </span>
-                                    <!-- 下载-->
-                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
-                                        <i class="el-icon-download"></i>
-                                    </span>
-                                    <!-- 移除-->
-                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
-                                        <i class="el-icon-delete"></i>
-                                    </span>
+                            <el-form-item label="所属组织" prop="organizationIds" label-width="100px">
+                                <el-select v-model="editForm.organizationIds" filterable multiple placeholder="请选择">
+                                    <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="出身" prop="islandsIds" label-width="100px">
+                                <el-select v-model="editForm.islandsIds" filterable multiple placeholder="请选择">
+                                    <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="所乘船只" prop="shippingIds" label-width="100px">
+                                <el-select v-model="editForm.shippingIds" filterable multiple placeholder="请选择">
+                                    <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="所用武器" prop="weaponIds" label-width="100px">
+                                <el-select v-model="editForm.weaponIds" filterable multiple placeholder="请选择">
+                                    <el-option v-for="item in weaponOptions" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                            </el-form-item>
+                        </el-tab-pane>
+
+                        <el-tab-pane label="角色图片">
+                            <el-upload action="#" list-type="picture-card" :file-list="fileShowList" :on-change="handleFile" :auto-upload="false">
+                                <i slot="default" class="el-icon-plus"></i>
+                                <div slot="file" slot-scope="{file}">
+                                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                                    <span class="el-upload-list__item-actions">
+                                <!-- 预览-->
+                                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                                    <i class="el-icon-zoom-in"></i>
                                 </span>
-                            </div>
-                        </el-upload>
-                        <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt="">
-                        </el-dialog>
-                    </el-tab-pane>
+                                        <!-- 下载-->
+                                <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+                                    <i class="el-icon-download"></i>
+                                </span>
+                                        <!-- 移除-->
+                                <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+                                    <i class="el-icon-delete"></i>
+                                </span>
+                            </span>
+                                </div>
+                            </el-upload>
+                            <el-dialog :visible.sync="dialogVisible">
+                                <img width="100%" :src="dialogImageUrl" alt="">
+                            </el-dialog>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="角色背景">
-                        <el-tiptap v-model="editForm.background" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
+                        <el-tab-pane label="角色背景">
+                            <el-tiptap v-model="editForm.background" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="角色形象">
-                        <el-tiptap v-model="editForm.image" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
+                        <el-tab-pane label="角色形象">
+                            <el-tiptap v-model="editForm.image" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="角色生活">
-                        <el-tiptap v-model="editForm.life" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
+                        <el-tab-pane label="角色生活">
+                            <el-tiptap v-model="editForm.life" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="角色能力">
-                        <el-tiptap v-model="editForm.ability" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
+                        <el-tab-pane label="角色能力">
+                            <el-tiptap v-model="editForm.ability" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="角色经历">
-                        <el-tiptap v-model="editForm.experience" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
+                        <el-tab-pane label="角色经历">
+                            <el-tiptap v-model="editForm.experience" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="人际关系">
-                        <el-tiptap v-model="editForm.interpersonalRelationship" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
+                        <el-tab-pane label="人际关系">
+                            <el-tiptap v-model="editForm.interpersonalRelationship" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
 
-                    <el-tab-pane label="对战记录">
-                        <el-tiptap v-model="editForm.warRecord" :extensions="extensions"></el-tiptap>
-                    </el-tab-pane>
-                </el-tabs>
+                        <el-tab-pane label="对战记录">
+                            <el-tiptap v-model="editForm.warRecord" :extensions="extensions"></el-tiptap>
+                        </el-tab-pane>
+                    </el-tabs>
+                </div>
 
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
@@ -248,11 +284,21 @@
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
                 disabled: false,                 //是否显示图片按钮
-                figureSex: []                   //人物性别
+                figureSex: [],                   //人物性别
+                devilnutOptions:[],               //恶魔果实
+                organizationOptions:[],               //所属组织
+                islandsOptions:[],               //出身
+                shippingOptions:[],               //所乘船只
+                weaponOptions:[],               //所用武器
             }
         },
         created(){
-            this.getFigureSex()
+            this.getFigureSex();
+            this.getDevilnutOptions();
+            this.getOrganizationOptions();
+            this.getIslandsOptions();
+            this.getShippingOptions();
+            this.getWeaponOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -271,7 +317,14 @@
                             this.editForm.interpersonalRelationship = res.data.data.interpersonalRelationship     //人际关系
                             this.editForm.warRecord = res.data.data.warRecord     //对战记录
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
-                            this.editForm.sex = res.data.data.figure.sex.toString();
+                            if(res.data.data.figure.sex){
+                                this.editForm.sex = res.data.data.figure.sex.toString();            //性别回显
+                            }
+                            this.editForm.devilnutIds = res.data.data.devilnutList;                   //恶魔果实
+                            this.editForm.organizationIds = res.data.data.organizationList;                   //所属组织
+                            this.editForm.islandsIds = res.data.data.islandsList;                   //出身
+                            this.editForm.shippingIds = res.data.data.shippingList;                   //shippingOptions
+                            this.editForm.weaponIds = res.data.data.weaponList;                   //所用武器
                         })
                     }
                     this.open = true;
@@ -304,6 +357,36 @@
                     this.figureSex = res.data.data;
                 })
             },
+            //获取恶魔果实
+            getDevilnutOptions(){
+                this.$axios.get('sys/devilnut/getAll').then(res =>{
+                    this.devilnutOptions = res.data.data;
+                })
+            },
+            //获取组织
+            getOrganizationOptions(){
+                this.$axios.get('sys/organization/getAll').then(res =>{
+                    this.organizationOptions = res.data.data;
+                })
+            },
+            //获取岛屿
+            getIslandsOptions(){
+                this.$axios.get('sys/islands/getAll').then(res =>{
+                    this.islandsOptions = res.data.data;
+                })
+            },
+            //获取船只
+            getShippingOptions(){
+                this.$axios.get('sys/shipping/getAll').then(res =>{
+                    this.shippingOptions = res.data.data;
+                })
+            },
+            //获取武器
+            getWeaponOptions(){
+                this.$axios.get('sys/weapon/getAll').then(res =>{
+                    this.weaponOptions = res.data.data;
+                })
+            },
             //提交
             async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -311,6 +394,21 @@
 
                         if(this.editForm.id){
                             this.editForm.fileIds = this.deleteFileId.toString();
+                        }
+                        if(this.editForm.devilnutIds){
+                            this.editForm.devilnutIds = this.editForm.devilnutIds.join(",");
+                        }
+                        if(this.editForm.organizationIds){
+                            this.editForm.organizationIds = this.editForm.organizationIds.join(",");
+                        }
+                        if(this.editForm.islandsIds){
+                            this.editForm.islandsIds = this.editForm.islandsIds.join(",");
+                        }
+                        if(this.editForm.shippingIds){
+                            this.editForm.shippingIds = this.editForm.shippingIds.join(",");
+                        }
+                        if(this.editForm.weaponIds){
+                            this.editForm.weaponIds = this.editForm.weaponIds.join(",");
                         }
                         //保存组织信息
                         this.$axios.post('/sys/figure/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
@@ -405,5 +503,9 @@
 </script>
 
 <style scoped>
-
+    .dialogDiv{
+        height: 50vh;
+        overflow: auto;
+        margin-bottom: 30px;
+    }
 </style>
