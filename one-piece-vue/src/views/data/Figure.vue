@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :inline="true">
-
+            <!-- 操作按钮-->
             <el-form-item>
                 <el-button type="primary" @click="editHandle(null)" v-if="hasAuth('sys:figure:save')">新增</el-button>
             </el-form-item>
@@ -13,15 +13,9 @@
 
             <el-table-column prop="name" label="名称" width="120"></el-table-column>
 
-            <el-table-column prop="birth" label="生日" width="120">
-                <template slot-scope="scope">{{scope.row.birth | formatDate('yyyy-MM-dd')}}</template>
-            </el-table-column>
+            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
 
-            <el-table-column prop="age" label="年龄" width="120"></el-table-column>
-
-            <el-table-column prop="blood" label="血型" width="120"></el-table-column>
-
-            <el-table-column prop="height" label="身高" width="120"></el-table-column>
+            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
 
             <el-table-column prop="sex" label="性别" width="120">
                 <template slot-scope="scope">
@@ -31,14 +25,21 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="bounty" label="悬赏金" width="120"></el-table-column>
+            <el-table-column prop="birth" label="生日" >
+                <template slot-scope="scope">{{scope.row.birth | formatDate('yyyy-MM-dd')}}</template>
+            </el-table-column>
 
+            <el-table-column prop="age" label="年龄" width="150"></el-table-column>
+
+            <el-table-column prop="blood" label="血型" width="150"></el-table-column>
+
+            <el-table-column prop="height" label="身高" width="150"></el-table-column>
+
+            <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
-
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:figure:update')">编辑</el-button>
-                    <el-divider direction="vertical" v-if="hasAuth('sys:weapon:update')"></el-divider>
-
+                    <el-divider direction="vertical" v-if="hasAuth('sys:figure:update')"></el-divider>
                     <el-button type="text" slot="reference" @click="deleteHandle(scope.row.id)" v-if="hasAuth('sys:figure:delete')">删除</el-button>
                 </template>
             </el-table-column>
@@ -56,32 +57,32 @@
                 :total="total">
         </el-pagination>
 
-        <EditFigure title="编辑人物" v-if="dialogVisible" ref="EditFigure"/>
+        <FigureEdit title="编辑人物信息" v-if="dialogVisible" ref="FigureEdit"/>
     </div>
 </template>
 
 <script>
-    import EditFigure from "../data/EditFigure";
+    import FigureEdit from "../data/FigureEdit";
 
     export default {
         name: "Figure",
-        components:{EditFigure},
+        components:{FigureEdit},
         data() {
             return {
-                searchForm: {},
-                tableData: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                dialogVisible: false,
+                searchForm: {},                 //搜索内容
+                tableData: [],                  //列表数据
+                total: 0,                       //总条数
+                size: 10,                       //每页显示条数
+                current: 1,                     //页数
+                dialogVisible: false,           //是否显示编辑对话框
             }
         },
         created(){
-            this.getList()
+            this.listPage()
         },
         methods: {
-            //获取列表
-            getList() {
+            //获取
+            listPage() {
                 this.$axios.get('sys/figure/listPage', {params: {
                         keyword: JSON.stringify(this.searchForm),
                         current: this.current,
@@ -98,19 +99,19 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.size = val
-                this.getList()
+                this.listPage()
             },
             //页数改变触发
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.current = val
-                this.getList()
+                this.listPage()
             },
             //编辑
             editHandle(id){
                 this.dialogVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.EditFigure.init(id);
+                    this.$refs.FigureEdit.init(id);
                 });
             },
             //删除
@@ -127,7 +128,7 @@
                             message: '删除成功',
                             type: 'success',
                             onClose:() => {
-                                this.getList()
+                                this.listPage()
                             }
                         });
                     })
