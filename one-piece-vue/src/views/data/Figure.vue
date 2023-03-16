@@ -1,5 +1,24 @@
 <template>
     <div>
+
+        <el-form :inline="true"  class="demo-form-inline">
+            <el-form-item label="名称" class="searchForm">
+                <el-input v-model="searchForm.name" placeholder="名称"></el-input>
+            </el-form-item>
+
+            <el-form-item label="性别" class="searchForm">
+                <el-select v-model="searchForm.sex" placeholder="请选择">
+                    <el-option v-for="item in figureSex" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item class="searchForm">
+                <el-button type="primary" @click="listPage">查询</el-button>
+            </el-form-item>
+        </el-form>
+
+        <el-divider></el-divider>
+
         <el-form :inline="true">
             <!-- 操作按钮-->
             <el-form-item>
@@ -7,7 +26,7 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe>
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
 
             <el-table-column type="selection" width="55"></el-table-column>
 
@@ -19,21 +38,15 @@
 
             <el-table-column prop="sex" label="性别" width="120">
                 <template slot-scope="scope">
-                    <p v-show="scope.row.sex == 1">男</p>
-                    <p v-show="scope.row.sex == 2">女</p>
-                    <p v-show="scope.row.sex == 3">人妖</p>
+                    {{getFigureSexSelect(scope.row.sex)}}
                 </template>
             </el-table-column>
 
-            <el-table-column prop="birth" label="生日" >
-                <template slot-scope="scope">{{scope.row.birth | formatDate('yyyy-MM-dd')}}</template>
-            </el-table-column>
+            <el-table-column prop="height" label="身高" width="150"></el-table-column>
 
             <el-table-column prop="age" label="年龄" width="150"></el-table-column>
 
-            <el-table-column prop="blood" label="血型" width="150"></el-table-column>
-
-            <el-table-column prop="height" label="身高" width="150"></el-table-column>
+            <el-table-column prop="birth" label="生日" ></el-table-column>
 
             <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
@@ -69,18 +82,35 @@
         components:{FigureEdit},
         data() {
             return {
+                loading: true,                  //是否显示加载动效
                 searchForm: {},                 //搜索内容
                 tableData: [],                  //列表数据
                 total: 0,                       //总条数
                 size: 10,                       //每页显示条数
                 current: 1,                     //页数
                 dialogVisible: false,           //是否显示编辑对话框
+                figureSex: [],                   //人物性别
             }
         },
         created(){
-            this.listPage()
+            this.listPage();
+            this.getFigureSex();
         },
         methods: {
+            //获取人物性别
+            getFigureSex(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_SEX"}}).then(res =>{
+                    this.figureSex = res.data.data;
+                })
+            },
+            //回显性别
+            getFigureSexSelect(value) {
+                for (var i = 0; i < this.figureSex.length; i++) {
+                    if (this.figureSex[i].value == value) {
+                        return this.figureSex[i].name;
+                    }
+                }
+            },
             //获取
             listPage() {
                 this.$axios.get('sys/figure/listPage', {params: {
@@ -93,6 +123,7 @@
                     this.size = res.data.data.size
                     this.current = res.data.data.current
                     this.total = res.data.data.total
+                    this.loading = false;
                 })
             },
             //条数改变触发
@@ -145,4 +176,8 @@
         margin-top: 22px;
     }
 
+    .searchForm {
+        margin-top: 10px;
+        margin-left: 20px;
+    }
 </style>
