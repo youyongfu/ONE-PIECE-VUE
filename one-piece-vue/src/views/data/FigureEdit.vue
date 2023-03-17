@@ -84,6 +84,19 @@
                             <el-input v-model="editForm.bounty" autocomplete="off" placeholder="贝利"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="状态" prop="statu" label-width="100px">
+                            <el-select v-model="editForm.statu" placeholder="请选择">
+                                <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="所用武器" prop="weaponIds" label-width="100px">
+                            <el-select v-model="editForm.weaponIds" filterable multiple placeholder="请选择">
+                                <el-option v-for="item in weaponOptions" :key="item.id" :label="item.name" :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
                         <el-form-item label="霸气" prop="overbearing" label-width="100px">
                             <el-select v-model="editForm.overbearing" multiple placeholder="请选择">
                                 <el-option v-for="item in overbearingOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
@@ -109,19 +122,17 @@
 
                             <el-form-item label="隶属组织" prop="organizationIds" label-width="100px">
                                 <el-select v-model="item.organizationId" filterable placeholder="请选择">
-                                    <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
-                                    </el-option>
+                                    <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item label="担任职位" prop="position" label-width="100px">
+                            <el-form-item label="身份" prop="position" label-width="100px">
                                 <el-input v-model="item.position" autocomplete="off"></el-input>
                             </el-form-item>
 
                             <el-form-item label="搭乘船只" prop="shippingIds" label-width="100px">
                                 <el-select v-model="item.shippingId" filterable placeholder="请选择">
-                                    <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id">
-                                    </el-option>
+                                    <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
 
@@ -132,13 +143,6 @@
 
                             <el-divider></el-divider>
                         </div>
-
-                        <el-form-item label="所用武器" prop="weaponIds" label-width="100px">
-                            <el-select v-model="editForm.weaponIds" filterable multiple placeholder="请选择">
-                                <el-option v-for="item in weaponOptions" :key="item.id" :label="item.name" :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
                     </el-tab-pane>
 
                     <el-tab-pane label="角色图片">
@@ -188,7 +192,28 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="人际关系">
-                        <el-tiptap v-model="editForm.interpersonalRelationship" :extensions="extensions"></el-tiptap>
+                        <div v-for="(item,index) in interpersonal.relationList" :key="index">
+                            <el-form-item label="关系类型" prop="position" label-width="100px">
+                                <el-input v-model="item.relationType" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="关系人" prop="relationFigureId" label-width="100px">
+                                <el-select v-model="item.relationFigureId" filterable placeholder="请选择">
+                                    <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="关系简介" prop="relationSynopsis" label-width="100px">
+                                <el-input v-model="item.relationSynopsis" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item style="float: right">
+                                <el-button type="primary" @click="addRelation">添加</el-button>
+                                <el-button @click.prevent="removeRelation(item)">删除</el-button>
+                            </el-form-item>
+
+                            <el-divider></el-divider>
+                        </div>
                     </el-tab-pane>
 
                     <el-tab-pane label="对战记录">
@@ -302,26 +327,33 @@
                 disabled: false,                 //是否显示图片按钮
                 figureSex: [],                   //人物性别
                 bloodOptions: [],                   //人物血型
+                statuOptions: [],                   //人物状态
+                weaponOptions:[],               //所用武器
                 overbearingOptions: [],          //人物霸气
                 devilnutOptions:[],               //恶魔果实
                 organizationOptions:[],               //所属组织
                 islandsOptions:[],               //出身
                 shippingOptions:[],               //所乘船只
-                weaponOptions:[],               //所用武器
+                figureOptions:[],               //人物列表
                 professional:{
-                    experienceList:[{activeTime:"",organizationId:"",position:"",shippingId:""}]
+                    experienceList:[{id:"",activeTime:"",organizationId:"",position:"",shippingId:"",figureId:""}]
+                },
+                interpersonal:{
+                    relationList:[{id:"",relationType:"",relationFigureId:"",relationSynopsis:"",figureId:""}]
                 },
             }
         },
         created(){
             this.getFigureSex();
             this.getBloodOptions();
+            this.getStatuOptions();
+            this.getWeaponOptions();
             this.getOverbearingOptions();
             this.getDevilnutOptions();
             this.getOrganizationOptions();
             this.getIslandsOptions();
             this.getShippingOptions();
-            this.getWeaponOptions();
+            this.getFigureOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -338,20 +370,28 @@
                             if(res.data.data.figure.blood){
                                 this.editForm.blood = res.data.data.figure.blood.toString();        //血型回显
                             }
+                            if(res.data.data.figure.statu){
+                                this.editForm.statu = res.data.data.figure.statu.toString();        //状态回显
+                            }
+                            this.editForm.weaponIds = res.data.data.weaponList;                   //武器回显
                             this.editForm.overbearing = res.data.data.overbearingList;              //霸气回显
                             this.editForm.devilnutIds = res.data.data.devilnutList;                 //恶魔果实回显
                             if(res.data.data.islandsList.length > 0){
                                 this.editForm.islandsIds = res.data.data.islandsList[0];            //出身回显
                             }
+                            if(this.editForm.sysFigureExperienceList.length > 0){
+                                this.professional.experienceList = res.data.data.figure.sysFigureExperienceList;     //人物经历回显
+                            }
+                            if(this.editForm.sysFigureRelationList.length > 0){
+                                this.interpersonal.relationList = res.data.data.figure.sysFigureRelationList;     //人际关系回显
+                            }
                             this.fileShowList = res.data.data.fileList;                             //上传文件展示信息
 
-                            this.editForm.weaponIds = res.data.data.weaponList;                   //所用武器
                             this.editForm.background = res.data.data.background     //角色背景
                             this.editForm.image = res.data.data.image     //角色形象
                             this.editForm.life = res.data.data.life     //角色生活
                             this.editForm.ability = res.data.data.ability     //角色能力
                             this.editForm.experience = res.data.data.experience     //角色经历
-                            this.editForm.interpersonalRelationship = res.data.data.interpersonalRelationship     //人际关系
                             this.editForm.warRecord = res.data.data.warRecord     //对战记录
                         })
                     }
@@ -391,22 +431,16 @@
                     this.bloodOptions = res.data.data;
                 })
             },
+            //获取人物状态
+            getStatuOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_STATU"}}).then(res =>{
+                    this.statuOptions = res.data.data;
+                })
+            },
             //获取人物霸气
             getOverbearingOptions(){
                 this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_OVERBEARING"}}).then(res =>{
                     this.overbearingOptions = res.data.data;
-                })
-            },
-            //获取恶魔果实
-            getDevilnutOptions(){
-                this.$axios.get('sys/devilnut/getAll').then(res =>{
-                    this.devilnutOptions = res.data.data;
-                })
-            },
-            //获取组织
-            getOrganizationOptions(){
-                this.$axios.get('sys/organization/getAll').then(res =>{
-                    this.organizationOptions = res.data.data;
                 })
             },
             //获取岛屿
@@ -415,10 +449,10 @@
                     this.islandsOptions = res.data.data;
                 })
             },
-            //获取船只
-            getShippingOptions(){
-                this.$axios.get('sys/shipping/getAll').then(res =>{
-                    this.shippingOptions = res.data.data;
+            //获取恶魔果实
+            getDevilnutOptions(){
+                this.$axios.get('sys/devilnut/getAll').then(res =>{
+                    this.devilnutOptions = res.data.data;
                 })
             },
             //获取武器
@@ -427,13 +461,28 @@
                     this.weaponOptions = res.data.data;
                 })
             },
+            //获取组织
+            getOrganizationOptions(){
+                this.$axios.get('sys/organization/getAll').then(res =>{
+                    this.organizationOptions = res.data.data;
+                })
+            },
+            //获取船只
+            getShippingOptions(){
+                this.$axios.get('sys/shipping/getAll').then(res =>{
+                    this.shippingOptions = res.data.data;
+                })
+            },
             //添加职业经历
             addExperience(){
                 let obj={
+                    id:"",
                     activeTime:"",
                     organizationId:"",
                     position:"",
-                    shippingId:""
+                    shippingId:"",
+                    figureId:""
+
                 }
                 this.professional.experienceList.push(obj)
             },
@@ -443,6 +492,32 @@
                     var index = this.professional.experienceList.indexOf(item)
                     if (index !== -1) {
                         this.professional.experienceList.splice(index, 1)
+                    }
+                }
+            },
+            //获取人物
+            getFigureOptions(){
+                this.$axios.get('sys/figure/getAll').then(res =>{
+                    this.figureOptions = res.data.data;
+                })
+            },
+            //添加人际关系
+            addRelation(){
+                let obj={
+                    id:"",
+                    relationType:"",
+                    relationFigureId:"",
+                    relationSynopsis:"",
+                    figureId:""
+                }
+                this.interpersonal.relationList.push(obj)
+            },
+            //删除人际关系
+            removeRelation(item) {
+                if(this.interpersonal.relationList.length > 1){
+                    var index = this.interpersonal.relationList.indexOf(item)
+                    if (index !== -1) {
+                        this.interpersonal.relationList.splice(index, 1)
                     }
                 }
             },
@@ -461,12 +536,15 @@
                         if(this.editForm.devilnutIds){
                             this.editForm.devilnutIds = this.editForm.devilnutIds.join(",");
                         }
-                        //职业经历
-                        this.editForm.sysFigureExperienceList= this.professional.experienceList;
-
+                        //武器
                         if(this.editForm.weaponIds){
                             this.editForm.weaponIds = this.editForm.weaponIds.join(",");
                         }
+                        //职业经历
+                        this.editForm.sysFigureExperienceList= this.professional.experienceList;
+
+                        //人际关系
+                        this.editForm.sysFigureRelationList= this.interpersonal.relationList;
 
                         //保存组织信息
                         this.$axios.post('/sys/figure/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
