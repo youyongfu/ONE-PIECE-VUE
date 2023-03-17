@@ -217,7 +217,30 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="对战记录">
-                        <el-tiptap v-model="editForm.warRecord" :extensions="extensions"></el-tiptap>
+                        <div v-for="(item,index) in war.recordList" :key="index">
+                            <el-form-item label="对战对手" prop="opponentFigureId" label-width="100px">
+                                <el-select style="width:30vh" v-model="item.opponentFigureId" filterable placeholder="请选择">
+                                    <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="对战结果" prop="battleResults" label-width="100px">
+                                <el-select style="width:20vh" v-model="item.battleResults" placeholder="请选择">
+                                    <el-option v-for="item in battleResultsOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="过程简介" prop="synopsis" label-width="100px">
+                                <el-input v-model="item.synopsis" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item style="float: right">
+                                <el-button type="primary" @click="addWarRecord">添加</el-button>
+                                <el-button @click.prevent="removeWarRecord(item)">删除</el-button>
+                            </el-form-item>
+
+                            <el-divider></el-divider>
+                        </div>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -335,11 +358,15 @@
                 islandsOptions:[],               //出身
                 shippingOptions:[],               //所乘船只
                 figureOptions:[],               //人物列表
+                battleResultsOptions:[],               //对战结果
                 professional:{
                     experienceList:[{id:"",activeTime:"",organizationId:"",position:"",shippingId:"",figureId:""}]
                 },
                 interpersonal:{
                     relationList:[{id:"",relationType:"",relationFigureId:"",relationSynopsis:"",figureId:""}]
+                },
+                war:{
+                    recordList:[{id:"",opponentFigureId:"",battleResults:"",synopsis:"",figureId:""}]
                 },
             }
         },
@@ -354,6 +381,7 @@
             this.getIslandsOptions();
             this.getShippingOptions();
             this.getFigureOptions();
+            this.getBattleResultsOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -384,6 +412,12 @@
                             }
                             if(this.editForm.sysFigureRelationList.length > 0){
                                 this.interpersonal.relationList = res.data.data.figure.sysFigureRelationList;     //人际关系回显
+                            }
+                            if(this.editForm.sysFigureWarRecordList.length > 0){
+                                this.war.recordList = res.data.data.figure.sysFigureWarRecordList;     //对战记录回显
+                                this.war.recordList.forEach(war=>{
+                                    war.battleResults = war.battleResults.toString();
+                                })
                             }
                             this.fileShowList = res.data.data.fileList;                             //上传文件展示信息
 
@@ -521,6 +555,32 @@
                     }
                 }
             },
+            //获取对战结果
+            getBattleResultsOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_BATTLERESULTS"}}).then(res =>{
+                    this.battleResultsOptions = res.data.data;
+                })
+            },
+            //添加对战记录
+            addWarRecord(){
+                let obj={
+                    id:"",
+                    opponentFigureId:"",
+                    battleResults:"",
+                    synopsis:"",
+                    figureId:""
+                }
+                this.war.recordList.push(obj)
+            },
+            //删除对战记录
+            removeWarRecord(item) {
+                if(this.war.recordList.length > 1){
+                    var index = this.war.recordList.indexOf(item)
+                    if (index !== -1) {
+                        this.war.recordList.splice(index, 1)
+                    }
+                }
+            },
             //提交
             async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -545,6 +605,9 @@
 
                         //人际关系
                         this.editForm.sysFigureRelationList= this.interpersonal.relationList;
+
+                        //对战记录
+                        this.editForm.sysFigureWarRecordList= this.war.recordList;
 
                         //保存组织信息
                         this.$axios.post('/sys/figure/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
