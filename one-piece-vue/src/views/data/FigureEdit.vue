@@ -426,7 +426,6 @@
                             this.editForm.life = res.data.data.life     //角色生活
                             this.editForm.ability = res.data.data.ability     //角色能力
                             this.editForm.experience = res.data.data.experience     //角色经历
-                            this.editForm.warRecord = res.data.data.warRecord     //对战记录
                         })
                     }
                     this.open = true;
