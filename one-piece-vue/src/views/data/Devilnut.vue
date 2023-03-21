@@ -1,5 +1,22 @@
 <template>
     <div>
+
+        <el-form :inline="true"  class="demo-form-inline">
+            <el-form-item label="名称" class="searchForm">
+                <el-input v-model="searchForm.name" placeholder="名称"></el-input>
+            </el-form-item>
+
+            <el-form-item label="类别" class="searchForm">
+                <el-select v-model="searchForm.category" placeholder="请选择">
+                    <el-option v-for="item in categoryOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item class="searchForm">
+                <el-button type="primary" @click="listPage">查询</el-button>
+            </el-form-item>
+        </el-form>
+
         <el-form :inline="true">
             <!-- 操作按钮-->
             <el-form-item>
@@ -15,20 +32,17 @@
 
             <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
 
-            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+            <el-table-column prop="alias" label="别名" width="200"></el-table-column>
 
             <el-table-column prop="category" label="类别" width="120">
                 <template slot-scope="scope">
-                    <p v-show="scope.row.category == 1">超人系</p>
-                    <p v-show="scope.row.category == 2">自然系</p>
-                    <p v-show="scope.row.category == 3">动物系</p>
-                    <p v-show="scope.row.category == 4">衍生系</p>
+                    {{getCategorySelect(scope.row.category)}}
                 </template>
             </el-table-column>
 
-            <el-table-column prop="nature" label="性质" width="120"></el-table-column>
+            <el-table-column prop="nature" label="性质" width="200"></el-table-column>
 
-            <el-table-column prop="eater" label="食用者" width="150"></el-table-column>
+            <el-table-column prop="debut" label="初次出现" width="150"></el-table-column>
 
             <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
@@ -70,10 +84,12 @@
                 size: 10,                       //每页显示条数
                 current: 1,                     //页数
                 dialogVisible: false,           //是否显示编辑对话框
+                categoryOptions: []                   //果实分类
             }
         },
         created(){
-            this.listPage()
+            this.listPage();
+            this.getCategoryOptions();
         },
         methods: {
             //获取
@@ -101,6 +117,20 @@
                 console.log(`当前页: ${val}`);
                 this.current = val
                 this.listPage()
+            },
+            //获取果实分类
+            getCategoryOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"DEVILNUT_CATEGORY"}}).then(res =>{
+                    this.categoryOptions = res.data.data;
+                })
+            },
+            //回显果实分类
+            getCategorySelect(value) {
+                for (var i = 0; i < this.categoryOptions.length; i++) {
+                    if (this.categoryOptions[i].value == value) {
+                        return this.categoryOptions[i].name;
+                    }
+                }
             },
             //编辑
             editHandle(id){
