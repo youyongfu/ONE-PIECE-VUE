@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- 添加或修改业务对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body fullscreen>
 
-            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
+            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm" :inline="true">
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
@@ -55,7 +55,7 @@
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
                     </el-tab-pane>
 
@@ -98,8 +98,8 @@
                     </el-tab-pane>
                 </el-tabs>
 
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
+                <el-form-item class="btn">
+                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -356,4 +356,20 @@
 
 <style scoped>
 
+    .el-tiptap-editor {
+        height: 65vh;
+    }
+
+    .el-input {
+        width: 60vh
+    }
+
+    .el-select {
+        width: 60vh
+    }
+
+    .btn {
+        display: flex;
+        justify-content: center;
+    }
 </style>
