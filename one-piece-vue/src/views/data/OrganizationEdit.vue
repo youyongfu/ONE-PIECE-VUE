@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- 添加或修改业务对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body fullscreen>
 
-            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
+            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm" :inline="true">
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
@@ -11,6 +11,7 @@
                     <el-step title="成立背景"></el-step>
                     <el-step title="组织经历"></el-step>
                     <el-step title="组织文化"></el-step>
+                    <el-step title="组织关系"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
@@ -38,20 +39,34 @@
                             <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="状态" prop="statu" label-width="100px">
+                            <el-select v-model="editForm.statu" placeholder="请选择">
+                                <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+
                         <el-form-item label="性质" prop="nature" label-width="100px">
-                            <el-input v-model="editForm.nature" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.nature" placeholder="请选择">
+                                <el-option v-for="item in natureOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="诞生时间" prop="birth" label-width="100px">
                             <el-input v-model="editForm.birth" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="领导者" prop="leader" label-width="100px">
-                            <el-input v-model="editForm.leader" autocomplete="off"></el-input>
+                        <el-form-item label="最高权力" prop="leader" label-width="100px">
+                            <el-select v-model="editForm.leader" filterable placeholder="请选择">
+                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="总部" prop="headquarters" label-width="100px">
-                            <el-input v-model="editForm.headquarters" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.headquarters" filterable placeholder="请选择">
+                                <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="初次登场" prop="debut" label-width="100px">
@@ -59,7 +74,7 @@
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
                     </el-tab-pane>
 
@@ -100,10 +115,45 @@
                     <el-tab-pane label="组织文化">
                         <el-tiptap v-model="editForm.civilization" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
+
+                    <el-tab-pane label="组织关系">
+                        <div v-for="(item,index) in organization.relationList" :key="index">
+
+                            <el-form-item label="关系类型" prop="nature" label-width="100px">
+                                <el-select v-model="item.relationType" placeholder="请选择">
+                                    <el-option v-for="item in relationOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="组织名称" prop="organizationIds" label-width="100px">
+                                <el-select v-model="item.relationOrganizationId" placeholder="请选择组织">
+                                    <template v-for="item in treeData">
+                                        <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
+                                        <template v-for="child in item.children">
+                                            <el-option :label="child.name" :value="child.id" :key="child.name">
+                                                <span>{{ "- " + child.name }}</span>
+                                            </el-option>
+                                        </template>
+                                    </template>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                <el-input style="width:135vh" type="textarea" :rows="5" placeholder="请输入内容" v-model="item.synopsis"></el-input>
+                            </el-form-item>
+
+                            <el-form-item style="margin-top: 70px">
+                                <el-button type="primary" @click="addRelation">添加</el-button>
+                                <el-button @click.prevent="removeRelation(item)">删除</el-button>
+                            </el-form-item>
+
+                            <el-divider></el-divider>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
 
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
+                <el-form-item class="btn">
+                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -205,11 +255,24 @@
                 fileShowList: [],                   //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false                 //是否显示图片按钮
+                disabled: false,                 //是否显示图片按钮
+                natureOptions: [],                   //组织性质
+                islandsOptions:[],               //总部
+                figureOptions:[],               //人物列表
+                statuOptions: [],                   //组织状态
+                relationOptions:[],                  //组织关系类型
+                organization:{                      //组织关系
+                    relationList:[{id:"",relationType:"",relationOrganizationId:"",synopsis:"",ownerId:""}]
+                },
             }
         },
         created(){
-            this.getTreeOrganization()
+            this.getTreeOrganization();
+            this.getNatureOptions();
+            this.getIslandsOptions();
+            this.getFigureOptions();
+            this.getStatuOptions();
+            this.getRelationOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -220,13 +283,27 @@
                         //获取组织信息
                         this.$axios.get('/sys/organization/info/' + id).then(res => {
                             this.editForm = res.data.data.organization;              //组织基本信息
+                            if(res.data.data.organization.parentId === "0"){                   //若无上级组织，parentId设为空
+                                this.editForm.parentId = "";
+                            }
+                            if(res.data.data.organization.nature){
+                                this.editForm.nature = res.data.data.organization.nature.toString();            //性质回显
+                            }
+                            if(res.data.data.organization.statu){
+                                this.editForm.statu = res.data.data.organization.statu.toString();            //状态回显
+                            }
+
+                            if(res.data.data.organization.sysOrganizationRelationList.length > 0){
+                                this.organization.relationList = res.data.data.organization.sysOrganizationRelationList;     //组织关系回显
+                                this.organization.relationList.forEach(item=>{
+                                    item.relationType = item.relationType.toString();
+                                })
+                            }
+
                             this.editForm.background = res.data.data.background     //组织背景
                             this.editForm.experience = res.data.data.experience     //组织经历
                             this.editForm.civilization = res.data.data.civilization     //组织文化
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
-                            if(this.editForm.parentId === "0"){                   //若无上级组织，parentId设为空
-                                this.editForm.parentId = "";
-                            }
                         })
                     }
                     this.open = true;
@@ -259,6 +336,56 @@
                 this.fileList = [];
                 this.deleteFileId = [];
             },
+            //获取组织性质
+            getNatureOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"ORGANIZATION_NATURE"}}).then(res =>{
+                    this.natureOptions = res.data.data;
+                })
+            },
+            //获取岛屿
+            getIslandsOptions(){
+                this.$axios.get('sys/islands/getAll').then(res =>{
+                    this.islandsOptions = res.data.data;
+                })
+            },
+            //获取人物
+            getFigureOptions(){
+                this.$axios.get('sys/figure/getAll').then(res =>{
+                    this.figureOptions = res.data.data;
+                })
+            },
+            //获取组织状态
+            getStatuOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"ORGANIZATION_STATU"}}).then(res =>{
+                    this.statuOptions = res.data.data;
+                })
+            },
+            //获取组织关系类型
+            getRelationOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"ORGANIZATION_RELATION_TYPE"}}).then(res =>{
+                    this.relationOptions = res.data.data;
+                })
+            },
+            //添加组织关系
+            addRelation(){
+                let obj={
+                    id:"",
+                    relationType:"",
+                    relationOrganizationId:"",
+                    synopsis:"",
+                    ownerId:""
+                }
+                this.organization.relationList.push(obj)
+            },
+            //删除组织关系
+            removeRelation(item) {
+                if(this.organization.relationList.length > 1){
+                    var index = this.organization.relationList.indexOf(item)
+                    if (index !== -1) {
+                        this.organization.relationList.splice(index, 1)
+                    }
+                }
+            },
             //提交
             async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -267,6 +394,10 @@
                         if(this.editForm.id){
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
+
+                        //组织关系
+                        this.editForm.sysOrganizationRelationList= this.organization.relationList;
+
                         //保存组织信息
                         this.$axios.post('/sys/organization/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             this.$message({
@@ -359,5 +490,20 @@
 </script>
 
 <style scoped>
+    .el-tiptap-editor {
+        height: 65vh;
+    }
 
+    .el-input {
+        width: 60vh
+    }
+
+    .el-select {
+        width: 60vh
+    }
+
+    .btn {
+        display: flex;
+        justify-content: center;
+    }
 </style>

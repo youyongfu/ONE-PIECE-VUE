@@ -6,7 +6,7 @@
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
-                    <el-step title="职业经历"></el-step>
+                    <el-step title="人物履历"></el-step>
                     <el-step title="角色图片"></el-step>
                     <el-step title="角色背景"></el-step>
                     <el-step title="角色形象"></el-step>
@@ -114,7 +114,7 @@
                         </el-form-item>
                     </el-tab-pane>
 
-                    <el-tab-pane label="职业经历">
+                    <el-tab-pane label="人物履历">
                         <div v-for="(item,index) in professional.experienceList" :key="index">
                             <el-form-item label="活跃时间" prop="position" label-width="100px">
                                 <el-input v-model="item.activeTime" autocomplete="off"></el-input>
@@ -407,13 +407,13 @@
                             if(res.data.data.islandsList.length > 0){
                                 this.editForm.islandsIds = res.data.data.islandsList[0];            //出身回显
                             }
-                            if(this.editForm.sysFigureExperienceList.length > 0){
+                            if(res.data.data.figure.sysFigureExperienceList.length > 0){
                                 this.professional.experienceList = res.data.data.figure.sysFigureExperienceList;     //人物经历回显
                             }
-                            if(this.editForm.sysFigureRelationList.length > 0){
+                            if(res.data.data.figure.sysFigureRelationList.length > 0){
                                 this.interpersonal.relationList = res.data.data.figure.sysFigureRelationList;     //人际关系回显
                             }
-                            if(this.editForm.sysFigureWarRecordList.length > 0){
+                            if(res.data.data.figure.sysFigureWarRecordList.length > 0){
                                 this.war.recordList = res.data.data.figure.sysFigureWarRecordList;     //对战记录回显
                                 this.war.recordList.forEach(war=>{
                                     war.battleResults = war.battleResults.toString();
