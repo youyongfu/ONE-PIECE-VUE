@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- 添加或修改业务对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body fullscreen>
 
-            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
+            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm" :inline="true">
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
@@ -12,6 +12,7 @@
                     <el-step title="船只外观"></el-step>
                     <el-step title="船只功能"></el-step>
                     <el-step title="船只经历"></el-step>
+                    <el-step title="相关角色"></el-step>
                 </el-steps>
 
                 <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
@@ -31,7 +32,9 @@
                         </el-form-item>
 
                         <el-form-item label="型号" prop="model" label-width="100px">
-                            <el-input v-model="editForm.model" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.model" filterable placeholder="请选择">
+                                <el-option v-for="item in modelOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="建造日" prop="bulidDate" label-width="100px">
@@ -46,20 +49,14 @@
                             <el-input v-model="editForm.height" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="设计者" prop="designer" label-width="100px">
-                            <el-input v-model="editForm.designer" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="制造者" prop="producer" label-width="100px">
-                            <el-input v-model="editForm.producer" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="使用者" prop="user" label-width="100px">
-                            <el-input v-model="editForm.user" autocomplete="off"></el-input>
+                        <el-form-item label="状态" prop="statu" label-width="100px">
+                            <el-select v-model="editForm.statu" placeholder="请选择">
+                                <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
                     </el-tab-pane>
 
@@ -104,10 +101,49 @@
                     <el-tab-pane label="船只经历">
                         <el-tiptap v-model="editForm.experience" :extensions="extensions"></el-tiptap>
                     </el-tab-pane>
+
+                    <el-tab-pane label="相关角色">
+                        <div v-for="(item,index) in related.roleList" :key="index">
+
+                            <el-form-item label="身份类型" prop="relationIdentity" label-width="100px"  style="width: 200vh" >
+                                <el-radio-group v-model="item.relationIdentity">
+                                    <el-radio  label="1">个人</el-radio>
+                                    <el-radio  label="2">组织</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+
+                            <el-form-item label="关系类型" prop="relation" label-width="100px">
+                                <el-input v-model="item.relation" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item  label="姓名" prop="relationId" label-width="100px" v-if="item.relationIdentity === '1'">
+                                <el-select v-model="item.relationId" filterable placeholder="请选择">
+                                    <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="组织名称" prop="relationId" label-width="100px" v-if="item.relationIdentity === '2'">
+                                <el-select v-model="item.relationId" filterable placeholder="请选择">
+                                    <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+
+                            <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                <el-input style="width:135vh" type="textarea" :rows="5" placeholder="请输入内容" v-model="item.synopsis"></el-input>
+                            </el-form-item>
+
+                            <el-form-item style="float: right;margin-top: 70px">
+                                <el-button type="primary" @click="addRelated">添加</el-button>
+                                <el-button @click.prevent="removeRelated(item)">删除</el-button>
+                            </el-form-item>
+
+                            <el-divider></el-divider>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
 
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
+                <el-form-item class="btn">
+                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -210,11 +246,20 @@
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
                 disabled: false,                 //是否显示图片按钮
-                devilnutCategory: []                   //果实分类
+                modelOptions: [],                  //船只型号
+                statuOptions: [],                   //船只状态
+                figureOptions:[],               //人物列表
+                related:{
+                    roleList:[{id:"",relation:"",relationIdentity:"",relationId:"",synopsis:"",shippingId:""}]
+                },
+                organizationOptions:[],               //所属组织
             }
         },
         created(){
-            this.getDevilnutCategory()
+            this.getModelOptions();
+            this.getStatuOptions();
+            this.getFigureOptions();
+            this.getOrganizationOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -225,6 +270,18 @@
                         //获取组织信息
                         this.$axios.get('/sys/shipping/info/' + id).then(res => {
                             this.editForm = res.data.data.shipping;              //组织基本信息
+                            if(res.data.data.shipping.model){
+                                this.editForm.model = res.data.data.shipping.model.toString();            //型号回显
+                            }
+                            if(res.data.data.shipping.statu){
+                                this.editForm.statu = res.data.data.shipping.statu.toString();        //状态回显
+                            }
+                            if(res.data.data.shipping.sysShippingRoleList.length > 0){
+                                this.related.roleList = res.data.data.shipping.sysShippingRoleList;     //相关角色回显
+                                this.related.roleList.forEach(item=>{
+                                    item.relationIdentity = item.relationIdentity.toString();
+                                })
+                            }
                             this.editForm.background = res.data.data.background     //船只背景
                             this.editForm.appearance = res.data.data.appearance     //船只外观
                             this.editForm.function = res.data.data.function         //船只功能
@@ -256,11 +313,50 @@
                 this.fileList = [];
                 this.deleteFileId = [];
             },
-            //获取果实分类
-            getDevilnutCategory(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"DEVILNUT_CATEGORY"}}).then(res =>{
-                    this.devilnutCategory = res.data.data;
+            //获取船只型号
+            getModelOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"SHIPPING_MODEL"}}).then(res =>{
+                    this.modelOptions = res.data.data;
                 })
+            },
+            //获取船只状态
+            getStatuOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"SHIPPING_STATU"}}).then(res =>{
+                    this.statuOptions = res.data.data;
+                })
+            },
+            //获取人物
+            getFigureOptions(){
+                this.$axios.get('sys/figure/getAll').then(res =>{
+                    this.figureOptions = res.data.data;
+                })
+            },
+            //获取组织
+            getOrganizationOptions(){
+                this.$axios.get('sys/organization/getAll').then(res =>{
+                    this.organizationOptions = res.data.data;
+                })
+            },
+            //添加相关角色
+            addRelated(){
+                let obj={
+                    id:"",
+                    relation:"",
+                    relationIdentity:"",
+                    relationId:"",
+                    synopsis:"",
+                    shippingId:""
+                }
+                this.related.roleList.push(obj)
+            },
+            //删除相关角色
+            removeRelated(item) {
+                if(this.related.roleList.length > 1){
+                    var index = this.related.roleList.indexOf(item)
+                    if (index !== -1) {
+                        this.related.roleList.splice(index, 1)
+                    }
+                }
             },
             //提交
             async submitForm(formName) {
@@ -270,6 +366,10 @@
                         if(this.editForm.id){
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
+
+                        //相关角色
+                        this.editForm.sysShippingRoleList= this.related.roleList;
+
                         //保存组织信息
                         this.$axios.post('/sys/shipping/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             this.$message({
@@ -363,5 +463,20 @@
 </script>
 
 <style scoped>
+    .el-tiptap-editor {
+        height: 65vh;
+    }
 
+    .el-input {
+        width: 60vh
+    }
+
+    .el-select {
+        width: 60vh
+    }
+
+    .btn {
+        display: flex;
+        justify-content: center;
+    }
 </style>

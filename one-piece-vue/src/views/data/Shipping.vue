@@ -1,5 +1,16 @@
 <template>
     <div>
+
+        <el-form :inline="true"  class="demo-form-inline">
+            <el-form-item label="名称" class="searchForm">
+                <el-input v-model="searchForm.name" placeholder="名称"></el-input>
+            </el-form-item>
+
+            <el-form-item class="searchForm">
+                <el-button type="primary" @click="listPage">查询</el-button>
+            </el-form-item>
+        </el-form>
+
         <el-form :inline="true">
             <!-- 操作按钮-->
             <el-form-item>
@@ -17,19 +28,17 @@
 
             <el-table-column prop="alias" label="别名" width="120"></el-table-column>
 
-            <el-table-column prop="model" label="型号" width="120"></el-table-column>
+            <el-table-column prop="model" label="型号" width="120">
+                <template slot-scope="scope">
+                    {{getModelSelect(scope.row.model)}}
+                </template>
+            </el-table-column>
 
             <el-table-column prop="bulidDate" label="建造日" width="120"></el-table-column>
 
             <el-table-column prop="length" label="全长" width="150"></el-table-column>
 
             <el-table-column prop="height" label="总高" width="150"></el-table-column>
-
-            <el-table-column prop="designer" label="设计者" width="150"></el-table-column>
-
-            <el-table-column prop="producer" label="制造者" width="150"></el-table-column>
-
-            <el-table-column prop="user" label="使用者" width="150"></el-table-column>
 
             <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
@@ -71,10 +80,12 @@
                 size: 10,                       //每页显示条数
                 current: 1,                     //页数
                 dialogVisible: false,           //是否显示编辑对话框
+                modelOptions: [],           //是否显示编辑对话框
             }
         },
         created(){
-            this.listPage()
+            this.listPage();
+            this.getModelOptions();
         },
         methods: {
             //获取
@@ -102,6 +113,20 @@
                 console.log(`当前页: ${val}`);
                 this.current = val
                 this.listPage()
+            },
+            //获取船只型号
+            getModelOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"SHIPPING_MODEL"}}).then(res =>{
+                    this.modelOptions = res.data.data;
+                })
+            },
+            //回显型号
+            getModelSelect(value) {
+                for (var i = 0; i < this.modelOptions.length; i++) {
+                    if (this.modelOptions[i].value == value) {
+                        return this.modelOptions[i].name;
+                    }
+                }
             },
             //编辑
             editHandle(id){
