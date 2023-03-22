@@ -7,7 +7,7 @@
             </el-form-item>
 
             <el-form-item label="类别" class="searchForm">
-                <el-select v-model="searchForm.category" placeholder="请选择">
+                <el-select v-model="searchForm.category" placeholder="请选择" clearable>
                     <el-option v-for="item in categoryOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>

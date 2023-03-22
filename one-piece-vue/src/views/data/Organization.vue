@@ -7,13 +7,13 @@
             </el-form-item>
 
             <el-form-item label="性质" class="searchForm">
-                <el-select v-model="searchForm.nature" placeholder="请选择">
+                <el-select v-model="searchForm.nature" placeholder="请选择" clearable>
                     <el-option v-for="item in natureOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label="上级组织" prop="parentId">
-                <el-select v-model="searchForm.parentId" placeholder="请选择上级组织">
+                <el-select v-model="searchForm.parentId" placeholder="请选择上级组织" clearable>
                     <template v-for="item in treeData">
                         <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
                         <template v-for="child in item.children">

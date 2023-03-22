@@ -25,7 +25,7 @@
                         </el-form-item>
 
                         <el-form-item label="位阶" prop="level" label-width="100px">
-                            <el-select v-model="editForm.level" placeholder="请选择">
+                            <el-select v-model="editForm.level" placeholder="请选择" clearable>
                                 <el-option v-for="item in levelOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -35,13 +35,13 @@
                         </el-form-item>
 
                         <el-form-item label="铸造者" prop="foundry" label-width="100px">
-                            <el-select v-model="editForm.foundry" placeholder="请选择">
+                            <el-select v-model="editForm.foundry" placeholder="请选择" clearable>
                                 <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item label="使用者" prop="user" label-width="100px">
-                            <el-select v-model="editForm.user" placeholder="请选择">
+                            <el-select v-model="editForm.user" placeholder="请选择" clearable>
                                 <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </el-form-item>
@@ -51,7 +51,7 @@
                         </el-form-item>
 
                         <el-form-item label="状态" prop="statu" label-width="100px">
-                            <el-select v-model="editForm.statu" placeholder="请选择">
+                            <el-select v-model="editForm.statu" placeholder="请选择" clearable>
                                 <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -154,15 +154,6 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
-                editForm: {                         //编辑内容
-                    fileIds:""                     //上传文件id列表
-                },
-                editFormRules: {                  //校验规则
-                    name: [
-                        {required: true, message: '请输入名称', trigger: 'blur'}
-                    ]
-                },
-                treeData:[],                    //组织信息列表
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -194,15 +185,24 @@
                     new CodeBlock(),
                     new TextColor()
                 ],
+                editForm: {                         //编辑内容
+                    fileIds:""                     //上传文件id列表
+                },
+                editFormRules: {                  //校验规则
+                    name: [
+                        {required: true, message: '请输入名称', trigger: 'blur'}
+                    ]
+                },
+                treeData:[],                    //组织信息列表
                 deleteFileId: [],                //移除文件id
                 fileList: [],                   //上传文件列表
                 fileShowList: [],               //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false,                 //是否显示图片按钮
-                levelOptions: [],                   //位阶
-                figureOptions:[],                  //人物信息列表
-                statuOptions: [],                   //武器状态
+                disabled: false,                //是否显示图片按钮
+                levelOptions: [],               //位阶
+                figureOptions:[],               //人物信息列表
+                statuOptions: [],               //武器状态
             }
         },
         created(){
@@ -218,16 +218,10 @@
                     if(id){
                         //获取组织信息
                         this.$axios.get('/sys/weapon/info/' + id).then(res => {
-                            this.editForm = res.data.data.weapon;              //组织基本信息
-                            if(res.data.data.weapon.statu){
-                                this.editForm.statu = res.data.data.weapon.statu.toString();        //状态回显
-                            }
-                            if(res.data.data.weapon.level){
-                                this.editForm.level = res.data.data.weapon.level.toString();        //位阶回显
-                            }
-                            this.editForm.origin = res.data.data.origin     //来历
-                            this.editForm.modelling = res.data.data.modelling     //造型
+                            this.editForm = res.data.data.weapon;                   //组织基本信息
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
+                            this.editForm.origin = res.data.data.origin             //来历
+                            this.editForm.modelling = res.data.data.modelling       //造型
                         })
                     }
                     this.open = true;

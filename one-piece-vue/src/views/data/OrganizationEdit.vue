@@ -118,13 +118,13 @@
                         <div v-for="(item,index) in organization.relationList" :key="index">
 
                             <el-form-item label="关系类型" prop="nature" label-width="100px">
-                                <el-select v-model="item.relationType" placeholder="请选择">
+                                <el-select v-model="item.relationType" placeholder="请选择" clearable>
                                     <el-option v-for="item in relationOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                                 </el-select>
                             </el-form-item>
 
                             <el-form-item label="组织名称" prop="organizationIds" label-width="100px">
-                                <el-select v-model="item.relationOrganizationId" placeholder="请选择组织">
+                                <el-select v-model="item.relationOrganizationId" placeholder="请选择组织" clearable>
                                     <template v-for="item in treeData">
                                         <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
                                         <template v-for="child in item.children">
@@ -187,6 +187,7 @@
     } from 'element-tiptap';
 
     import request from "@/axios";
+
     // 富文本框上传图片
     export const fileUploadImage = data => request({
         url: "/file/uploadFile", // path路径
@@ -208,15 +209,6 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
-                editForm: {                         //编辑内容
-                    fileIds:""                     //上传文件id列表
-                },
-                editFormRules: {                  //校验规则
-                    name: [
-                        {required: true, message: '请输入组织名称', trigger: 'blur'}
-                    ]
-                },
-                treeData:[],                    //组织信息列表
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -248,18 +240,27 @@
                     new CodeBlock(),
                     new TextColor()
                 ],
-                deleteFileId: [],                //移除文件id
+                editForm: {                         //编辑内容
+                    fileIds:""                     //上传文件id列表
+                },
+                editFormRules: {                  //校验规则
+                    name: [
+                        {required: true, message: '请输入组织名称', trigger: 'blur'}
+                    ]
+                },
+                treeData:[],                    //组织信息列表
+                deleteFileId: [],               //移除文件id
                 fileList: [],                   //上传文件列表
-                fileShowList: [],                   //上传文件展示列表
+                fileShowList: [],               //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false,                 //是否显示图片按钮
-                natureOptions: [],                   //组织性质
-                islandsOptions:[],               //总部
+                disabled: false,                //是否显示图片按钮
+                natureOptions: [],              //组织性质
+                islandsOptions:[],              //总部
                 figureOptions:[],               //人物列表
-                statuOptions: [],                   //组织状态
-                relationOptions:[],                  //组织关系类型
-                organization:{                      //组织关系
+                statuOptions: [],               //组织状态
+                relationOptions:[],             //组织关系类型
+                organization:{                  //组织关系
                     relationList:[{id:"",relationType:"",relationOrganizationId:"",synopsis:"",ownerId:""}]
                 },
             }
@@ -281,40 +282,22 @@
                         //获取组织信息
                         this.$axios.get('/sys/organization/info/' + id).then(res => {
                             this.editForm = res.data.data.organization;              //组织基本信息
-                            if(res.data.data.organization.parentId === "0"){                   //若无上级组织，parentId设为空
+                            if(res.data.data.organization.parentId === "0"){         //若无上级组织，parentId设为空
                                 this.editForm.parentId = "";
                             }
-                            if(res.data.data.organization.nature){
-                                this.editForm.nature = res.data.data.organization.nature.toString();            //性质回显
-                            }
-                            if(res.data.data.organization.statu){
-                                this.editForm.statu = res.data.data.organization.statu.toString();            //状态回显
-                            }
-
+                            this.fileShowList = res.data.data.fileList;                 //上传文件展示信息
+                            this.editForm.background = res.data.data.background         //组织背景
+                            this.editForm.experience = res.data.data.experience         //组织经历
+                            this.editForm.civilization = res.data.data.civilization     //组织文化
                             if(res.data.data.organization.sysOrganizationRelationList.length > 0){
                                 this.organization.relationList = res.data.data.organization.sysOrganizationRelationList;     //组织关系回显
-                                this.organization.relationList.forEach(item=>{
-                                    if(item.relationType){
-                                        item.relationType = item.relationType.toString();
-                                    }
-                                })
                             }
 
-                            this.editForm.background = res.data.data.background     //组织背景
-                            this.editForm.experience = res.data.data.experience     //组织经历
-                            this.editForm.civilization = res.data.data.civilization     //组织文化
-                            this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                         })
                     }
                     this.open = true;
                     this.title = "编辑组织信息";
                 });
-            },
-            //获取树形组织
-            getTreeOrganization(){
-                this.$axios.get('sys/organization/tree').then(res =>{
-                    this.treeData = res.data.data;
-                })
             },
             //选项卡选中事件-步骤条联动
             handleClick(tab,event){
@@ -332,9 +315,16 @@
                 this.open = false;
                 this.activeNumber = 1;
                 this.selectLabel = "basicInfo";
-                this.fileShowList = [];
-                this.fileList = [];
+                this.treeData = [];
                 this.deleteFileId = [];
+                this.fileList = [];
+                this.fileShowList = [];
+            },
+            //获取树形组织
+            getTreeOrganization(){
+                this.$axios.get('sys/organization/tree').then(res =>{
+                    this.treeData = res.data.data;
+                })
             },
             //获取组织性质
             getNatureOptions(){

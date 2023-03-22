@@ -32,7 +32,7 @@
                         </el-form-item>
 
                         <el-form-item label="型号" prop="model" label-width="100px">
-                            <el-select v-model="editForm.model" filterable placeholder="请选择">
+                            <el-select v-model="editForm.model" filterable placeholder="请选择" clearable>
                                 <el-option v-for="item in modelOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -49,7 +49,7 @@
                             <el-input v-model="editForm.height" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="状态" prop="statu" label-width="100px">
+                        <el-form-item label="状态" prop="statu" label-width="100px" clearable>
                             <el-select v-model="editForm.statu" placeholder="请选择">
                                 <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
@@ -117,13 +117,13 @@
                             </el-form-item>
 
                             <el-form-item  label="姓名" prop="relationId" label-width="100px" v-if="item.relationIdentity === '1'">
-                                <el-select v-model="item.relationId" filterable placeholder="请选择">
+                                <el-select v-model="item.relationId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item label="组织名称" prop="relationId" label-width="100px" v-if="item.relationIdentity === '2'">
-                                <el-select v-model="item.relationId" filterable placeholder="请选择">
+                            <el-form-item label="组织名称" prop="relationId" label-width="100px" v-if="item.relationIdentity === '2'" >
+                                <el-select v-model="item.relationId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -179,6 +179,7 @@
     } from 'element-tiptap';
 
     import request from "@/axios";
+
     // 富文本框上传图片
     export const fileUploadImage = data => request({
         url: "/file/uploadFile", // path路径
@@ -200,15 +201,6 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
-                editForm: {                         //编辑内容
-                    fileIds:""                     //上传文件id列表
-                },
-                editFormRules: {                  //校验规则
-                    name: [
-                        {required: true, message: '请输入名称', trigger: 'blur'}
-                    ]
-                },
-                treeData:[],                    //组织信息列表
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -240,19 +232,28 @@
                     new CodeBlock(),
                     new TextColor()
                 ],
-                deleteFileId: [],                //移除文件id
+                editForm: {                        //编辑内容
+                    fileIds:""                     //上传文件id列表
+                },
+                editFormRules: {                  //校验规则
+                    name: [
+                        {required: true, message: '请输入名称', trigger: 'blur'}
+                    ]
+                },
+                treeData:[],                    //组织信息列表
+                deleteFileId: [],               //移除文件id
                 fileList: [],                   //上传文件列表
                 fileShowList: [],               //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false,                 //是否显示图片按钮
-                modelOptions: [],                  //船只型号
-                statuOptions: [],                   //船只状态
+                disabled: false,                //是否显示图片按钮
+                modelOptions: [],               //船只型号
+                statuOptions: [],               //船只状态
                 figureOptions:[],               //人物列表
-                related:{
+                related:{                       //相关角色
                     roleList:[{id:"",relation:"",relationIdentity:"",relationId:"",synopsis:"",shippingId:""}]
                 },
-                organizationOptions:[],               //所属组织
+                organizationOptions:[],         //所属组织
             }
         },
         created(){
@@ -270,23 +271,14 @@
                         //获取组织信息
                         this.$axios.get('/sys/shipping/info/' + id).then(res => {
                             this.editForm = res.data.data.shipping;              //组织基本信息
-                            if(res.data.data.shipping.model){
-                                this.editForm.model = res.data.data.shipping.model.toString();            //型号回显
-                            }
-                            if(res.data.data.shipping.statu){
-                                this.editForm.statu = res.data.data.shipping.statu.toString();        //状态回显
-                            }
-                            if(res.data.data.shipping.sysShippingRoleList.length > 0){
-                                this.related.roleList = res.data.data.shipping.sysShippingRoleList;     //相关角色回显
-                                this.related.roleList.forEach(item=>{
-                                    item.relationIdentity = item.relationIdentity.toString();
-                                })
-                            }
+                            this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                             this.editForm.background = res.data.data.background     //船只背景
                             this.editForm.appearance = res.data.data.appearance     //船只外观
                             this.editForm.function = res.data.data.function         //船只功能
                             this.editForm.experience = res.data.data.experience     //船只经历
-                            this.fileShowList = res.data.data.fileList;             //上传文件展示信息
+                            if(res.data.data.shipping.sysShippingRoleList.length > 0){
+                                this.related.roleList = res.data.data.shipping.sysShippingRoleList;     //相关角色回显
+                            }
                         })
                     }
                     this.open = true;

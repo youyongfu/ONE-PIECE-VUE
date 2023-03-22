@@ -29,9 +29,9 @@
                         </el-form-item>
 
                         <el-form-item label="分类" prop="category" label-width="100px">
-                            <el-radio-group v-model="editForm.category">
-                                <el-radio v-for="item in devilnutCategory" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                            </el-radio-group>
+                            <el-select v-model="editForm.category" placeholder="请选择" clearable>
+                                <el-option v-for="item in devilnutCategory" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="性质" prop="nature" label-width="100px">
@@ -140,15 +140,6 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
-                editForm: {                         //编辑内容
-                    fileIds:""                     //上传文件id列表
-                },
-                editFormRules: {                  //校验规则
-                    name: [
-                        {required: true, message: '请输入名称', trigger: 'blur'}
-                    ]
-                },
-                treeData:[],                    //组织信息列表
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -180,13 +171,22 @@
                     new CodeBlock(),
                     new TextColor()
                 ],
-                deleteFileId: [],                //移除文件id
+                editForm: {                         //编辑内容
+                    fileIds:""                     //上传文件id列表
+                },
+                editFormRules: {                  //校验规则
+                    name: [
+                        {required: true, message: '请输入名称', trigger: 'blur'}
+                    ]
+                },
+                treeData:[],                    //组织信息列表
+                deleteFileId: [],               //移除文件id
                 fileList: [],                   //上传文件列表
                 fileShowList: [],               //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false,                 //是否显示图片按钮
-                devilnutCategory: []                   //果实分类
+                disabled: false,                //是否显示图片按钮
+                devilnutCategory: []            //果实分类
             }
         },
         created(){
@@ -200,10 +200,10 @@
                     if(id){
                         //获取组织信息
                         this.$axios.get('/sys/devilnut/info/' + id).then(res => {
-                            this.editForm = res.data.data.devilnut;              //组织基本信息
-                            this.editForm.ability = res.data.data.ability     //果实能力
-                            this.editForm.move = res.data.data.move     //果实招式
+                            this.editForm = res.data.data.devilnut;                 //组织基本信息
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
+                            this.editForm.ability = res.data.data.ability           //果实能力
+                            this.editForm.move = res.data.data.move                 //果实招式
                         })
                     }
                     this.open = true;

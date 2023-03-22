@@ -1,5 +1,16 @@
 <template>
     <div>
+
+        <el-form :inline="true"  class="demo-form-inline">
+            <el-form-item label="名称" class="searchForm">
+                <el-input v-model="searchForm.name" placeholder="名称"></el-input>
+            </el-form-item>
+
+            <el-form-item class="searchForm">
+                <el-button type="primary" @click="listPage">查询</el-button>
+            </el-form-item>
+        </el-form>
+
         <el-form :inline="true">
             <!-- 操作按钮-->
             <el-form-item>

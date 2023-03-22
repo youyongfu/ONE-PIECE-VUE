@@ -156,15 +156,6 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
-                editForm: {                         //编辑内容
-                    fileIds:""                     //上传文件id列表
-                },
-                editFormRules: {                  //校验规则
-                    name: [
-                        {required: true, message: '请输入名称', trigger: 'blur'}
-                    ]
-                },
-                treeData:[],                    //组织信息列表
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -196,9 +187,18 @@
                     new CodeBlock(),
                     new TextColor()
                 ],
-                deleteFileId: [],                //移除文件id
+                editForm: {                         //编辑内容
+                    fileIds:""                     //上传文件id列表
+                },
+                editFormRules: {                  //校验规则
+                    name: [
+                        {required: true, message: '请输入名称', trigger: 'blur'}
+                    ]
+                },
+                treeData:[],                    //组织信息列表
+                deleteFileId: [],               //移除文件id
                 fileList: [],                   //上传文件列表
-                fileShowList: [],                   //上传文件展示列表
+                fileShowList: [],               //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
                 disabled: false                 //是否显示图片按钮
@@ -216,13 +216,13 @@
                         //获取组织信息
                         this.$axios.get('/sys/islands/info/' + id).then(res => {
                             this.editForm = res.data.data.islands;              //组织基本信息
-                            this.editForm.source = res.data.data.source     //历史
-                            this.editForm.geography = res.data.data.geography     //地理环境
-                            this.editForm.appearances = res.data.data.appearances     //登场人物
-                            this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                             if(this.editForm.parentId === "0"){                   //若无上级组织，parentId设为空
                                 this.editForm.parentId = "";
                             }
+                            this.fileShowList = res.data.data.fileList;             //上传文件展示信息
+                            this.editForm.source = res.data.data.source             //历史
+                            this.editForm.geography = res.data.data.geography       //地理环境
+                            this.editForm.appearances = res.data.data.appearances   //登场人物
                         })
                     }
                     this.open = true;

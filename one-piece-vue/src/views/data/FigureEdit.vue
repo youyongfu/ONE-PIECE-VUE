@@ -34,7 +34,7 @@
                         </el-form-item>
 
                         <el-form-item label="性别" prop="sex" label-width="100px">
-                            <el-select v-model="editForm.sex" placeholder="请选择">
+                            <el-select v-model="editForm.sex" placeholder="请选择" clearable>
                                 <el-option v-for="item in figureSex" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -52,14 +52,14 @@
                         </el-form-item>
 
                         <el-form-item label="出身" prop="islandsIds" label-width="100px">
-                            <el-select v-model="editForm.islandsIds" filterable placeholder="请选择">
+                            <el-select v-model="editForm.islandsIds" filterable placeholder="请选择" clearable>
                                 <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item label="血型" prop="blood" label-width="100px">
-                            <el-select v-model="editForm.blood" placeholder="请选择">
+                            <el-select v-model="editForm.blood" placeholder="请选择" clearable>
                                 <el-option v-for="item in bloodOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -85,7 +85,7 @@
                         </el-form-item>
 
                         <el-form-item label="状态" prop="statu" label-width="100px">
-                            <el-select v-model="editForm.statu" placeholder="请选择">
+                            <el-select v-model="editForm.statu" placeholder="请选择" clearable>
                                 <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -121,7 +121,7 @@
                             </el-form-item>
 
                             <el-form-item label="隶属组织" prop="organizationIds" label-width="100px">
-                                <el-select v-model="item.organizationId" filterable placeholder="请选择">
+                                <el-select v-model="item.organizationId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -131,7 +131,7 @@
                             </el-form-item>
 
                             <el-form-item label="搭乘船只" prop="shippingIds" label-width="100px">
-                                <el-select v-model="item.shippingId" filterable placeholder="请选择">
+                                <el-select v-model="item.shippingId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -198,7 +198,7 @@
                             </el-form-item>
 
                             <el-form-item label="关系人" prop="relationFigureId" label-width="100px">
-                                <el-select v-model="item.relationFigureId" filterable placeholder="请选择">
+                                <el-select v-model="item.relationFigureId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -219,13 +219,13 @@
                     <el-tab-pane label="对战记录">
                         <div v-for="(item,index) in war.recordList" :key="index">
                             <el-form-item label="对战对手" prop="opponentFigureId" label-width="100px">
-                                <el-select style="width:30vh" v-model="item.opponentFigureId" filterable placeholder="请选择">
+                                <el-select style="width:30vh" v-model="item.opponentFigureId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
 
                             <el-form-item label="对战结果" prop="battleResults" label-width="100px">
-                                <el-select style="width:20vh" v-model="item.battleResults" placeholder="请选择">
+                                <el-select style="width:20vh" v-model="item.battleResults" placeholder="请选择" clearable>
                                     <el-option v-for="item in battleResultsOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -302,15 +302,6 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
-                editForm: {                         //编辑内容
-                    fileIds:""                     //上传文件id列表
-                },
-                editFormRules: {                  //校验规则
-                    name: [
-                        {required: true, message: '请输入名称', trigger: 'blur'}
-                    ]
-                },
-                treeData:[],                    //组织信息列表
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -342,30 +333,39 @@
                     new CodeBlock(),
                     new TextColor()
                 ],
+                editForm: {                         //编辑内容
+                    fileIds:""                     //上传文件id列表
+                },
+                editFormRules: {                  //校验规则
+                    name: [
+                        {required: true, message: '请输入名称', trigger: 'blur'}
+                    ]
+                },
+                treeData:[],                     //组织信息列表
                 deleteFileId: [],                //移除文件id
-                fileList: [],                   //上传文件列表
-                fileShowList: [],               //上传文件展示列表
-                dialogImageUrl: '',             //图片地址
-                dialogVisible: false,           //是否显示图片
+                fileList: [],                    //上传文件列表
+                fileShowList: [],                //上传文件展示列表
+                dialogImageUrl: '',              //图片地址
+                dialogVisible: false,            //是否显示图片
                 disabled: false,                 //是否显示图片按钮
                 figureSex: [],                   //人物性别
-                bloodOptions: [],                   //人物血型
-                statuOptions: [],                   //人物状态
-                weaponOptions:[],               //所用武器
+                bloodOptions: [],                //人物血型
+                statuOptions: [],                //人物状态
+                weaponOptions:[],                //所用武器
                 overbearingOptions: [],          //人物霸气
-                devilnutOptions:[],               //恶魔果实
-                organizationOptions:[],               //所属组织
+                devilnutOptions:[],              //恶魔果实
+                organizationOptions:[],          //所属组织
                 islandsOptions:[],               //出身
-                shippingOptions:[],               //所乘船只
-                figureOptions:[],               //人物列表
-                battleResultsOptions:[],               //对战结果
-                professional:{
+                shippingOptions:[],              //所乘船只
+                figureOptions:[],                //人物列表
+                battleResultsOptions:[],         //对战结果
+                professional:{                   //个人履历
                     experienceList:[{id:"",activeTime:"",organizationId:"",position:"",shippingId:"",figureId:""}]
                 },
-                interpersonal:{
+                interpersonal:{                 //人际关系
                     relationList:[{id:"",relationType:"",relationFigureId:"",relationSynopsis:"",figureId:""}]
                 },
-                war:{
+                war:{                           //对战记录
                     recordList:[{id:"",opponentFigureId:"",battleResults:"",synopsis:"",figureId:""}]
                 },
             }
@@ -392,24 +392,21 @@
                         //获取组织信息
                         this.$axios.get('/sys/figure/info/' + id).then(res => {
                             this.editForm = res.data.data.figure;              //人物基本信息
-                            if(res.data.data.figure.sex){
-                                this.editForm.sex = res.data.data.figure.sex.toString();            //性别回显
-                            }
-                            if(res.data.data.figure.blood){
-                                this.editForm.blood = res.data.data.figure.blood.toString();        //血型回显
-                            }
-                            if(res.data.data.figure.statu){
-                                this.editForm.statu = res.data.data.figure.statu.toString();        //状态回显
-                            }
                             this.editForm.weaponIds = res.data.data.weaponList;                   //武器回显
                             this.editForm.overbearing = res.data.data.overbearingList;              //霸气回显
                             this.editForm.devilnutIds = res.data.data.devilnutList;                 //恶魔果实回显
+                            this.fileShowList = res.data.data.fileList;                             //上传文件展示信息
                             if(res.data.data.islandsList.length > 0){
                                 this.editForm.islandsIds = res.data.data.islandsList[0];            //出身回显
                             }
                             if(res.data.data.figure.sysFigureExperienceList.length > 0){
                                 this.professional.experienceList = res.data.data.figure.sysFigureExperienceList;     //人物经历回显
                             }
+                            this.editForm.background = res.data.data.background     //角色背景
+                            this.editForm.image = res.data.data.image     //角色形象
+                            this.editForm.life = res.data.data.life     //角色生活
+                            this.editForm.ability = res.data.data.ability     //角色能力
+                            this.editForm.experience = res.data.data.experience     //角色经历
                             if(res.data.data.figure.sysFigureRelationList.length > 0){
                                 this.interpersonal.relationList = res.data.data.figure.sysFigureRelationList;     //人际关系回显
                             }
@@ -419,13 +416,6 @@
                                     war.battleResults = war.battleResults.toString();
                                 })
                             }
-                            this.fileShowList = res.data.data.fileList;                             //上传文件展示信息
-
-                            this.editForm.background = res.data.data.background     //角色背景
-                            this.editForm.image = res.data.data.image     //角色形象
-                            this.editForm.life = res.data.data.life     //角色生活
-                            this.editForm.ability = res.data.data.ability     //角色能力
-                            this.editForm.experience = res.data.data.experience     //角色经历
                         })
                     }
                     this.open = true;
