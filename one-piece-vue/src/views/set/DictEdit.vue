@@ -31,12 +31,6 @@
                     <el-input v-model="editForm.value" autocomplete="off"></el-input>
                 </el-form-item>
 
-                <el-form-item label="状态" prop="statu" label-width="100px">
-                    <el-radio-group v-model="editForm.statu">
-                        <el-radio v-for="item in dictStatu" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
@@ -65,12 +59,10 @@
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
                 },
-                dictStatu:[]                //字典状态
             }
         },
         created(){
             this.getTreeDict()
-            this.getDictStatu()
         },
         methods: {
             // 窗口初始化方法
@@ -79,7 +71,6 @@
                     if(id){
                         this.$axios.get('/sys/dict/info/' + id).then(res => {
                             this.editForm = res.data.data;
-                            this.editForm.statu = res.data.data.statu.toString();
                             if(this.editForm.parentId === 0){
                                 this.editForm.parentId = "";
                             }
@@ -93,12 +84,6 @@
             getTreeDict(){
                 this.$axios.get('sys/dict/list').then(res =>{
                     this.tableData = res.data.data;
-                })
-            },
-            //获取字典状态
-            getDictStatu(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"DICT_STATU"}}).then(res =>{
-                    this.dictStatu = res.data.data;
                 })
             },
             //重置

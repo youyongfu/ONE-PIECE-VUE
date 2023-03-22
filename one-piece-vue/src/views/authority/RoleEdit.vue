@@ -17,12 +17,6 @@
                     <el-input v-model="editForm.remark" autocomplete="off"></el-input>
                 </el-form-item>
 
-                <el-form-item label="状态" prop="statu" label-width="100px">
-                    <el-radio-group v-model="editForm.statu">
-                        <el-radio v-for="item in roleStatu" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
@@ -53,7 +47,6 @@
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
                 },
-                roleStatu: []                      //角色状态
             }
         },
         created(){
@@ -67,18 +60,11 @@
                         //获取角色信息
                         this.$axios.get('/sys/role/info/' + id).then(res => {
                             this.editForm = res.data.data;
-                            this.editForm.statu = res.data.data.statu.toString();
                         })
                     }
                     this.dialogVisible = true;
                     this.title = "编辑角色";
                 });
-            },
-            //获取角色状态
-            getRoleStatu(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"ROLE_STATU"}}).then(res =>{
-                    this.roleStatu = res.data.data;
-                })
             },
             //重置
             resetForm(formName) {

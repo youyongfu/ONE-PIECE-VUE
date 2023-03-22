@@ -45,12 +45,6 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="状态" prop="statu" label-width="100px">
-                    <el-radio-group v-model="editForm.statu">
-                        <el-radio v-for="item in menuStatu" :key="item.value" :label="item.value" :value="item.value">{{item.name}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
                 <el-form-item label="排序号" prop="orderNum" label-width="100px">
                     <el-input-number v-model="editForm.orderNum" :min="1" label="排序号">1</el-input-number>
                 </el-form-item>
@@ -93,13 +87,11 @@
                 },
                 treeData:[],                        //树形菜单数据
                 menuType: [],                      //菜单类型
-                menuStatu: []                      //菜单状态
             }
         },
         created(){
             this.getTreeMenu()
             this.getMenuType()
-            this.getMenuStatu()
         },
         methods: {
             // 窗口初始化方法
@@ -108,7 +100,6 @@
                     if(id){
                         this.$axios.get('/sys/menu/info/' + id).then(res => {
                             this.editForm = res.data.data;
-                            this.editForm.statu = res.data.data.statu.toString();
                             this.editForm.type = res.data.data.type.toString();
                             if(this.editForm.parentId === 0){
                                 this.editForm.parentId = "";
@@ -129,12 +120,6 @@
             getMenuType(){
                 this.$axios.get('sys/dict/getListByCode',{params:{code:"MENU_TYPE"}}).then(res =>{
                     this.menuType = res.data.data;
-                })
-            },
-            //获取菜单状态
-            getMenuStatu(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"MENU_STATU"}}).then(res =>{
-                    this.menuStatu = res.data.data;
                 })
             },
             //重置
