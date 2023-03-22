@@ -18,7 +18,7 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe>
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
 
             <el-table-column type="selection" width="55"></el-table-column>
 
@@ -74,6 +74,7 @@
         components:{ShippingEdit},
         data() {
             return {
+                loading: true,                  //是否显示加载动效
                 searchForm: {},                 //搜索内容
                 tableData: [],                  //列表数据
                 total: 0,                       //总条数
@@ -100,6 +101,7 @@
                     this.size = res.data.data.size
                     this.current = res.data.data.current
                     this.total = res.data.data.total
+                    this.loading = false;
                 })
             },
             //条数改变触发

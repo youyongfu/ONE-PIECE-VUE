@@ -19,7 +19,7 @@
                     <el-tab-pane label="基本信息" name="basicInfo">
 
                         <el-form-item label="上级组织" prop="parentId">
-                            <el-select v-model="editForm.parentId" placeholder="请选择上级组织">
+                            <el-select v-model="editForm.parentId" placeholder="请选择上级组织" clearable>
                                 <template v-for="item in treeData">
                                     <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
                                     <template v-for="child in item.children">
@@ -40,13 +40,13 @@
                         </el-form-item>
 
                         <el-form-item label="状态" prop="statu" label-width="100px">
-                            <el-select v-model="editForm.statu" placeholder="请选择">
+                            <el-select v-model="editForm.statu" placeholder="请选择" clearable>
                                 <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item label="性质" prop="nature" label-width="100px">
-                            <el-select v-model="editForm.nature" placeholder="请选择">
+                            <el-select v-model="editForm.nature" placeholder="请选择" clearable>
                                 <el-option v-for="item in natureOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
                             </el-select>
                         </el-form-item>
@@ -56,16 +56,14 @@
                         </el-form-item>
 
                         <el-form-item label="最高权力" prop="leader" label-width="100px">
-                            <el-select v-model="editForm.leader" filterable placeholder="请选择">
-                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id">
-                                </el-option>
+                            <el-select v-model="editForm.leader" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item label="总部" prop="headquarters" label-width="100px">
-                            <el-select v-model="editForm.headquarters" filterable placeholder="请选择">
-                                <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id">
-                                </el-option>
+                            <el-select v-model="editForm.headquarters" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </el-form-item>
 
@@ -296,7 +294,9 @@
                             if(res.data.data.organization.sysOrganizationRelationList.length > 0){
                                 this.organization.relationList = res.data.data.organization.sysOrganizationRelationList;     //组织关系回显
                                 this.organization.relationList.forEach(item=>{
-                                    item.relationType = item.relationType.toString();
+                                    if(item.relationType){
+                                        item.relationType = item.relationType.toString();
+                                    }
                                 })
                             }
 

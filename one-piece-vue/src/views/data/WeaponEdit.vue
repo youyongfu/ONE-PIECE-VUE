@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- 添加或修改业务对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" :before-close="handleClose" append-to-body fullscreen>
 
-            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
+            <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm" :inline="true">
 
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
@@ -24,8 +24,10 @@
                             <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="级别" prop="level" label-width="100px">
-                            <el-input v-model="editForm.level" autocomplete="off"></el-input>
+                        <el-form-item label="位阶" prop="level" label-width="100px">
+                            <el-select v-model="editForm.level" placeholder="请选择">
+                                <el-option v-for="item in levelOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="价值" prop="money" label-width="100px">
@@ -33,15 +35,29 @@
                         </el-form-item>
 
                         <el-form-item label="铸造者" prop="foundry" label-width="100px">
-                            <el-input v-model="editForm.foundry" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.foundry" placeholder="请选择">
+                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="使用者" prop="user" label-width="100px">
-                            <el-input v-model="editForm.user" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.user" placeholder="请选择">
+                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="初次登场" prop="debut" label-width="100px">
+                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="状态" prop="statu" label-width="100px">
+                            <el-select v-model="editForm.statu" placeholder="请选择">
+                                <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
                     </el-tab-pane>
 
@@ -80,8 +96,8 @@
                     </el-tab-pane>
                 </el-tabs>
 
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
+                <el-form-item class="btn">
+                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -184,11 +200,15 @@
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
                 disabled: false,                 //是否显示图片按钮
-                devilnutCategory: []                   //果实分类
+                levelOptions: [],                   //位阶
+                figureOptions:[],                  //人物信息列表
+                statuOptions: [],                   //武器状态
             }
         },
         created(){
-            this.getDevilnutCategory()
+            this.getLevelOptions();
+            this.getFigureOptions();
+            this.getStatuOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -199,6 +219,12 @@
                         //获取组织信息
                         this.$axios.get('/sys/weapon/info/' + id).then(res => {
                             this.editForm = res.data.data.weapon;              //组织基本信息
+                            if(res.data.data.weapon.statu){
+                                this.editForm.statu = res.data.data.weapon.statu.toString();        //状态回显
+                            }
+                            if(res.data.data.weapon.level){
+                                this.editForm.level = res.data.data.weapon.level.toString();        //位阶回显
+                            }
                             this.editForm.origin = res.data.data.origin     //来历
                             this.editForm.modelling = res.data.data.modelling     //造型
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
@@ -228,10 +254,22 @@
                 this.fileList = [];
                 this.deleteFileId = [];
             },
-            //获取果实分类
-            getDevilnutCategory(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"DEVILNUT_CATEGORY"}}).then(res =>{
-                    this.devilnutCategory = res.data.data;
+            //获取武器位阶
+            getLevelOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"WEAPON_LEVEL"}}).then(res =>{
+                    this.levelOptions = res.data.data;
+                })
+            },
+            //获取人物
+            getFigureOptions(){
+                this.$axios.get('sys/figure/getAll').then(res =>{
+                    this.figureOptions = res.data.data;
+                })
+            },
+            //获取武器状态
+            getStatuOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"WEAPON_STATU"}}).then(res =>{
+                    this.statuOptions = res.data.data;
                 })
             },
             //提交
@@ -335,5 +373,20 @@
 </script>
 
 <style scoped>
+    .el-tiptap-editor {
+        height: 65vh;
+    }
 
+    .el-input {
+        width: 60vh
+    }
+
+    .el-select {
+        width: 60vh
+    }
+
+    .btn {
+        display: flex;
+        justify-content: center;
+    }
 </style>

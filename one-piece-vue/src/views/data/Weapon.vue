@@ -7,7 +7,7 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe>
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
 
             <el-table-column type="selection" width="55"></el-table-column>
 
@@ -15,13 +15,15 @@
 
             <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
 
-            <el-table-column prop="level" label="级别" width="120"></el-table-column>
+            <el-table-column prop="level" label="位阶" width="120">
+                <template slot-scope="scope">
+                    {{getLevelSelect(scope.row.level)}}
+                </template>
+            </el-table-column>
 
             <el-table-column prop="money" label="价值" width="120"></el-table-column>
 
-            <el-table-column prop="foundry" label="铸造者" width="150"></el-table-column>
-
-            <el-table-column prop="user" label="使用者" width="150"></el-table-column>
+            <el-table-column prop="debut" label="初次登场" width="120"></el-table-column>
 
             <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
@@ -57,16 +59,19 @@
         components:{WeaponEdit},
         data() {
             return {
+                loading: true,                  //是否显示加载动效
                 searchForm: {},                 //搜索内容
                 tableData: [],                  //列表数据
                 total: 0,                       //总条数
                 size: 10,                       //每页显示条数
                 current: 1,                     //页数
                 dialogVisible: false,           //是否显示编辑对话框
+                levelOptions: [],                   //位阶
             }
         },
         created(){
-            this.listPage()
+            this.listPage();
+            this.getLevelOptions();
         },
         methods: {
             //获取
@@ -81,6 +86,7 @@
                     this.size = res.data.data.size
                     this.current = res.data.data.current
                     this.total = res.data.data.total
+                    this.loading = false;
                 })
             },
             //条数改变触发
@@ -94,6 +100,20 @@
                 console.log(`当前页: ${val}`);
                 this.current = val
                 this.listPage()
+            },
+            //获取武器位阶
+            getLevelOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"WEAPON_LEVEL"}}).then(res =>{
+                    this.levelOptions = res.data.data;
+                })
+            },
+            //回显武器位阶
+            getLevelSelect(value) {
+                for (var i = 0; i < this.levelOptions.length; i++) {
+                    if (this.levelOptions[i].value == value) {
+                        return this.levelOptions[i].name;
+                    }
+                }
             },
             //编辑
             editHandle(id){
