@@ -87,8 +87,8 @@
                                         <i class="el-icon-zoom-in"></i>
                                     </span>
                                     <!-- 下载-->
-                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
-                                        <i class="el-icon-download"></i>
+                                    <span v-if="!disabled && file.id" class="el-upload-list__item-delete" @click="handleDownload(file)">
+                                        <i class="el-icon-download" ></i>
                                     </span>
                                     <!-- 移除-->
                                     <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
@@ -473,8 +473,11 @@
             },
             //图片下载
             handleDownload(file) {
-                console.log(file);
-            }
+                var elemIF = document.createElement('iframe')
+                elemIF.src = file.url;
+                elemIF.style.display = 'none'
+                document.body.appendChild(elemIF)
+            },
         }
     }
 </script>
