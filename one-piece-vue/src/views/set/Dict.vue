@@ -16,7 +16,7 @@
             </el-form-item>
         </el-form>
 
-        <el-table :data="tableData" :load="getChildrenList" lazy style="width: 100%;margin-bottom: 20px;" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table :data="tableData" :load="getChildrenList" lazy style="width: 100%;margin-bottom: 20px;" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" v-loading="loading">
 
             <el-table-column prop="name" label="名称" sortable width="180"></el-table-column>
 
@@ -68,6 +68,7 @@
         components:{DictEdit},
         data() {
             return {
+                loading: true,                  //是否显示加载动效
                 searchForm: {},                 //搜索内容
                 tableData: [],                  //列表数据
                 total: 0,                       //总条数
@@ -92,6 +93,7 @@
                     this.size = res.data.data.size
                     this.current = res.data.data.current
                     this.total = res.data.data.total
+                    this.loading = false;
                 })
             },
             //获取子菜单
