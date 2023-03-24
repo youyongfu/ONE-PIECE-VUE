@@ -30,13 +30,6 @@
 
             <el-table-column prop="orderNum" label="排序号"></el-table-column>
 
-            <el-table-column prop="statu" label="状态">
-                <template slot-scope="scope">
-                    <el-tag size="small" v-if="scope.row.statu === 1" type="success">正常</el-tag>
-                    <el-tag size="small" v-else-if="scope.row.statu === 0" type="danger">禁用</el-tag>
-                </template>
-            </el-table-column>
-
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:menu:update')">编辑</el-button>
