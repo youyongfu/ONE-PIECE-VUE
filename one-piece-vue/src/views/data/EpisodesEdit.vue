@@ -18,6 +18,10 @@
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="剧集号" prop="orderNum" label-width="100px">
+                            <el-input-number v-model="editForm.orderNum" :min="1" label="排序号">1</el-input-number>
+                        </el-form-item>
+
                         <el-form-item label="BOSS" prop="boss" label-width="100px">
                             <el-select style="width:30vh" v-model="editForm.boss" filterable placeholder="请选择" clearable>
                                 <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
