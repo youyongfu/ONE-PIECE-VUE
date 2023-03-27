@@ -319,7 +319,6 @@
                 this.open = false;
                 this.activeNumber = 1;
                 this.selectLabel = "basicInfo";
-                this.treeData = [];
                 this.deleteFileId = [];
                 this.fileList = [];
                 this.fileShowList = [];
