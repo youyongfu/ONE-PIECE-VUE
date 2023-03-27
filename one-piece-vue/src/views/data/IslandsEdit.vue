@@ -54,6 +54,12 @@
                             <el-input v-model="editForm.climate" autocomplete="off"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="初次出现" prop="debut" label-width="100px">
+                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
                             <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
@@ -201,11 +207,13 @@
                 fileShowList: [],               //上传文件展示列表
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
-                disabled: false                 //是否显示图片按钮
+                disabled: false,                 //是否显示图片按钮
+                episodesOptions:[],             //剧集信息
             }
         },
         created(){
-            this.getTreeOrganization()
+            this.getTreeOrganization();
+            this.getEpisodesOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -254,6 +262,12 @@
                 this.fileShowList = [];
                 this.fileList = [];
                 this.deleteFileId = [];
+            },
+            //获取剧集信息
+            getEpisodesOptions(){
+                this.$axios.get('sys/episodes/getAll').then(res =>{
+                    this.episodesOptions = res.data.data;
+                })
             },
             //提交
             async submitForm(formName) {

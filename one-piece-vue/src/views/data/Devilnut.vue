@@ -42,8 +42,6 @@
 
             <el-table-column prop="nature" label="性质" width="200"></el-table-column>
 
-            <el-table-column prop="debut" label="初次出现" width="150"></el-table-column>
-
             <!--  操作按钮-->
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">

@@ -39,7 +39,9 @@
                         </el-form-item>
 
                         <el-form-item label="初次出现" prop="debut" label-width="100px">
-                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
@@ -186,11 +188,13 @@
                 dialogImageUrl: '',             //图片地址
                 dialogVisible: false,           //是否显示图片
                 disabled: false,                //是否显示图片按钮
-                devilnutCategory: []            //果实分类
+                devilnutCategory: [],            //果实分类
+                episodesOptions:[],             //剧集信息
             }
         },
         created(){
-            this.getDevilnutCategory()
+            this.getDevilnutCategory();
+            this.getEpisodesOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -229,6 +233,12 @@
                 this.fileShowList = [];
                 this.fileList = [];
                 this.deleteFileId = [];
+            },
+            //获取剧集信息
+            getEpisodesOptions(){
+                this.$axios.get('sys/episodes/getAll').then(res =>{
+                    this.episodesOptions = res.data.data;
+                })
             },
             //获取果实分类
             getDevilnutCategory(){

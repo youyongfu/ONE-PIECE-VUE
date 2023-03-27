@@ -77,7 +77,9 @@
                         </el-form-item>
 
                         <el-form-item label="初次登场" prop="debut" label-width="100px">
-                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="悬赏金" prop="bounty" label-width="100px">
@@ -359,6 +361,7 @@
                 shippingOptions:[],              //所乘船只
                 figureOptions:[],                //人物列表
                 battleResultsOptions:[],         //对战结果
+                episodesOptions:[],              //剧集信息
                 professional:{                   //个人履历
                     experienceList:[{id:"",activeTime:"",organizationId:"",position:"",shippingId:"",figureId:""}]
                 },
@@ -382,6 +385,7 @@
             this.getShippingOptions();
             this.getFigureOptions();
             this.getBattleResultsOptions();
+            this.getEpisodesOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -494,6 +498,12 @@
             getShippingOptions(){
                 this.$axios.get('sys/shipping/getAll').then(res =>{
                     this.shippingOptions = res.data.data;
+                })
+            },
+            //获取剧集信息
+            getEpisodesOptions(){
+                this.$axios.get('sys/episodes/getAll').then(res =>{
+                    this.episodesOptions = res.data.data;
                 })
             },
             //添加职业经历

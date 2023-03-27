@@ -55,8 +55,6 @@
 
             <el-table-column prop="birth" label="诞生时间" width="120"></el-table-column>
 
-            <el-table-column prop="debut" label="初次登场" width="220"></el-table-column>
-
             <el-table-column prop="icon" label="操作">
                 <template slot-scope="scope">
 

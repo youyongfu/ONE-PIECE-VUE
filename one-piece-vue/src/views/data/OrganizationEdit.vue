@@ -68,7 +68,9 @@
                         </el-form-item>
 
                         <el-form-item label="初次登场" prop="debut" label-width="100px">
-                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
@@ -260,6 +262,7 @@
                 figureOptions:[],               //人物列表
                 statuOptions: [],               //组织状态
                 relationOptions:[],             //组织关系类型
+                episodesOptions:[],             //剧集信息
                 organization:{                  //组织关系
                     relationList:[{id:"",relationType:"",relationOrganizationId:"",synopsis:"",ownerId:""}]
                 },
@@ -272,6 +275,7 @@
             this.getFigureOptions();
             this.getStatuOptions();
             this.getRelationOptions();
+            this.getEpisodesOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -342,6 +346,12 @@
             getFigureOptions(){
                 this.$axios.get('sys/figure/getAll').then(res =>{
                     this.figureOptions = res.data.data;
+                })
+            },
+            //获取剧集信息
+            getEpisodesOptions(){
+                this.$axios.get('sys/episodes/getAll').then(res =>{
+                    this.episodesOptions = res.data.data;
                 })
             },
             //获取组织状态

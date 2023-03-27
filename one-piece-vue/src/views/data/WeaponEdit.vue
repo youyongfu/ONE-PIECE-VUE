@@ -46,8 +46,10 @@
                             </el-select>
                         </el-form-item>
 
-                        <el-form-item label="初次登场" prop="debut" label-width="100px">
-                            <el-input v-model="editForm.debut" autocomplete="off"></el-input>
+                        <el-form-item label="初次出现" prop="debut" label-width="100px">
+                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="状态" prop="statu" label-width="100px">
@@ -203,12 +205,14 @@
                 levelOptions: [],               //位阶
                 figureOptions:[],               //人物信息列表
                 statuOptions: [],               //武器状态
+                episodesOptions:[],             //剧集信息
             }
         },
         created(){
             this.getLevelOptions();
             this.getFigureOptions();
             this.getStatuOptions();
+            this.getEpisodesOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -264,6 +268,12 @@
             getStatuOptions(){
                 this.$axios.get('sys/dict/getListByCode',{params:{code:"WEAPON_STATU"}}).then(res =>{
                     this.statuOptions = res.data.data;
+                })
+            },
+            //获取剧集信息
+            getEpisodesOptions(){
+                this.$axios.get('sys/episodes/getAll').then(res =>{
+                    this.episodesOptions = res.data.data;
                 })
             },
             //提交
