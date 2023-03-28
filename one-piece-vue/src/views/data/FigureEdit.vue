@@ -7,6 +7,7 @@
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
                     <el-step title="人物履历"></el-step>
+                    <el-step title="搭乘船只"></el-step>
                     <el-step title="悬赏变化"></el-step>
                     <el-step title="角色图片"></el-step>
                     <el-step title="角色背景"></el-step>
@@ -112,6 +113,16 @@
                             </el-select>
                         </el-form-item>
 
+                        <el-form-item label="隶属组织" prop="organizationId" label-width="100px">
+                            <el-select v-model="editForm.organizationId" filterable placeholder="请选择" clearable>
+                                <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="组织角色" prop="position" label-width="100px">
+                            <el-input v-model="editForm.position" autocomplete="off"></el-input>
+                        </el-form-item>
+
                         <el-form-item label="简介" prop="synopsis" label-width="100px">
                             <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
                         </el-form-item>
@@ -133,15 +144,30 @@
                                 <el-input v-model="item.position" autocomplete="off"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="搭乘船只" prop="shippingIds" label-width="100px">
+                            <el-form-item style="float: right">
+                                <el-button type="primary" @click="addExperience">添加</el-button>
+                                <el-button @click.prevent="removeExperience(item)">删除</el-button>
+                            </el-form-item>
+
+                            <el-divider></el-divider>
+                        </div>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="搭乘船只">
+                        <div v-for="(item,index) in by.boat" :key="index">
+                            <el-form-item label="搭乘时间" prop="time" label-width="100px">
+                                <el-input style="width: 30vh" v-model="item.time" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="搭乘船只" prop="shippingId" label-width="100px">
                                 <el-select v-model="item.shippingId" filterable placeholder="请选择" clearable>
                                     <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
 
                             <el-form-item>
-                                <el-button type="primary" @click="addExperience">添加</el-button>
-                                <el-button @click.prevent="removeExperience(item)">删除</el-button>
+                                <el-button type="primary" @click="addShipping">添加</el-button>
+                                <el-button @click.prevent="removeShipping(item)">删除</el-button>
                             </el-form-item>
 
                             <el-divider></el-divider>
@@ -383,7 +409,7 @@
                 battleResultsOptions:[],         //对战结果
                 episodesOptions:[],              //剧集信息
                 professional:{                   //个人履历
-                    experienceList:[{id:"",activeTime:"",organizationId:"",position:"",shippingId:"",figureId:""}]
+                    experienceList:[{id:"",activeTime:"",organizationId:"",position:"",figureId:""}]
                 },
                 interpersonal:{                 //人际关系
                     relationList:[{id:"",relationType:"",relationFigureId:"",relationSynopsis:"",figureId:""}]
@@ -393,6 +419,9 @@
                 },
                 reward:{                   //悬赏变化
                     variation:[{id:"",reward:"",synopsis:"",figureId:""}]
+                },
+                by:{                   //搭乘船只
+                    boat:[{id:"",time:"",shippingId:"",figureId:""}]
                 },
             }
         },
@@ -445,6 +474,9 @@
                             }
                             if(res.data.data.figure.sysFigureRewardList.length > 0){
                                 this.reward.variation = res.data.data.figure.sysFigureRewardList;     //悬赏变化回显
+                            }
+                            if(res.data.data.figure.sysFigureShippingList.length > 0){
+                                this.by.boat = res.data.data.figure.sysFigureShippingList;     //搭乘船只回显
                             }
                         })
                     }
@@ -526,6 +558,25 @@
                     this.shippingOptions = res.data.data;
                 })
             },
+            //添加船只
+            addShipping(){
+                let obj={
+                    id:"",
+                    time:"",
+                    shippingId:"",
+                    figureId:""
+                }
+                this.by.boat.push(obj)
+            },
+            //删除船只
+            removeShipping(item) {
+                if(this.by.boat.length > 1){
+                    var index = this.by.boat.indexOf(item)
+                    if (index !== -1) {
+                        this.by.boat.splice(index, 1)
+                    }
+                }
+            },
             //获取剧集信息
             getEpisodesOptions(){
                 this.$axios.get('sys/episodes/getAll').then(res =>{
@@ -539,7 +590,6 @@
                     activeTime:"",
                     organizationId:"",
                     position:"",
-                    shippingId:"",
                     figureId:""
 
                 }
@@ -655,6 +705,9 @@
 
                         //悬赏变化
                         this.editForm.sysFigureRewardList= this.reward.variation;
+
+                        //搭乘船只
+                        this.editForm.sysFigureShippingList= this.by.boat;
 
                         //保存组织信息
                         this.$axios.post('/sys/figure/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
