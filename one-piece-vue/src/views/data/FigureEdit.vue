@@ -7,6 +7,7 @@
                 <el-steps :active="activeNumber" align-center>
                     <el-step title="基本信息"></el-step>
                     <el-step title="人物履历"></el-step>
+                    <el-step title="悬赏变化"></el-step>
                     <el-step title="角色图片"></el-step>
                     <el-step title="角色背景"></el-step>
                     <el-step title="角色形象"></el-step>
@@ -141,6 +142,25 @@
                             <el-form-item>
                                 <el-button type="primary" @click="addExperience">添加</el-button>
                                 <el-button @click.prevent="removeExperience(item)">删除</el-button>
+                            </el-form-item>
+
+                            <el-divider></el-divider>
+                        </div>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="悬赏变化">
+                        <div v-for="(item,index) in reward.variation" :key="index">
+                            <el-form-item label="悬赏金" prop="reward" label-width="100px">
+                                <el-input style="width: 30vh" v-model="item.reward" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="主要行动" prop="synopsis" label-width="100px">
+                                <el-input v-model="item.synopsis" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item>
+                                <el-button type="primary" @click="addReward">添加</el-button>
+                                <el-button @click.prevent="removeReward(item)">删除</el-button>
                             </el-form-item>
 
                             <el-divider></el-divider>
@@ -371,6 +391,9 @@
                 war:{                           //对战记录
                     recordList:[{id:"",opponentFigureId:"",battleResults:"",synopsis:"",figureId:""}]
                 },
+                reward:{                   //悬赏变化
+                    variation:[{id:"",reward:"",synopsis:"",figureId:""}]
+                },
             }
         },
         created(){
@@ -419,6 +442,9 @@
                                 this.war.recordList.forEach(war=>{
                                     war.battleResults = war.battleResults.toString();
                                 })
+                            }
+                            if(res.data.data.figure.sysFigureRewardList.length > 0){
+                                this.reward.variation = res.data.data.figure.sysFigureRewardList;     //悬赏变化回显
                             }
                         })
                     }
@@ -580,6 +606,25 @@
                     }
                 }
             },
+            //添加悬赏变化
+            addReward(){
+                let obj={
+                    id:"",
+                    reward:"",
+                    synopsis:"",
+                    figureId:""
+                }
+                this.reward.variation.push(obj)
+            },
+            //删除悬赏变化
+            removeReward(item) {
+                if(this.reward.variation.length > 1){
+                    var index = this.reward.variation.indexOf(item)
+                    if (index !== -1) {
+                        this.reward.variation.splice(index, 1)
+                    }
+                }
+            },
             //提交
             async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -607,6 +652,9 @@
 
                         //对战记录
                         this.editForm.sysFigureWarRecordList= this.war.recordList;
+
+                        //悬赏变化
+                        this.editForm.sysFigureRewardList= this.reward.variation;
 
                         //保存组织信息
                         this.$axios.post('/sys/figure/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
