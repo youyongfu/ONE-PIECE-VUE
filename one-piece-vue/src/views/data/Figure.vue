@@ -26,30 +26,30 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border stripe v-loading="loading">
 
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" min-width="3"></el-table-column>
 
-            <el-table-column prop="name" label="名称" width="120"></el-table-column>
+            <el-table-column prop="name" label="名称" min-width="10"></el-table-column>
 
-            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
+            <el-table-column prop="foreignName" label="外文名" min-width="13"></el-table-column>
 
-            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+            <el-table-column prop="alias" label="别名" min-width="14"></el-table-column>
 
-            <el-table-column prop="sex" label="性别" width="120">
+            <el-table-column prop="sex" label="性别" min-width="10">
                 <template slot-scope="scope">
                     {{getFigureSexSelect(scope.row.sex)}}
                 </template>
             </el-table-column>
 
-            <el-table-column prop="height" label="身高" width="150"></el-table-column>
+            <el-table-column prop="height" label="身高" min-width="10"></el-table-column>
 
-            <el-table-column prop="age" label="年龄" width="150"></el-table-column>
+            <el-table-column prop="age" label="年龄" min-width="10"></el-table-column>
 
-            <el-table-column prop="birth" label="生日" ></el-table-column>
+            <el-table-column prop="birth" label="生日" min-width="10" ></el-table-column>
 
             <!--  操作按钮-->
-            <el-table-column prop="icon" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="20">
                 <template slot-scope="scope">
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:figure:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:figure:update')"></el-divider>

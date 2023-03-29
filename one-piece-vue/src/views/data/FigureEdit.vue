@@ -19,175 +19,229 @@
                     <el-step title="对战记录"></el-step>
                 </el-steps>
 
-                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
+                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
-
-                        <el-form-item label="名称" prop="name" label-width="100px">
-                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
-                            <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="别名" prop="alias" label-width="100px">
-                            <el-input v-model="editForm.alias" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="性别" prop="sex" label-width="100px">
-                            <el-select v-model="editForm.sex" placeholder="请选择" clearable>
-                                <el-option v-for="item in figureSex" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="身高" prop="height" label-width="100px">
-                            <el-input v-model="editForm.height" autocomplete="off" placeholder="cm"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="年龄" prop="age" label-width="100px">
-                            <el-input v-model="editForm.age" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="生日" prop="birth" label-width="100px">
-                            <el-input v-model="editForm.birth" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="出身" prop="islandsIds" label-width="100px">
-                            <el-select v-model="editForm.islandsIds" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="血型" prop="blood" label-width="100px">
-                            <el-select v-model="editForm.blood" placeholder="请选择" clearable>
-                                <el-option v-for="item in bloodOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="星座" prop="constellation" label-width="100px">
-                            <el-input v-model="editForm.constellation" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="正义观" prop="justiceView" label-width="100px">
-                            <el-input v-model="editForm.justiceView" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="饮食习惯" prop="eatingHabits" label-width="100px">
-                            <el-input v-model="editForm.eatingHabits" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="初次登场" prop="debut" label-width="100px">
-                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="悬赏金" prop="bounty" label-width="100px">
-                            <el-input v-model="editForm.bounty" autocomplete="off" placeholder="贝利"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="状态" prop="statu" label-width="100px">
-                            <el-select v-model="editForm.statu" placeholder="请选择" clearable>
-                                <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="所用武器" prop="weaponIds" label-width="100px">
-                            <el-select v-model="editForm.weaponIds" filterable multiple placeholder="请选择">
-                                <el-option v-for="item in weaponOptions" :key="item.id" :label="item.name" :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="霸气" prop="overbearing" label-width="100px">
-                            <el-select v-model="editForm.overbearing" multiple placeholder="请选择">
-                                <el-option v-for="item in overbearingOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="恶魔果实" prop="devilnutIds" label-width="100px">
-                            <el-select v-model="editForm.devilnutIds" filterable multiple placeholder="请选择">
-                                <el-option v-for="item in devilnutOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="隶属组织" prop="organizationId" label-width="100px">
-                            <el-select v-model="editForm.organizationId" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="组织角色" prop="position" label-width="100px">
-                            <el-input v-model="editForm.position" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
-                        </el-form-item>
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="名称" prop="name">
+                                    <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="外文名" prop="foreignName">
+                                    <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="别名" prop="alias">
+                                    <el-input v-model="editForm.alias" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="性别" prop="sex">
+                                    <el-select v-model="editForm.sex" placeholder="请选择" clearable>
+                                        <el-option v-for="item in figureSex" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="身高" prop="height">
+                                    <el-input v-model="editForm.height" autocomplete="off" placeholder="cm"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="年龄" prop="age">
+                                    <el-input v-model="editForm.age" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="生日" prop="birth">
+                                    <el-input v-model="editForm.birth" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="出身" prop="islandsIds">
+                                    <el-select v-model="editForm.islandsIds" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="血型" prop="blood">
+                                    <el-select v-model="editForm.blood" placeholder="请选择" clearable>
+                                        <el-option v-for="item in bloodOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="星座" prop="constellation">
+                                    <el-input v-model="editForm.constellation" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="正义观" prop="justiceView">
+                                    <el-input v-model="editForm.justiceView" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="饮食习惯" prop="eatingHabits">
+                                    <el-input v-model="editForm.eatingHabits" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="初次登场" prop="debut">
+                                    <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="悬赏金" prop="bounty">
+                                    <el-input v-model="editForm.bounty" autocomplete="off" placeholder="贝利"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="状态" prop="statu">
+                                    <el-select v-model="editForm.statu" placeholder="请选择" clearable>
+                                        <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="所用武器" prop="weaponIds">
+                                    <el-select v-model="editForm.weaponIds" filterable multiple placeholder="请选择">
+                                        <el-option v-for="item in weaponOptions" :key="item.id" :label="item.name" :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="霸气" prop="overbearing">
+                                    <el-select v-model="editForm.overbearing" multiple placeholder="请选择">
+                                        <el-option v-for="item in overbearingOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="恶魔果实" prop="devilnutIds">
+                                    <el-select v-model="editForm.devilnutIds" filterable multiple placeholder="请选择">
+                                        <el-option v-for="item in devilnutOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="隶属组织" prop="organizationId">
+                                    <el-select v-model="editForm.organizationId" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="组织角色" prop="position">
+                                    <el-input v-model="editForm.position" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="简介" prop="synopsis">
+                                    <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane label="人物履历">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Experience')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in professional.experienceList" :key="index">
-                            <el-form-item label="活跃时间" prop="position" label-width="100px">
-                                <el-input v-model="item.activeTime" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="隶属组织" prop="organizationIds" label-width="100px">
-                                <el-select v-model="item.organizationId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="身份" prop="position" label-width="100px">
-                                <el-input v-model="item.position" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item style="float: right">
-                                <el-button type="primary" @click="addExperience">添加</el-button>
-                                <el-button @click.prevent="removeExperience(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="6">
+                                    <el-form-item label="活跃时间" prop="activeTime">
+                                        <el-input v-model="item.activeTime" autocomplete="off" class="el-input30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-form-item label="隶属组织" prop="organizationId">
+                                        <el-select v-model="item.organizationId" filterable placeholder="请选择" clearable class="el-select30">
+                                            <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-form-item label="身份" prop="position">
+                                        <el-input v-model="item.position" autocomplete="off" class="el-input30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'Experience')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'Experience')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'Experience')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
                     </el-tab-pane>
 
                     <el-tab-pane label="搭乘船只">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Shipping')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in by.boat" :key="index">
-                            <el-form-item label="搭乘时间" prop="time" label-width="100px">
-                                <el-input style="width: 30vh" v-model="item.time" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="搭乘船只" prop="shippingId" label-width="100px">
-                                <el-select v-model="item.shippingId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item>
-                                <el-button type="primary" @click="addShipping">添加</el-button>
-                                <el-button @click.prevent="removeShipping(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="6">
+                                    <el-form-item label="搭乘时间" prop="time">
+                                        <el-input v-model="item.time" autocomplete="off" class="el-input30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-form-item label="搭乘船只" prop="shippingId">
+                                        <el-select v-model="item.shippingId" filterable placeholder="请选择" clearable class="el-select30">
+                                            <el-option v-for="item in shippingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'Shipping')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'Shipping')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'Shipping')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
                     </el-tab-pane>
 
                     <el-tab-pane label="悬赏变化">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Reward')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in reward.variation" :key="index">
-                            <el-form-item label="悬赏金" prop="reward" label-width="100px">
-                                <el-input style="width: 30vh" v-model="item.reward" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="主要行动" prop="synopsis" label-width="100px">
-                                <el-input v-model="item.synopsis" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item>
-                                <el-button type="primary" @click="addReward">添加</el-button>
-                                <el-button @click.prevent="removeReward(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="6">
+                                    <el-form-item label="悬赏金" prop="reward">
+                                        <el-input v-model="item.reward" autocomplete="off" class="el-input30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="10">
+                                    <el-form-item label="主要行动" prop="synopsis">
+                                        <el-input v-model="item.synopsis" autocomplete="off"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'Reward')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'Reward')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'Reward')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
@@ -240,52 +294,74 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="人际关系">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Relation')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in interpersonal.relationList" :key="index">
-                            <el-form-item label="关系类型" prop="position" label-width="100px">
-                                <el-input v-model="item.relationType" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="关系人" prop="relationFigureId" label-width="100px">
-                                <el-select v-model="item.relationFigureId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="关系简介" prop="relationSynopsis" label-width="100px">
-                                <el-input v-model="item.relationSynopsis" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item style="float: right">
-                                <el-button type="primary" @click="addRelation">添加</el-button>
-                                <el-button @click.prevent="removeRelation(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="6">
+                                    <el-form-item label="关系类型" prop="relationType">
+                                        <el-input v-model="item.relationType" autocomplete="off" class="el-input30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-form-item label="关系人" prop="relationFigureId">
+                                        <el-select v-model="item.relationFigureId" filterable placeholder="请选择" clearable class="el-select30">
+                                            <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="7">
+                                    <el-form-item label="关系简介" prop="relationSynopsis">
+                                        <el-input v-model="item.relationSynopsis" autocomplete="off" onmouseover="this.title=this.value" class="el-select30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'Relation')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'Relation')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'Relation')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
                     </el-tab-pane>
 
                     <el-tab-pane label="对战记录">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('WarRecord')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in war.recordList" :key="index">
-                            <el-form-item label="对战对手" prop="opponentFigureId" label-width="100px">
-                                <el-select style="width:30vh" v-model="item.opponentFigureId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="对战结果" prop="battleResults" label-width="100px">
-                                <el-select style="width:20vh" v-model="item.battleResults" placeholder="请选择" clearable>
-                                    <el-option v-for="item in battleResultsOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="过程简介" prop="synopsis" label-width="100px">
-                                <el-input v-model="item.synopsis" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item style="float: right">
-                                <el-button type="primary" @click="addWarRecord">添加</el-button>
-                                <el-button @click.prevent="removeWarRecord(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="6">
+                                    <el-form-item label="对战对手" prop="opponentFigureId">
+                                        <el-select v-model="item.opponentFigureId" filterable placeholder="请选择" clearable class="el-select30">
+                                            <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-form-item label="对战结果" prop="battleResults" label-width="100px">
+                                        <el-select v-model="item.battleResults" placeholder="请选择" clearable class="el-select30">
+                                            <el-option v-for="item in battleResultsOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="7">
+                                    <el-form-item label="过程简介" prop="synopsis" label-width="100px">
+                                        <el-input v-model="item.synopsis" autocomplete="off" onmouseover="this.title=this.value" class="el-select30"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item  class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'WarRecord')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'WarRecord')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'WarRecord')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
@@ -293,7 +369,7 @@
                 </el-tabs>
 
                 <el-form-item class="btn">
-                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
+                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -409,19 +485,19 @@
                 battleResultsOptions:[],         //对战结果
                 episodesOptions:[],              //剧集信息
                 professional:{                   //个人履历
-                    experienceList:[{id:"",activeTime:"",organizationId:"",position:"",figureId:""}]
+                    experienceList:[{id:"",activeTime:"",organizationId:"",position:"",figureId:"",sortNumber:1}]
                 },
                 interpersonal:{                 //人际关系
-                    relationList:[{id:"",relationType:"",relationFigureId:"",relationSynopsis:"",figureId:""}]
+                    relationList:[{id:"",relationType:"",relationFigureId:"",relationSynopsis:"",figureId:"",sortNumber:1}]
                 },
                 war:{                           //对战记录
-                    recordList:[{id:"",opponentFigureId:"",battleResults:"",synopsis:"",figureId:""}]
+                    recordList:[{id:"",opponentFigureId:"",battleResults:"",synopsis:"",figureId:"",sortNumber:1}]
                 },
                 reward:{                   //悬赏变化
-                    variation:[{id:"",reward:"",synopsis:"",figureId:""}]
+                    variation:[{id:"",reward:"",synopsis:"",figureId:"",sortNumber:1}]
                 },
                 by:{                   //搭乘船只
-                    boat:[{id:"",time:"",shippingId:"",figureId:""}]
+                    boat:[{id:"",time:"",shippingId:"",figureId:"",sortNumber:1}]
                 },
             }
         },
@@ -522,6 +598,18 @@
                     this.statuOptions = res.data.data;
                 })
             },
+            //获取对战结果
+            getBattleResultsOptions(){
+                this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_BATTLERESULTS"}}).then(res =>{
+                    this.battleResultsOptions = res.data.data;
+                })
+            },
+            //获取剧集信息
+            getEpisodesOptions(){
+                this.$axios.get('sys/episodes/getAll').then(res =>{
+                    this.episodesOptions = res.data.data;
+                })
+            },
             //获取人物霸气
             getOverbearingOptions(){
                 this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_OVERBEARING"}}).then(res =>{
@@ -558,121 +646,97 @@
                     this.shippingOptions = res.data.data;
                 })
             },
-            //添加船只
-            addShipping(){
-                let obj={
-                    id:"",
-                    time:"",
-                    shippingId:"",
-                    figureId:""
-                }
-                this.by.boat.push(obj)
-            },
-            //删除船只
-            removeShipping(item) {
-                if(this.by.boat.length > 1){
-                    var index = this.by.boat.indexOf(item)
-                    if (index !== -1) {
-                        this.by.boat.splice(index, 1)
-                    }
-                }
-            },
-            //获取剧集信息
-            getEpisodesOptions(){
-                this.$axios.get('sys/episodes/getAll').then(res =>{
-                    this.episodesOptions = res.data.data;
-                })
-            },
-            //添加职业经历
-            addExperience(){
-                let obj={
-                    id:"",
-                    activeTime:"",
-                    organizationId:"",
-                    position:"",
-                    figureId:""
-
-                }
-                this.professional.experienceList.push(obj)
-            },
-            //删除职业经历
-            removeExperience(item) {
-                if(this.professional.experienceList.length > 1){
-                    var index = this.professional.experienceList.indexOf(item)
-                    if (index !== -1) {
-                        this.professional.experienceList.splice(index, 1)
-                    }
-                }
-            },
             //获取人物
             getFigureOptions(){
                 this.$axios.get('sys/figure/getAll').then(res =>{
                     this.figureOptions = res.data.data;
                 })
             },
-            //添加人际关系
-            addRelation(){
-                let obj={
-                    id:"",
-                    relationType:"",
-                    relationFigureId:"",
-                    relationSynopsis:"",
-                    figureId:""
+            //添加记录
+            addRecord(type){
+                let list = this.professional.experienceList;     //人物履历
+                if(type == "Shipping"){
+                    list = this.by.boat;                        //搭乘船只
+                }else if(type =='Relation'){
+                    list = this.interpersonal.relationList;     //人际关系
+                }else if(type =='WarRecord'){
+                    list = this.war.recordList;                 //对战记录
+                }else if(type =='Reward'){
+                    list = this.reward.variation;               //悬赏变化
                 }
-                this.interpersonal.relationList.push(obj)
+                let obj={id:"", activeTime:"", organizationId:"", position:"", figureId:"", sortNumber: list.length + 1}    //人物履历
+                if(type == "Shipping"){
+                    obj = {id:"", time:"", shippingId:"", figureId:"", sortNumber: list.length + 1};                        //搭乘船只
+                }else if(type =='Relation'){
+                    obj = {id:"", relationType:"", relationFigureId:"", relationSynopsis:"", figureId:"", sortNumber: list.length + 1};     //人际关系
+                }else if(type =='WarRecord'){
+                    obj = {id:"", opponentFigureId:"", battleResults:"", synopsis:"", figureId:"", sortNumber: list.length + 1};                 //对战记录
+                }else if(type =='Reward'){
+                    obj = {id:"", reward:"", synopsis:"", figureId:"", sortNumber: list.length + 1};               //悬赏变化
+                }
+                list.push(obj)
             },
-            //删除人际关系
-            removeRelation(item) {
-                if(this.interpersonal.relationList.length > 1){
-                    var index = this.interpersonal.relationList.indexOf(item)
+            //删除记录
+            removeRecord(item,type) {
+                let list = this.professional.experienceList;     //人物履历
+                if(type == "Shipping"){
+                    list = this.by.boat;                        //搭乘船只
+                }else if(type =='Relation'){
+                    list = this.interpersonal.relationList;     //人际关系
+                }else if(type =='WarRecord'){
+                    list = this.war.recordList;                 //对战记录
+                }else if(type =='Reward'){
+                    list = this.reward.variation;               //悬赏变化
+                }
+                let length = list.length;
+                if(length > 1){
+                    var index = list.indexOf(item)
                     if (index !== -1) {
-                        this.interpersonal.relationList.splice(index, 1)
+                        if(index + 1 < length){
+                            list.slice(index+1,length).forEach(e =>{
+                                e.sortNumber -= 1
+                            })
+                        }
+                        list.splice(index, 1)
                     }
                 }
             },
-            //获取对战结果
-            getBattleResultsOptions(){
-                this.$axios.get('sys/dict/getListByCode',{params:{code:"FIGURE_BATTLERESULTS"}}).then(res =>{
-                    this.battleResultsOptions = res.data.data;
-                })
-            },
-            //添加对战记录
-            addWarRecord(){
-                let obj={
-                    id:"",
-                    opponentFigureId:"",
-                    battleResults:"",
-                    synopsis:"",
-                    figureId:""
+            //上移记录
+            moveUpRecord(index,type) {
+                let list = this.professional.experienceList;
+                if(type == "Shipping"){
+                    list = this.by.boat;                        //搭乘船只
+                }else if(type =='Relation'){
+                    list = this.interpersonal.relationList;     //人际关系
+                }else if(type =='WarRecord'){
+                    list = this.war.recordList;                 //对战记录
+                }else if(type =='Reward'){
+                    list = this.reward.variation;               //悬赏变化
                 }
-                this.war.recordList.push(obj)
-            },
-            //删除对战记录
-            removeWarRecord(item) {
-                if(this.war.recordList.length > 1){
-                    var index = this.war.recordList.indexOf(item)
-                    if (index !== -1) {
-                        this.war.recordList.splice(index, 1)
-                    }
+                if(index > 0){
+                    let sortNumber = list[index - 1].sortNumber;
+                    list[index - 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index - 1, 1, ...list.splice(index, 1, list[index - 1]))
                 }
             },
-            //添加悬赏变化
-            addReward(){
-                let obj={
-                    id:"",
-                    reward:"",
-                    synopsis:"",
-                    figureId:""
+            //下移记录
+            moveDownRecord(index,type) {
+                let list = this.professional.experienceList;
+                if(type == "Shipping"){
+                    list = this.by.boat;                        //搭乘船只
+                }else if(type =='Relation'){
+                    list = this.interpersonal.relationList;     //人际关系
+                }else if(type =='WarRecord'){
+                    list = this.war.recordList;                 //对战记录
+                }else if(type =='Reward'){
+                    list = this.reward.variation;               //悬赏变化
                 }
-                this.reward.variation.push(obj)
-            },
-            //删除悬赏变化
-            removeReward(item) {
-                if(this.reward.variation.length > 1){
-                    var index = this.reward.variation.indexOf(item)
-                    if (index !== -1) {
-                        this.reward.variation.splice(index, 1)
-                    }
+                if(index != list.length -1){
+                    let sortNumber = list[index + 1].sortNumber;
+                    list[index + 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index, 1, ...list.splice(index + 1, 1, list[index]))
                 }
             },
             //提交
@@ -807,20 +871,48 @@
 
 <style scoped>
 
+    .el-tabs{
+        margin-top: 5vh;
+    }
+
     .el-tiptap-editor {
         height: 65vh;
     }
 
-    .el-input {
-        width: 60vh
+    .el-input{
+        width: 50vh;
     }
 
-    .el-select {
-        width: 60vh
+    .el-input30{
+        width: 30vh;
+    }
+
+    .el-select{
+        width: 50vh;
+    }
+
+    .el-select30{
+        width: 30vh;
+    }
+
+    .el-textarea{
+        width: 146vh;
+    }
+
+    .floatRight{
+        float: right;
+    }
+
+    .margin3{
+        margin: 3vh;
     }
 
     .btn {
         display: flex;
         justify-content: center;
+    }
+
+    .btn .el-button{
+        margin-right: 10vh;
     }
 </style>
