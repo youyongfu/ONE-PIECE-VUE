@@ -10,45 +10,61 @@
                     <el-step title="登场角色"></el-step>
                 </el-steps>
 
-                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
+                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
-
-                        <el-form-item label="标题" prop="name" label-width="100px">
-                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="剧集号" prop="orderNum" label-width="100px">
-                            <el-input-number v-model="editForm.orderNum" :min="1" label="排序号">1</el-input-number>
-                        </el-form-item>
-
-                        <el-form-item label="BOSS" prop="boss" label-width="100px">
-                            <el-select style="width:30vh" v-model="editForm.boss" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
-                        </el-form-item>
+                        <el-row :gutter="10">
+                            <el-col :span="9">
+                                <el-form-item label="标题" prop="name">
+                                    <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-form-item label="剧集号" prop="orderNum">
+                                    <el-input-number v-model="editForm.orderNum" :min="1" label="排序号">1</el-input-number>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="9">
+                                <el-form-item label="BOSS" prop="boss">
+                                    <el-select v-model="editForm.boss" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                    <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane label="登场角色">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Onstage')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in onstage.character" :key="index">
-                            <el-form-item label="名称" prop="opponentFigureId" label-width="100px">
-                                <el-select style="width:30vh" v-model="item.figureId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="简介" prop="synopsis" label-width="100px">
-                                <el-input v-model="item.synopsis" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item style="float: right">
-                                <el-button type="primary" @click="addOnstage">添加</el-button>
-                                <el-button @click.prevent="removeOnstage(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="9">
+                                    <el-form-item label="名称" prop="opponentFigureId" label-width="100px">
+                                        <el-select v-model="item.figureId" filterable placeholder="请选择" clearable>
+                                            <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="9">
+                                    <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                        <el-input v-model="item.synopsis" autocomplete="off"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item  class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'Onstage')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'Onstage')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'Onstage')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
@@ -56,7 +72,7 @@
                 </el-tabs>
 
                 <el-form-item class="btn">
-                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
+                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -134,23 +150,50 @@
                     this.figureOptions = res.data.data;
                 })
             },
-            //添加登场角色
-            addOnstage(){
-                let obj={
-                    id:"",
-                    figureId:"",
-                    synopsis:"",
-                    episodesId:""
-                }
-                this.onstage.character.push(obj)
+            //添加记录
+            addRecord(type){
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                let obj={id:"",figureId:"",synopsis:"",episodesId:"", sortNumber: list.length + 1}    //登场角色
+                list.push(obj)
             },
-            //删除登场角色
-            removeOnstage(item) {
-                if(this.onstage.character.length > 1){
-                    var index = this.onstage.character.indexOf(item)
+            //删除记录
+            removeRecord(item,type) {
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                let length = list.length;
+                if(length > 1){
+                    var index = list.indexOf(item)
                     if (index !== -1) {
-                        this.onstage.character.splice(index, 1)
+                        if(index + 1 < length){
+                            list.slice(index+1,length).forEach(e =>{
+                                e.sortNumber -= 1
+                            })
+                        }
+                        list.splice(index, 1)
                     }
+                }
+            },
+            //上移记录
+            moveUpRecord(index,type) {
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                if(index > 0){
+                    let sortNumber = list[index - 1].sortNumber;
+                    list[index - 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index - 1, 1, ...list.splice(index, 1, list[index - 1]))
+                }
+            },
+            //下移记录
+            moveDownRecord(index,type) {
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                if(index != list.length -1){
+                    let sortNumber = list[index + 1].sortNumber;
+                    list[index + 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index, 1, ...list.splice(index + 1, 1, list[index]))
                 }
             },
             //提交
@@ -186,21 +229,53 @@
 
 <style scoped>
 
+    .el-tabs{
+        margin-top: 5vh;
+    }
+
     .el-tiptap-editor {
         height: 65vh;
     }
 
-    .el-input {
-        width: 60vh
+    .el-input{
+        width: 50vh;
     }
 
-    .el-select {
-        width: 60vh
+    .el-input30{
+        width: 30vh;
+    }
+
+    .el-select{
+        width: 50vh;
+    }
+
+    .el-select30{
+        width: 30vh;
+    }
+
+    .el-textarea{
+        width: 146vh;
+    }
+
+    .el-textarea123{
+        width: 123vh;
+    }
+
+    .floatRight{
+        float: right;
+    }
+
+    .margin3{
+        margin: 3vh;
     }
 
     .btn {
         display: flex;
         justify-content: center;
+    }
+
+    .btn .el-button{
+        margin-right: 10vh;
     }
 
 </style>

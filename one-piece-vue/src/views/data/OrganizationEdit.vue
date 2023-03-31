@@ -14,68 +14,80 @@
                     <el-step title="组织关系"></el-step>
                 </el-steps>
 
-                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
+                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
-
-                        <el-form-item label="上级组织" prop="parentId">
-                            <el-select v-model="editForm.parentId" placeholder="请选择上级组织" clearable>
-                                <template v-for="item in treeData">
-                                    <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                    <template v-for="child in item.children">
-                                        <el-option :label="child.name" :value="child.id" :key="child.name">
-                                            <span>{{ "- " + child.name }}</span>
-                                        </el-option>
-                                    </template>
-                                </template>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="名称" prop="name" label-width="100px">
-                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
-                            <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="状态" prop="statu" label-width="100px">
-                            <el-select v-model="editForm.statu" placeholder="请选择" clearable>
-                                <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="性质" prop="nature" label-width="100px">
-                            <el-select v-model="editForm.nature" placeholder="请选择" clearable>
-                                <el-option v-for="item in natureOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="诞生时间" prop="birth" label-width="100px">
-                            <el-input v-model="editForm.birth" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="最高权力" prop="leader" label-width="100px">
-                            <el-select v-model="editForm.leader" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="总部" prop="headquarters" label-width="100px">
-                            <el-select v-model="editForm.headquarters" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="初次登场" prop="debut" label-width="100px">
-                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
-                        </el-form-item>
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="上级组织" prop="parentId">
+                                    <el-select v-model="editForm.parentId" placeholder="请选择上级组织" clearable>
+                                        <template v-for="item in treeData">
+                                            <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
+                                            <template v-for="child in item.children">
+                                                <el-option :label="child.name" :value="child.id" :key="child.name">
+                                                    <span>{{ "- " + child.name }}</span>
+                                                </el-option>
+                                            </template>
+                                        </template>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="名称" prop="name">
+                                    <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="外文名" prop="foreignName">
+                                    <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="状态" prop="statu">
+                                    <el-select v-model="editForm.statu" placeholder="请选择" clearable>
+                                        <el-option v-for="item in statuOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="性质" prop="nature">
+                                    <el-select v-model="editForm.nature" placeholder="请选择" clearable>
+                                        <el-option v-for="item in natureOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="诞生时间" prop="birth">
+                                    <el-input v-model="editForm.birth" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="最高权力" prop="leader">
+                                    <el-select v-model="editForm.leader" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="总部" prop="headquarters">
+                                    <el-select v-model="editForm.headquarters" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in islandsOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="初次登场" prop="debut">
+                                    <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="简介" prop="synopsis">
+                                    <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane label="标志">
@@ -117,35 +129,45 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="组织关系">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('WarRecord')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in organization.relationList" :key="index">
-
-                            <el-form-item label="关系类型" prop="nature" label-width="100px">
-                                <el-select v-model="item.relationType" placeholder="请选择" clearable>
-                                    <el-option v-for="item in relationOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="组织名称" prop="organizationIds" label-width="100px">
-                                <el-select v-model="item.relationOrganizationId" placeholder="请选择组织" clearable>
-                                    <template v-for="item in treeData">
-                                        <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                        <template v-for="child in item.children">
-                                            <el-option :label="child.name" :value="child.id" :key="child.name">
-                                                <span>{{ "- " + child.name }}</span>
-                                            </el-option>
-                                        </template>
-                                    </template>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="简介" prop="synopsis" label-width="100px">
-                                <el-input style="width:135vh" type="textarea" :rows="5" placeholder="请输入内容" v-model="item.synopsis"></el-input>
-                            </el-form-item>
-
-                            <el-form-item style="margin-top: 70px">
-                                <el-button type="primary" @click="addRelation">添加</el-button>
-                                <el-button @click.prevent="removeRelation(item)">删除</el-button>
-                            </el-form-item>
+                            <el-row :gutter="10">
+                                <el-col :span="9">
+                                    <el-form-item label="关系类型" prop="relationType">
+                                        <el-select v-model="item.relationType" placeholder="请选择" clearable>
+                                            <el-option v-for="item in relationOptions" :key="item.value" :label="item.name" :value="item.value"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="10">
+                                    <el-form-item label="组织名称" prop="relationOrganizationId">
+                                        <el-select v-model="item.relationOrganizationId" placeholder="请选择组织" clearable>
+                                            <template v-for="item in treeData">
+                                                <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
+                                                <template v-for="child in item.children">
+                                                    <el-option :label="child.name" :value="child.id" :key="child.name">
+                                                        <span>{{ "- " + child.name }}</span>
+                                                    </el-option>
+                                                </template>
+                                            </template>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item  class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'WarRecord')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'WarRecord')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'WarRecord')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="19">
+                                    <el-form-item label="简介" prop="synopsis">
+                                        <el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="item.synopsis" class="el-textarea123"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
                             <el-divider></el-divider>
                         </div>
@@ -153,7 +175,7 @@
                 </el-tabs>
 
                 <el-form-item class="btn">
-                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
+                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -211,6 +233,10 @@
                 activeNumber:1,                   //步骤条高亮显示位置
                 selectLabel:"basicInfo",          //选项卡高亮显示位置
                 tabPosition: 'left',              //选项卡位置
+                defaultProps: {             //树形默认配置
+                    children: 'children',
+                    label: "name",
+                },
                 extensions: [                   //富文本框工具栏
                     new Doc(),
                     new Text(),
@@ -264,7 +290,7 @@
                 relationOptions:[],             //组织关系类型
                 episodesOptions:[],             //剧集信息
                 organization:{                  //组织关系
-                    relationList:[{id:"",relationType:"",relationOrganizationId:"",synopsis:"",ownerId:""}]
+                    relationList:[{id:"",relationType:"",relationOrganizationId:"",synopsis:"",ownerId:"",sortNumber:1}]
                 },
             }
         },
@@ -296,7 +322,6 @@
                             if(res.data.data.organization.sysOrganizationRelationList.length > 0){
                                 this.organization.relationList = res.data.data.organization.sysOrganizationRelationList;     //组织关系回显
                             }
-
                         })
                     }
                     this.open = true;
@@ -365,24 +390,50 @@
                     this.relationOptions = res.data.data;
                 })
             },
-            //添加组织关系
-            addRelation(){
-                let obj={
-                    id:"",
-                    relationType:"",
-                    relationOrganizationId:"",
-                    synopsis:"",
-                    ownerId:""
-                }
-                this.organization.relationList.push(obj)
+            //添加记录
+            addRecord(type){
+                console.log(type)
+                let list = this.organization.relationList;     //组织关系
+                let obj={id:"",relationType:"",relationOrganizationId:"",synopsis:"",ownerId:"", sortNumber: list.length + 1}    //人物履历
+                list.push(obj)
             },
-            //删除组织关系
-            removeRelation(item) {
-                if(this.organization.relationList.length > 1){
-                    var index = this.organization.relationList.indexOf(item)
+            //删除记录
+            removeRecord(item,type) {
+                console.log(type)
+                let list = this.organization.relationList;     //人物履历
+                let length = list.length;
+                if(length > 1){
+                    var index = list.indexOf(item)
                     if (index !== -1) {
-                        this.organization.relationList.splice(index, 1)
+                        if(index + 1 < length){
+                            list.slice(index+1,length).forEach(e =>{
+                                e.sortNumber -= 1
+                            })
+                        }
+                        list.splice(index, 1)
                     }
+                }
+            },
+            //上移记录
+            moveUpRecord(index,type) {
+                console.log(type)
+                let list = this.organization.relationList;     //组织关系
+                if(index > 0){
+                    let sortNumber = list[index - 1].sortNumber;
+                    list[index - 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index - 1, 1, ...list.splice(index, 1, list[index - 1]))
+                }
+            },
+            //下移记录
+            moveDownRecord(index,type) {
+                console.log(type)
+                let list = this.organization.relationList;     //组织关系
+                if(index != list.length -1){
+                    let sortNumber = list[index + 1].sortNumber;
+                    list[index + 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index, 1, ...list.splice(index + 1, 1, list[index]))
                 }
             },
             //提交
@@ -393,6 +444,8 @@
                         if(this.editForm.id){
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
+
+                        this.editForm.parentId = this.valueData;
 
                         //组织关系
                         this.editForm.sysOrganizationRelationList= this.organization.relationList;
@@ -492,20 +545,60 @@
 </script>
 
 <style scoped>
+    .el-tabs{
+        margin-top: 5vh;
+    }
+
     .el-tiptap-editor {
         height: 65vh;
     }
 
-    .el-input {
-        width: 60vh
+    .el-input{
+        width: 50vh;
     }
 
-    .el-select {
-        width: 60vh
+    .el-input30{
+        width: 30vh;
+    }
+
+    .el-select{
+        width: 50vh;
+    }
+
+    .el-select30{
+        width: 30vh;
+    }
+
+    .el-textarea{
+        width: 146vh;
+    }
+
+    .el-textarea123{
+        width: 123vh;
+    }
+
+    .floatRight{
+        float: right;
+    }
+
+    .margin3{
+        margin: 3vh;
     }
 
     .btn {
         display: flex;
         justify-content: center;
+    }
+
+    .btn .el-button{
+        margin-right: 10vh;
+    }
+
+    .setstyle {
+        min-height: 200px;
+        padding: 0 !important;
+        margin: 0;
+        overflow: auto;
+        cursor: default !important;
     }
 </style>

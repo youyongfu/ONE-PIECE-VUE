@@ -13,56 +13,67 @@
                     <el-step title="登场人物"></el-step>
                 </el-steps>
 
-                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
+                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
-
-                        <el-form-item label="所属区域" prop="parentId">
-                            <el-select v-model="editForm.parentId" placeholder="请选择所属区域">
-                                <template v-for="item in treeData">
-                                    <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                    <template v-for="child in item.children">
-                                        <el-option :label="child.name" :value="child.id" :key="child.name">
-                                            <span>{{ "- " + child.name }}</span>
-                                        </el-option>
-                                    </template>
-                                </template>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="名称" prop="name" label-width="100px">
-                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="外文名" prop="foreignName" label-width="100px">
-                            <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="别名" prop="alias" label-width="100px">
-                            <el-input v-model="editForm.alias" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="地理位置" prop="position" label-width="100px">
-                            <el-input v-model="editForm.position" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="特征" prop="characteristic" label-width="100px">
-                            <el-input v-model="editForm.characteristic" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="气候条件" prop="climate" label-width="100px">
-                            <el-input v-model="editForm.climate" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="初次出现" prop="debut" label-width="100px">
-                            <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
-                        </el-form-item>
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="所属区域" prop="parentId">
+                                    <el-select v-model="editForm.parentId" placeholder="请选择所属区域">
+                                        <template v-for="item in treeData">
+                                            <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
+                                            <template v-for="child in item.children">
+                                                <el-option :label="child.name" :value="child.id" :key="child.name">
+                                                    <span>{{ "- " + child.name }}</span>
+                                                </el-option>
+                                            </template>
+                                        </template>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="名称" prop="name">
+                                    <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="外文名" prop="foreignName">
+                                    <el-input v-model="editForm.foreignName" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="别名" prop="alias">
+                                    <el-input v-model="editForm.alias" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="地理位置" prop="position">
+                                    <el-input v-model="editForm.position" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="特征" prop="characteristic">
+                                    <el-input v-model="editForm.characteristic" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="气候条件" prop="climate">
+                                    <el-input v-model="editForm.climate" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="初次出现" prop="debut">
+                                    <el-select v-model="editForm.debut" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                    <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane label="标志">
@@ -105,7 +116,7 @@
                 </el-tabs>
 
                 <el-form-item class="btn">
-                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
+                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -373,20 +384,52 @@
 
 <style scoped>
 
+    .el-tabs{
+        margin-top: 5vh;
+    }
+
     .el-tiptap-editor {
         height: 65vh;
     }
 
-    .el-input {
-        width: 60vh
+    .el-input{
+        width: 50vh;
     }
 
-    .el-select {
-        width: 60vh
+    .el-input30{
+        width: 30vh;
+    }
+
+    .el-select{
+        width: 50vh;
+    }
+
+    .el-select30{
+        width: 30vh;
+    }
+
+    .el-textarea{
+        width: 146vh;
+    }
+
+    .el-textarea123{
+        width: 123vh;
+    }
+
+    .floatRight{
+        float: right;
+    }
+
+    .margin3{
+        margin: 3vh;
     }
 
     .btn {
         display: flex;
         justify-content: center;
+    }
+
+    .btn .el-button{
+        margin-right: 10vh;
     }
 </style>

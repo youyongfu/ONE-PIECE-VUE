@@ -18,14 +18,14 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark"  border stripe v-loading="loading">
 
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" min-width="3"></el-table-column>
 
-            <el-table-column prop="name" label="名称" width="400"></el-table-column>
+            <el-table-column prop="name" label="名称" min-width="30"></el-table-column>
 
             <!--  操作按钮-->
-            <el-table-column prop="icon" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="60">
                 <template slot-scope="scope">
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:episodes:update')">编辑</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:episodes:update')"></el-divider>
@@ -134,6 +134,11 @@
     .el-pagination {
         float: right;
         margin-top: 22px;
+    }
+
+    .searchForm {
+        margin-top: 10px;
+        margin-left: 20px;
     }
 
 </style>

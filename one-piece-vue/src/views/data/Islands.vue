@@ -18,23 +18,23 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border stripe v-loading="loading">
 
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" min-width="3"></el-table-column>
 
-            <el-table-column prop="name" label="名称" width="120"></el-table-column>
+            <el-table-column prop="name" label="名称" min-width="10"></el-table-column>
 
-            <el-table-column prop="foreignName" label="外文名" width="170"></el-table-column>
+            <el-table-column prop="foreignName" label="外文名" min-width="10"></el-table-column>
 
-            <el-table-column prop="alias" label="别名" width="120"></el-table-column>
+            <el-table-column prop="alias" label="别名" min-width="10"></el-table-column>
 
-            <el-table-column prop="position" label="地理位置" width="120"></el-table-column>
+            <el-table-column prop="position" label="地理位置" min-width="10"></el-table-column>
 
-            <el-table-column prop="characteristic" label="特征" width="150"></el-table-column>
+            <el-table-column prop="characteristic" label="特征" min-width="10"></el-table-column>
 
-            <el-table-column prop="climate" label="气候条件" width="120"></el-table-column>
+            <el-table-column prop="climate" label="气候条件" min-width="10"></el-table-column>
 
-            <el-table-column prop="icon" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="20">
                 <template slot-scope="scope">
 
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:islands:update')">编辑</el-button>
@@ -147,4 +147,8 @@
         margin-top: 22px;
     }
 
+    .searchForm {
+        margin-top: 10px;
+        margin-left: 20px;
+    }
 </style>

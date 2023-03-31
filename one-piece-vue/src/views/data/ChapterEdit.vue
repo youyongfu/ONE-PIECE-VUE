@@ -11,29 +11,35 @@
                     <el-step title="所属章节"></el-step>
                 </el-steps>
 
-                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel" style="margin:30px 20px 30px 15px">
+                <el-tabs :tab-position="tabPosition" @tab-click="handleClick" v-model="selectLabel">
 
                     <el-tab-pane label="基本信息" name="basicInfo">
-
-                        <el-form-item label="篇章名称" prop="name" label-width="100px">
-                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="篇章开始" prop="boss" label-width="100px">
-                            <el-select style="width:30vh" v-model="editForm.beginEpisodesId" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="篇章结束" prop="boss" label-width="100px">
-                            <el-select style="width:30vh" v-model="editForm.endEpisodesId" filterable placeholder="请选择" clearable>
-                                <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item label="简介" prop="synopsis" label-width="100px">
-                            <el-input style="width:135vh" type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
-                        </el-form-item>
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="篇章名称" prop="name">
+                                    <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="篇章开始" prop="boss">
+                                    <el-select v-model="editForm.beginEpisodesId" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="篇章结束" prop="boss" >
+                                    <el-select v-model="editForm.endEpisodesId" filterable placeholder="请选择" clearable>
+                                        <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                    <el-input  type="textarea" :rows="10" placeholder="请输入内容" v-model="editForm.synopsis"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane label="篇章内容">
@@ -41,35 +47,45 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="所属章节">
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Sections')">添加</el-button>
+                        </div>
                         <div v-for="(item,index) in chapter.sections" :key="index">
-                            <el-form-item label="名称" prop="name" label-width="60px">
-                                <el-input style="width: 20vh" v-model="item.name" autocomplete="off"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="章节开始" prop="boss" label-width="100px">
-                                <el-select style="width:50vh" v-model="item.beginEpisodesId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="章节结束" prop="boss" label-width="100px">
-                                <el-select style="width:50vh" v-model="item.endEpisodesId" filterable placeholder="请选择" clearable>
-                                    <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item style="float: right">
-                                <el-button type="primary" @click="addSections">添加</el-button>
-                                <el-button @click.prevent="removeSections(item)">删除</el-button>
-                            </el-form-item>
-
+                            <el-row :gutter="10">
+                                <el-col :span="9">
+                                    <el-form-item label="名称" prop="name">
+                                        <el-input  v-model="item.name" autocomplete="off"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="9">
+                                    <el-form-item label="章节开始" prop="beginEpisodesId">
+                                        <el-select  v-model="item.beginEpisodesId" filterable placeholder="请选择" clearable>
+                                            <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item  class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'WarRecord')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'WarRecord')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'WarRecord')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="9">
+                                    <el-form-item label="章节结束" prop="endEpisodesId">
+                                        <el-select  v-model="item.endEpisodesId" filterable placeholder="请选择" clearable>
+                                            <el-option v-for="item in episodesOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
                             <el-divider></el-divider>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
 
                 <el-form-item class="btn">
-                    <el-button type="primary" @click="submitForm('editForm')" style="margin-right: 30px;">提交</el-button>
+                    <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
                     <el-button @click="resetForm('editForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -216,24 +232,50 @@
                     this.episodesOptions = res.data.data;
                 })
             },
-            //添加章节
-            addSections(){
-                let obj={
-                    id:"",
-                    name:"",
-                    beginEpisodesId:"",
-                    endEpisodesId:"",
-                    chapterId:""
-                }
-                this.chapter.sections.push(obj)
+            //添加记录
+            addRecord(type){
+                console.log(type)
+                let list = this.chapter.sections;     //所属章节
+                let obj={id:"",name:"",beginEpisodesId:"",endEpisodesId:"",chapterId:"", sortNumber: list.length + 1}    //所属章节
+                list.push(obj)
             },
-            //删除章节
-            removeSections(item) {
-                if(this.chapter.sections.length > 1){
-                    var index = this.chapter.sections.indexOf(item)
+            //删除记录
+            removeRecord(item,type) {
+                console.log(type)
+                let list = this.chapter.sections;     //所属章节
+                let length = list.length;
+                if(length > 1){
+                    var index = list.indexOf(item)
                     if (index !== -1) {
-                        this.chapter.sections.splice(index, 1)
+                        if(index + 1 < length){
+                            list.slice(index+1,length).forEach(e =>{
+                                e.sortNumber -= 1
+                            })
+                        }
+                        list.splice(index, 1)
                     }
+                }
+            },
+            //上移记录
+            moveUpRecord(index,type) {
+                console.log(type)
+                let list = this.chapter.sections;     //所属章节
+                if(index > 0){
+                    let sortNumber = list[index - 1].sortNumber;
+                    list[index - 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index - 1, 1, ...list.splice(index, 1, list[index - 1]))
+                }
+            },
+            //下移记录
+            moveDownRecord(index,type) {
+                console.log(type)
+                let list = this.chapter.sections;     //所属章节
+                if(index != list.length -1){
+                    let sortNumber = list[index + 1].sortNumber;
+                    list[index + 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index, 1, ...list.splice(index + 1, 1, list[index]))
                 }
             },
             //提交
@@ -269,21 +311,53 @@
 
 <style scoped>
 
+    .el-tabs{
+        margin-top: 5vh;
+    }
+
     .el-tiptap-editor {
         height: 65vh;
     }
 
-    .el-input {
-        width: 60vh
+    .el-input{
+        width: 50vh;
     }
 
-    .el-select {
-        width: 60vh
+    .el-input30{
+        width: 30vh;
+    }
+
+    .el-select{
+        width: 50vh;
+    }
+
+    .el-select30{
+        width: 30vh;
+    }
+
+    .el-textarea{
+        width: 146vh;
+    }
+
+    .el-textarea123{
+        width: 123vh;
+    }
+
+    .floatRight{
+        float: right;
+    }
+
+    .margin3{
+        margin: 3vh;
     }
 
     .btn {
         display: flex;
         justify-content: center;
+    }
+
+    .btn .el-button{
+        margin-right: 10vh;
     }
 
 </style>

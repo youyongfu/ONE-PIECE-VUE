@@ -12,7 +12,7 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="上级组织" prop="parentId">
+            <el-form-item label="上级组织" prop="parentId" class="searchForm">
                 <el-select v-model="searchForm.parentId" placeholder="请选择上级组织" clearable>
                     <template v-for="item in treeData">
                         <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
@@ -39,23 +39,23 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe v-loading="loading">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border stripe v-loading="loading">
 
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" min-width="3"></el-table-column>
 
-            <el-table-column prop="name" label="名称" width="150"></el-table-column>
+            <el-table-column prop="name" label="名称" min-width="20"></el-table-column>
 
-            <el-table-column prop="foreignName" label="外文名" width="160"></el-table-column>
+            <el-table-column prop="foreignName" label="外文名" min-width="20"></el-table-column>
 
-            <el-table-column prop="nature" label="性质" width="120">
+            <el-table-column prop="nature" label="性质" min-width="17">
                 <template slot-scope="scope">
                     {{getNatureSelect(scope.row.nature)}}
                 </template>
             </el-table-column>
 
-            <el-table-column prop="birth" label="诞生时间" width="120"></el-table-column>
+            <el-table-column prop="birth" label="诞生时间" min-width="20"></el-table-column>
 
-            <el-table-column prop="icon" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="20">
                 <template slot-scope="scope">
 
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:organization:update')">编辑</el-button>
@@ -192,4 +192,8 @@
         margin-top: 22px;
     }
 
+    .searchForm {
+        margin-top: 10px;
+        margin-left: 20px;
+    }
 </style>
