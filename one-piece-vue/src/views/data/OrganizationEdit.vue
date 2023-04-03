@@ -20,14 +20,10 @@
                         <el-row :gutter="10">
                             <el-col :span="12">
                                 <el-form-item label="上级组织" prop="parentId">
-                                    <el-select v-model="editForm.parentId" placeholder="请选择上级组织" clearable>
-                                        <template v-for="item in treeData">
+                                    <el-select v-model="editForm.parentId" placeholder="请选择组织" clearable filterable>
+                                        <template v-for="(item,index) in treeData">
                                             <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                            <template v-for="child in item.children">
-                                                <el-option :label="child.name" :value="child.id" :key="child.name">
-                                                    <span>{{ "- " + child.name }}</span>
-                                                </el-option>
-                                            </template>
+                                            <OrganizationTree :children="item.children" :key="index" v-if="item.children"/>
                                         </template>
                                     </el-select>
                                 </el-form-item>
@@ -143,14 +139,10 @@
                                 </el-col>
                                 <el-col :span="10">
                                     <el-form-item label="组织名称" prop="relationOrganizationId">
-                                        <el-select v-model="item.relationOrganizationId" placeholder="请选择组织" clearable>
-                                            <template v-for="item in treeData">
+                                        <el-select v-model="item.relationOrganizationId" filterable placeholder="请选择组织" clearable>
+                                            <template v-for="(item,index) in treeData">
                                                 <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                                <template v-for="child in item.children">
-                                                    <el-option :label="child.name" :value="child.id" :key="child.name">
-                                                        <span>{{ "- " + child.name }}</span>
-                                                    </el-option>
-                                                </template>
+                                                <OrganizationTree :children="item.children" :key="index" v-if="item.children"/>
                                             </template>
                                         </el-select>
                                     </el-form-item>
@@ -211,6 +203,8 @@
     } from 'element-tiptap';
 
     import request from "@/axios";
+    import OrganizationTree from "./OrganizationTree";
+
 
     // 富文本框上传图片
     export const fileUploadImage = data => request({
@@ -225,7 +219,7 @@
     export default {
         name: "OrganizationEdit",
         inject:['reload'],
-        components: {'el-tiptap': ElementTiptap,},
+        components: {'el-tiptap': ElementTiptap,OrganizationTree},
         data() {
             return {
                 title: "",                         //对话框标题
@@ -445,8 +439,6 @@
                             this.editForm.fileIds = this.deleteFileId.toString();
                         }
 
-                        this.editForm.parentId = this.valueData;
-
                         //组织关系
                         this.editForm.sysOrganizationRelationList= this.organization.relationList;
 
@@ -594,11 +586,4 @@
         margin-right: 10vh;
     }
 
-    .setstyle {
-        min-height: 200px;
-        padding: 0 !important;
-        margin: 0;
-        overflow: auto;
-        cursor: default !important;
-    }
 </style>

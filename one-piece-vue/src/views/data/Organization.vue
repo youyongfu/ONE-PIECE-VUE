@@ -13,14 +13,9 @@
             </el-form-item>
 
             <el-form-item label="上级组织" prop="parentId" class="searchForm">
-                <el-select v-model="searchForm.parentId" placeholder="请选择上级组织" clearable>
-                    <template v-for="item in treeData">
+                <el-select v-model="searchForm.parentId" filterable placeholder="请选择组织" clearable>
+                    <template v-for="item in allData">
                         <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                        <template v-for="child in item.children">
-                            <el-option :label="child.name" :value="child.id" :key="child.name">
-                                <span>{{ "- " + child.name }}</span>
-                            </el-option>
-                        </template>
                     </template>
                 </el-select>
             </el-form-item>
@@ -98,13 +93,13 @@
                 current: 1,                     //页数
                 dialogVisible: false,           //是否显示编辑对话框
                 natureOptions: [],                   //组织性质
-                treeData:[],                    //组织信息列表
+                allData:[],                    //组织信息列表
             }
         },
         created(){
             this.getOrganizationList();
             this.getNatureOptions();
-            this.getTreeOrganization();
+            this.getAllOrganization();
         },
         methods: {
             //获取组织列表
@@ -134,10 +129,10 @@
                 this.current = val
                 this.getOrganizationList()
             },
-            //获取树形组织
-            getTreeOrganization(){
-                this.$axios.get('sys/organization/tree').then(res =>{
-                    this.treeData = res.data.data;
+            //获取所有组织
+            getAllOrganization(){
+                this.$axios.get('sys/organization/getAll').then(res =>{
+                    this.allData = res.data.data;
                 })
             },
             //获取组织性质
