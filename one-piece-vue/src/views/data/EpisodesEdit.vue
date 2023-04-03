@@ -102,7 +102,7 @@
                 },
                 figureOptions:[],                //人物列表
                 onstage:{                        //登场角色
-                    character:[{id:"",figureId:"",synopsis:"",episodesId:""}]
+                    character:[{id:"",figureId:"",synopsis:"",episodesId:"",sortNumber:1}]
                 },
             }
         },

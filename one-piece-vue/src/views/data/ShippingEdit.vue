@@ -279,7 +279,7 @@
                 statuOptions: [],               //船只状态
                 figureOptions:[],               //人物列表
                 related:{                       //相关角色
-                    roleList:[{id:"",relation:"",relationIdentity:"",relationId:"",synopsis:"",shippingId:""}]
+                    roleList:[{id:"",relation:"",relationIdentity:"",relationId:"",synopsis:"",shippingId:"",sortNumber:1}]
                 },
                 organizationOptions:[],         //所属组织
                 episodesOptions:[],             //剧集信息

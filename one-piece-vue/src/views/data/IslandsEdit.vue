@@ -111,7 +111,34 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="登场人物">
-                        <el-tiptap v-model="editForm.appearances" :extensions="extensions"></el-tiptap>
+                        <div class="margin3">
+                            <el-button type="primary" @click="addRecord('Onstage')">添加</el-button>
+                        </div>
+                        <div v-for="(item,index) in onstage.character" :key="index">
+                            <el-row :gutter="10">
+                                <el-col :span="9">
+                                    <el-form-item label="名称" prop="opponentFigureId" label-width="100px">
+                                        <el-select v-model="item.figureId" filterable placeholder="请选择" clearable>
+                                            <el-option v-for="item in figureOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="9">
+                                    <el-form-item label="简介" prop="synopsis" label-width="100px">
+                                        <el-input v-model="item.synopsis" autocomplete="off"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form-item  class="floatRight">
+                                        <el-button  @click.prevent="moveUpRecord(index,'Onstage')">上移</el-button>
+                                        <el-button  @click.prevent="moveDownRecord(index,'Onstage')">下移</el-button>
+                                        <el-button type="danger" @click.prevent="removeRecord(item,'Onstage')">删除</el-button>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-divider></el-divider>
+                        </div>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -220,11 +247,16 @@
                 dialogVisible: false,           //是否显示图片
                 disabled: false,                 //是否显示图片按钮
                 episodesOptions:[],             //剧集信息
+                figureOptions:[],                //人物列表
+                onstage:{                        //登场角色
+                    character:[{id:"",figureId:"",synopsis:"",episodesId:"",sortNumber:1}]
+                },
             }
         },
         created(){
             this.getTreeOrganization();
             this.getEpisodesOptions();
+            this.getFigureOptions();
         },
         methods: {
             // 窗口初始化方法
@@ -241,7 +273,9 @@
                             this.fileShowList = res.data.data.fileList;             //上传文件展示信息
                             this.editForm.source = res.data.data.source             //历史
                             this.editForm.geography = res.data.data.geography       //地理环境
-                            this.editForm.appearances = res.data.data.appearances   //登场人物
+                            if(res.data.data.islands.sysIslandsCharacterList.length > 0){
+                                this.onstage.character = res.data.data.islands.sysIslandsCharacterList;     //登场角色回显
+                            }
                         })
                     }
                     this.open = true;
@@ -280,10 +314,65 @@
                     this.episodesOptions = res.data.data;
                 })
             },
+            //获取人物
+            getFigureOptions(){
+                this.$axios.get('sys/figure/getAll').then(res =>{
+                    this.figureOptions = res.data.data;
+                })
+            },
+            //添加记录
+            addRecord(type){
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                let obj={id:"",figureId:"",synopsis:"",episodesId:"", sortNumber: list.length + 1}    //登场角色
+                list.push(obj)
+            },
+            //删除记录
+            removeRecord(item,type) {
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                let length = list.length;
+                if(length > 1){
+                    var index = list.indexOf(item)
+                    if (index !== -1) {
+                        if(index + 1 < length){
+                            list.slice(index+1,length).forEach(e =>{
+                                e.sortNumber -= 1
+                            })
+                        }
+                        list.splice(index, 1)
+                    }
+                }
+            },
+            //上移记录
+            moveUpRecord(index,type) {
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                if(index > 0){
+                    let sortNumber = list[index - 1].sortNumber;
+                    list[index - 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index - 1, 1, ...list.splice(index, 1, list[index - 1]))
+                }
+            },
+            //下移记录
+            moveDownRecord(index,type) {
+                console.log(type)
+                let list = this.onstage.character;     //登场角色
+                if(index != list.length -1){
+                    let sortNumber = list[index + 1].sortNumber;
+                    list[index + 1].sortNumber = list[index].sortNumber;
+                    list[index].sortNumber = sortNumber;
+                    list.splice(index, 1, ...list.splice(index + 1, 1, list[index]))
+                }
+            },
             //提交
             async submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+
+                        //登场角色
+                        this.editForm.sysIslandsCharacterList= this.onstage.character;
 
                         if(this.editForm.id){
                             this.editForm.fileIds = this.deleteFileId.toString();

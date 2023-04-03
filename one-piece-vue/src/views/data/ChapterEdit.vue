@@ -183,7 +183,7 @@
                 },
                 episodesOptions:[],               //剧集列表
                 chapter:{                        //所属章节
-                    sections:[{id:"",name:"",beginEpisodesId:"",endEpisodesId:"",chapterId:""}]
+                    sections:[{id:"",name:"",beginEpisodesId:"",endEpisodesId:"",chapterId:"",sortNumber:1}]
                 },
             }
         },
