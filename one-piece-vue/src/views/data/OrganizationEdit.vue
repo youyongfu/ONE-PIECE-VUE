@@ -20,12 +20,7 @@
                         <el-row :gutter="10">
                             <el-col :span="12">
                                 <el-form-item label="上级组织" prop="parentId">
-                                    <el-select v-model="editForm.parentId" placeholder="请选择组织" clearable filterable>
-                                        <template v-for="(item,index) in treeData">
-                                            <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                            <OrganizationTree :children="item.children" :key="index" v-if="item.children"/>
-                                        </template>
-                                    </el-select>
+                                    <select-tree :props="defaultProps" :options="treeData" :value="editForm.parentId" @getValue="getValue($event)"></select-tree>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
@@ -139,12 +134,7 @@
                                 </el-col>
                                 <el-col :span="10">
                                     <el-form-item label="组织名称" prop="relationOrganizationId">
-                                        <el-select v-model="item.relationOrganizationId" filterable placeholder="请选择组织" clearable>
-                                            <template v-for="(item,index) in treeData">
-                                                <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                                                <OrganizationTree :children="item.children" :key="index" v-if="item.children"/>
-                                            </template>
-                                        </el-select>
+                                        <select-tree :props="defaultProps" :options="treeData" :value="item.relationOrganizationId" @getValue="getValue($event)"></select-tree>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="5">
@@ -202,10 +192,6 @@
         TextColor
     } from 'element-tiptap';
 
-    import request from "@/axios";
-    import OrganizationTree from "./OrganizationTree";
-
-
     // 富文本框上传图片
     export const fileUploadImage = data => request({
         url: "/file/uploadFile", // path路径
@@ -216,10 +202,14 @@
         data // 请求体
     })
 
+    import request from "@/axios";
+
+    import SelectTree from "../../components/inc/SelectTree";
+
     export default {
         name: "OrganizationEdit",
         inject:['reload'],
-        components: {'el-tiptap': ElementTiptap,OrganizationTree},
+        components: {'el-tiptap': ElementTiptap,SelectTree},
         data() {
             return {
                 title: "",                         //对话框标题
@@ -230,6 +220,7 @@
                 defaultProps: {             //树形默认配置
                     children: 'children',
                     label: "name",
+                    value: "id",
                 },
                 extensions: [                   //富文本框工具栏
                     new Doc(),
@@ -347,6 +338,10 @@
                 this.$axios.get('sys/organization/tree').then(res =>{
                     this.treeData = res.data.data;
                 })
+            },
+            // 取值
+            getValue(value) {
+                this.editForm.parentId = value;
             },
             //获取组织性质
             getNatureOptions(){
