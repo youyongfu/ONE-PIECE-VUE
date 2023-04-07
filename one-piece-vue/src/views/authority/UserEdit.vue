@@ -19,9 +19,7 @@
                 </el-form-item>
 
                 <el-form-item label="城市"  prop="city" label-width="100px">
-                    <v-distpicker @province = "changeProvince($event,'province')"  :province="placeholders.province"
-                                  @city = "changeCity($event,'city')" :city="placeholders.city"
-                                  @area = "changeArea($event,'area')" :area="placeholders.area"></v-distpicker>
+                    <el-cascader size="large" :props="{ expandTrigger: 'hover' }" :options="options" v-model="selectedCityOptions" @change="handleChangeCity"></el-cascader>
                 </el-form-item>
 
                 <el-form-item label="状态"  prop="statu" label-width="100px">
@@ -42,20 +40,15 @@
 <script>
 
     //导入省市区联动控件
-    import VDistpicker from "v-distpicker";
+    import { regionData } from 'element-china-area-data'
 
     export default {
         name: "UserEdit",
-        components:{VDistpicker},
+        components:{},
         inject:['reload'],
         data() {
             return {
                 dialogVisible: false,               //是否显示对话框
-                placeholders: {
-                    province: '',                   //省
-                    city: '',                       //市
-                    area: '',                       //区
-                },
                 editForm: {},                       //编辑内容
                 editFormRules: {                    //检验规则
                     username: [
@@ -71,7 +64,9 @@
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
                 },
-                userStatu: []                      //用户状态
+                userStatu: [],                      //用户状态
+                options: regionData,
+                selectedCityOptions: []                //城市选择
             }
         },
         created(){
@@ -86,21 +81,10 @@
                         this.$axios.get('/sys/user/info/' + id).then(res => {
                             this.editForm = res.data.data;
                             this.editForm.statu = res.data.data.statu.toString();
-                            if(this.editForm.city){
-                                let citys =(this.editForm.city || "").split('-')
-                                this.placeholders.province = citys[0]
-                                this.placeholders.city = citys[1]
-                                this.placeholders.area = citys[2]
-                            }else {
-                                this.placeholders.province = ''
-                                this.placeholders.city = ''
-                                this.placeholders.area = ''
+                            if(res.data.data.city){
+                                this.selectedCityOptions = res.data.data.city.split(",");
                             }
                         })
-                    }else {
-                        this.placeholders.province = ''
-                        this.placeholders.city = ''
-                        this.placeholders.area = ''
                     }
                     this.dialogVisible = true;
                     this.title = "编辑用户";
@@ -112,24 +96,6 @@
                     this.userStatu = res.data.data;
                 })
             },
-            //省选择
-            changeProvince(event,value){
-                console.log(value)
-                this.placeholders.province = event.value
-                this.placeholders.city = ''
-                this.placeholders.area = ''
-            },
-            //市选择
-            changeCity(event,value){
-                console.log(value)
-                this.placeholders.city = event.value
-                this.placeholders.area = ''
-            },
-            //区选择
-            changeArea(event,value){
-                console.log(value)
-                this.placeholders.area = event.value
-            },
             //重置
             resetForm(formName) {
                 this.$refs[formName].resetFields();
@@ -137,14 +103,17 @@
             },
             //关闭对话框
             handleClose() {
-                this.resetForm('editForm')
+                this.resetForm('editForm');
+                this.selectedCityOptions = [];
                 this.dialogVisible = false
+            },
+            handleChangeCity (value) {
+                this.editForm.city = value.toString();
             },
             //提交
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.editForm.city = this.placeholders.province + "-" + this.placeholders.city + "-" + this.placeholders.area
                         this.$axios.post('/sys/user/' + (this.editForm.id?'update' : 'save'), this.editForm).then(res => {
                             console.log(res)
                             this.$message({

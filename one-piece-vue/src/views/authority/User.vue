@@ -29,8 +29,6 @@
 
             <el-table-column prop="phone" label="手机号"></el-table-column>
 
-            <el-table-column prop="city" label="城市" width="200"></el-table-column>
-
             <el-table-column prop="createdTime" label="创建时间" >
                 <template slot-scope="scope">{{scope.row.createdTime | formatDate('yyyy-MM-dd')}}</template>
             </el-table-column>
