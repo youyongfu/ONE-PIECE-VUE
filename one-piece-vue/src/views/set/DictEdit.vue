@@ -6,16 +6,7 @@
             <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
 
                 <el-form-item label="上级数据字典" prop="parentId">
-                    <el-select v-model="editForm.parentId" placeholder="请选择上级数据字典">
-                        <template v-for="item in tableData">
-                            <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                            <template v-for="child in item.children">
-                                <el-option :label="child.name" :value="child.id" :key="child.name">
-                                    <span>{{ "- " + child.name }}</span>
-                                </el-option>
-                            </template>
-                        </template>
-                    </el-select>
+                    <select-tree :props="defaultProps" :options="treeData" :value="editForm.parentId" @getValue="getValue($event)"></select-tree>
                     <el-alert title="未选择上级数据字典，则默认为添加一级数据字典" :closable="false" type="info" style="line-height: 12px;"></el-alert>
                 </el-form-item>
 
@@ -43,13 +34,16 @@
 
 <script>
 
+    import SelectTree from "../../components/inc/SelectTree";
+
     export default {
         name: "DictEdit",
         inject:['reload'],
+        components: {SelectTree},
         data() {
             return {
                 dialogVisible: false,           //是否显示对话框
-                tableData: [],                  //列表数据
+                treeData: [],                  //列表数据
                 editForm: {},                   //编辑内容
                 editFormRules: {                //检验规则
                     name: [
@@ -58,6 +52,11 @@
                     statu: [
                         {required: true, message: '请选择状态', trigger: 'blur'}
                     ]
+                },
+                defaultProps: {                     //树形默认配置
+                    children: 'children',
+                    label: "name",
+                    value: "id",
                 },
             }
         },
@@ -71,7 +70,7 @@
                     if(id){
                         this.$axios.get('/sys/dict/info/' + id).then(res => {
                             this.editForm = res.data.data;
-                            if(this.editForm.parentId === 0){
+                            if(this.editForm.parentId === "0"){
                                 this.editForm.parentId = "";
                             }
                         })
@@ -82,9 +81,13 @@
             },
             //获取数据字典列表
             getTreeDict(){
-                this.$axios.get('sys/dict/list').then(res =>{
-                    this.tableData = res.data.data;
+                this.$axios.get('sys/dict/tree').then(res =>{
+                    this.treeData = res.data.data;
                 })
+            },
+            // 取值
+            getValue(value) {
+                this.editForm.parentId = value;
             },
             //重置
             resetForm(formName) {
