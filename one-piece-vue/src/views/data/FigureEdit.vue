@@ -133,9 +133,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="隶属组织" prop="organizationId">
-                                    <el-select v-model="editForm.organizationId" filterable placeholder="请选择" clearable>
-                                        <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                    </el-select>
+                                    <select-tree :props="defaultProps" :options="treeData" :value="editForm.organizationId" @getValue="getValue($event,'1',index)"></select-tree>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
@@ -157,21 +155,19 @@
                         </div>
                         <div v-for="(item,index) in professional.experienceList" :key="index">
                             <el-row :gutter="10">
-                                <el-col :span="6">
+                                <el-col :span="5">
                                     <el-form-item label="活跃时间" prop="activeTime">
-                                        <el-input v-model="item.activeTime" autocomplete="off" class="el-input30"></el-input>
+                                        <el-input v-model="item.activeTime" autocomplete="off" class="el-input20"></el-input>
                                     </el-form-item>
                                 </el-col>
-                                <el-col :span="6">
+                                <el-col :span="9">
                                     <el-form-item label="隶属组织" prop="organizationId">
-                                        <el-select v-model="item.organizationId" filterable placeholder="请选择" clearable class="el-select30">
-                                            <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                        </el-select>
+                                        <select-tree :props="defaultProps" :options="treeData" :value="item.organizationId" @getValue="getValue($event,'2',index)"></select-tree>
                                     </el-form-item>
                                 </el-col>
-                                <el-col :span="6">
+                                <el-col :span="5">
                                     <el-form-item label="身份" prop="position">
-                                        <el-input v-model="item.position" autocomplete="off" class="el-input30"></el-input>
+                                        <el-input v-model="item.position" autocomplete="off" class="el-input20"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="5">
@@ -415,10 +411,12 @@
         data // 请求体
     })
 
+    import SelectTree from "../../components/inc/SelectTree";
+
     export default {
         name: "FigureEdit",
         inject:['reload'],
-        components: {'el-tiptap': ElementTiptap,},
+        components: {'el-tiptap': ElementTiptap,SelectTree},
         data() {
             return {
                 title: "",                         //对话框标题
@@ -478,7 +476,6 @@
                 weaponOptions:[],                //所用武器
                 overbearingOptions: [],          //人物霸气
                 devilnutOptions:[],              //恶魔果实
-                organizationOptions:[],          //所属组织
                 islandsOptions:[],               //出身
                 shippingOptions:[],              //所乘船只
                 figureOptions:[],                //人物列表
@@ -499,6 +496,11 @@
                 by:{                   //搭乘船只
                     boat:[{id:"",time:"",shippingId:"",figureId:"",sortNumber:1}]
                 },
+                defaultProps: {             //树形默认配置
+                    children: 'children',
+                    label: "name",
+                    value: "id",
+                },
             }
         },
         created(){
@@ -508,7 +510,7 @@
             this.getWeaponOptions();
             this.getOverbearingOptions();
             this.getDevilnutOptions();
-            this.getOrganizationOptions();
+            this.getTreeOrganization();
             this.getIslandsOptions();
             this.getShippingOptions();
             this.getFigureOptions();
@@ -634,11 +636,20 @@
                     this.weaponOptions = res.data.data;
                 })
             },
-            //获取组织
-            getOrganizationOptions(){
-                this.$axios.get('sys/organization/getAll').then(res =>{
-                    this.organizationOptions = res.data.data;
+            //获取树形组织
+            getTreeOrganization(){
+                this.$axios.get('sys/organization/tree').then(res =>{
+                    this.treeData = res.data.data;
                 })
+            },
+            // 取值
+            getValue(value,type,index) {
+                if(type == '1'){
+                    this.editForm.organizationId = value;
+                }else if(type =='2'){
+                    let list = this.professional.experienceList;
+                    list[index].organizationId = value;
+                }
             },
             //获取船只
             getShippingOptions(){
@@ -885,6 +896,10 @@
 
     .el-input30{
         width: 30vh;
+    }
+
+    .el-input20{
+        width: 20vh;
     }
 
     .el-select{

@@ -141,9 +141,7 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="组织名称" prop="relationId" label-width="100px" v-if="item.relationIdentity === '2'" >
-                                        <el-select v-model="item.relationId" filterable placeholder="请选择" clearable>
-                                            <el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                        </el-select>
+                                        <select-tree :props="defaultProps" :options="treeData" :value="item.relationId" @getValue="getValue($event,index)"></select-tree>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="5">
@@ -218,10 +216,12 @@
         data // 请求体
     })
 
+    import SelectTree from "../../components/inc/SelectTree";
+
     export default {
         name: "ShippingEdit",
         inject:['reload'],
-        components: {'el-tiptap': ElementTiptap,},
+        components: {'el-tiptap': ElementTiptap,SelectTree},
         data() {
             return {
                 title: "",                         //对话框标题
@@ -281,15 +281,19 @@
                 related:{                       //相关角色
                     roleList:[{id:"",relation:"",relationIdentity:"",relationId:"",synopsis:"",shippingId:"",sortNumber:1}]
                 },
-                organizationOptions:[],         //所属组织
                 episodesOptions:[],             //剧集信息
+                defaultProps: {                //树形默认配置
+                    children: 'children',
+                    label: "name",
+                    value: "id",
+                },
             }
         },
         created(){
             this.getModelOptions();
             this.getStatuOptions();
             this.getFigureOptions();
-            this.getOrganizationOptions();
+            this.getTreeOrganization();
             this.getEpisodesOptions();
         },
         methods: {
@@ -353,11 +357,16 @@
                     this.figureOptions = res.data.data;
                 })
             },
-            //获取组织
-            getOrganizationOptions(){
-                this.$axios.get('sys/organization/getAll').then(res =>{
-                    this.organizationOptions = res.data.data;
+            //获取树形组织
+            getTreeOrganization(){
+                this.$axios.get('sys/organization/tree').then(res =>{
+                    this.treeData = res.data.data;
                 })
+            },
+            // 取值
+            getValue(value,index) {
+                let list = this.related.roleList;
+                list[index].relationId = value;
             },
             //获取剧集信息
             getEpisodesOptions(){

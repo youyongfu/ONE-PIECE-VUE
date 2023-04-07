@@ -20,7 +20,7 @@
                         <el-row :gutter="10">
                             <el-col :span="12">
                                 <el-form-item label="上级组织" prop="parentId">
-                                    <select-tree :props="defaultProps" :options="treeData" :value="editForm.parentId" @getValue="getValue($event)"></select-tree>
+                                    <select-tree :props="defaultProps" :options="treeData" :value="editForm.parentId" @getValue="getValue($event,'1')"></select-tree>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
@@ -134,7 +134,7 @@
                                 </el-col>
                                 <el-col :span="10">
                                     <el-form-item label="组织名称" prop="relationOrganizationId">
-                                        <select-tree :props="defaultProps" :options="treeData" :value="item.relationOrganizationId" @getValue="getValue($event)"></select-tree>
+                                        <select-tree :props="defaultProps" :options="treeData" :value="item.relationOrganizationId" @getValue="getValue($event,'2',index)"></select-tree>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="5">
@@ -340,8 +340,13 @@
                 })
             },
             // 取值
-            getValue(value) {
-                this.editForm.parentId = value;
+            getValue(value,type,index) {
+                if(type == '1'){
+                    this.editForm.parentId = value;
+                }else if(type == '2'){
+                    let list = this.organization.relationList;     //人物履历
+                    list[index].relationOrganizationId = value;
+                }
             },
             //获取组织性质
             getNatureOptions(){
