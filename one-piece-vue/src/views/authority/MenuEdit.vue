@@ -6,16 +6,7 @@
             <el-form :model="editForm" :rules="editFormRules" ref="editForm" label-width="100px" class="demo-editForm">
 
                 <el-form-item label="上级菜单" prop="parentId">
-                    <el-select v-model="editForm.parentId" placeholder="请选择上级菜单">
-                        <template v-for="item in treeData">
-                            <el-option :label="item.name" :value="item.id" :key="item.name"></el-option>
-                            <template v-for="child in item.children">
-                                <el-option :label="child.name" :value="child.id" :key="child.name">
-                                    <span>{{ "- " + child.name }}</span>
-                                </el-option>
-                            </template>
-                        </template>
-                    </el-select>
+                    <select-tree :props="defaultProps" :options="treeData" :value="editForm.parentId" @getValue="getValue($event)"></select-tree>
                     <el-alert title="未选择上级菜单，则默认为添加一级菜单" :closable="false" type="info" style="line-height: 12px;"></el-alert>
                 </el-form-item>
 
@@ -61,9 +52,12 @@
 
 <script>
 
+    import SelectTree from "../../components/inc/SelectTree";
+
     export default {
         name: "MenuEdit",
         inject:['reload'],
+        components: {SelectTree},
         data() {
             return {
                 dialogVisible: false,               //是否显示对话框
@@ -87,6 +81,11 @@
                 },
                 treeData:[],                        //树形菜单数据
                 menuType: [],                      //菜单类型
+                defaultProps: {                     //树形默认配置
+                    children: 'children',
+                    label: "name",
+                    value: "id",
+                },
             }
         },
         created(){
@@ -101,7 +100,7 @@
                         this.$axios.get('/sys/menu/info/' + id).then(res => {
                             this.editForm = res.data.data;
                             this.editForm.type = res.data.data.type.toString();
-                            if(this.editForm.parentId === 0){
+                            if(this.editForm.parentId === "0"){
                                 this.editForm.parentId = "";
                             }
                         })
@@ -112,9 +111,13 @@
             },
             //获取树形菜单
             getTreeMenu(){
-                this.$axios.get('sys/menu/list').then(res =>{
+                this.$axios.get('sys/menu/tree').then(res =>{
                     this.treeData = res.data.data;
                 })
+            },
+            // 取值
+            getValue(value) {
+                this.editForm.parentId = value;
             },
             //获取菜单类型
             getMenuType(){

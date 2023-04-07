@@ -46,7 +46,7 @@
             },
             //获取菜单列表
             getMenuList(){
-                this.$axios.get('sys/menu/list').then(res =>{
+                this.$axios.get('sys/menu/tree').then(res =>{
                     this.permTreeData = res.data.data;
                 })
             },

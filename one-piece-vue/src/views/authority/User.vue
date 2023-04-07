@@ -185,7 +185,14 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post("/sys/user/repass", id).then(res => {
+                    var data = new FormData;
+                    data.append("id",id)
+                    this.$axios({
+                        method: 'Post',
+                        url:"/sys/user/repass",
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                        data: data
+                    }).then(res => {
                         console.log(res);
                         this.$message({
                             showClose: true,
