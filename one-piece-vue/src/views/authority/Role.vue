@@ -20,24 +20,17 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe @selection-change="handleSelectionChange" v-loading="loading">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border stripe @selection-change="handleSelectionChange" v-loading="loading">
 
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" min-width="3"></el-table-column>
 
-            <el-table-column prop="name" label="名称" width="120"></el-table-column>
+            <el-table-column prop="name" label="名称" min-width="10"></el-table-column>
 
-            <el-table-column prop="code" label="唯一编码" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="code" label="唯一编码" show-overflow-tooltip min-width="10"></el-table-column>
 
-            <el-table-column prop="remark" label="描述" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="remark" label="描述" show-overflow-tooltip min-width="30"></el-table-column>
 
-            <el-table-column prop="statu" label="状态">
-                <template slot-scope="scope">
-                    <el-tag size="small" v-if="scope.row.statu === 1" type="success">正常</el-tag>
-                    <el-tag size="small" v-else-if="scope.row.statu === 0" type="danger">禁用</el-tag>
-                </template>
-            </el-table-column>
-
-            <el-table-column prop="icon" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="20">
                 <template slot-scope="scope">
                     <el-button type="text" @click="permHandle(scope.row.id)" v-if="hasAuth('sys:role:perm')">分配权限</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:role:perm')"></el-divider>

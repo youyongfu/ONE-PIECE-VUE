@@ -19,28 +19,28 @@
             </el-form-item>
         </el-form>
 
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe @selection-change="handleSelectionChange" v-loading="loading">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border stripe @selection-change="handleSelectionChange" v-loading="loading">
 
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" min-width="3"></el-table-column>
 
-            <el-table-column prop="username" label="用户名" width="120"></el-table-column>
+            <el-table-column prop="username" label="用户名" min-width="10"></el-table-column>
 
-            <el-table-column prop="email" label="邮箱"></el-table-column>
+            <el-table-column prop="email" label="邮箱" min-width="15"></el-table-column>
 
-            <el-table-column prop="phone" label="手机号"></el-table-column>
+            <el-table-column prop="phone" label="手机号" min-width="15"></el-table-column>
 
-            <el-table-column prop="createdTime" label="创建时间" >
+            <el-table-column prop="createdTime" label="创建时间" min-width="10">
                 <template slot-scope="scope">{{scope.row.createdTime | formatDate('yyyy-MM-dd')}}</template>
             </el-table-column>
 
-            <el-table-column prop="statu" label="状态">
+            <el-table-column prop="statu" label="状态" min-width="5">
                 <template slot-scope="scope">
                     <el-tag size="small" v-if="scope.row.statu === 1" type="success">正常</el-tag>
                     <el-tag size="small" v-else-if="scope.row.statu === 0" type="danger">禁用</el-tag>
                 </template>
             </el-table-column>
 
-            <el-table-column prop="icon" width="260px" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="20">
                 <template slot-scope="scope">
                     <el-button type="text" @click="roleHandle(scope.row.id)" v-if="hasAuth('sys:user:role')">分配角色</el-button>
                     <el-divider direction="vertical" v-if="hasAuth('sys:user:role')"></el-divider>

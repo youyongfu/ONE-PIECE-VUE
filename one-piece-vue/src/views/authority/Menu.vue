@@ -8,15 +8,15 @@
             </el-form-item>
         </el-form>
 
-        <el-table :data="tableData" :load="getChildrenList" lazy style="width: 100%;margin-bottom: 20px;" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" v-loading="loading">
+        <el-table :data="tableData" :load="getChildrenList" lazy  row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" v-loading="loading">
 
-            <el-table-column prop="name" label="名称" sortable width="180"></el-table-column>
+            <el-table-column prop="name" label="名称" sortable min-width="15"></el-table-column>
 
-            <el-table-column prop="perms" label="权限编码" sortable width="180"></el-table-column>
+            <el-table-column prop="perms" label="权限编码" sortable min-width="17"></el-table-column>
 
-            <el-table-column prop="icon" label="图标"></el-table-column>
+            <el-table-column prop="icon" label="图标" min-width="15"></el-table-column>
 
-            <el-table-column prop="type" label="类型">
+            <el-table-column prop="type" label="类型" min-width="7">
                 <template slot-scope="scope">
                     <el-tag size="small" v-if="scope.row.type === 0">目录</el-tag>
                     <el-tag size="small" v-else-if="scope.row.type === 1" type="success">菜单</el-tag>
@@ -24,13 +24,11 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="path" label="菜单URL"></el-table-column>
+            <el-table-column prop="path" label="菜单URL" min-width="15"></el-table-column>
 
-            <el-table-column prop="component" label="菜单组件"></el-table-column>
+            <el-table-column prop="component" label="菜单组件" min-width="20"></el-table-column>
 
-            <el-table-column prop="orderNum" label="排序号"></el-table-column>
-
-            <el-table-column prop="icon" label="操作">
+            <el-table-column prop="icon" label="操作" min-width="15">
                 <template slot-scope="scope">
                     <el-button type="text" @click="editHandle(scope.row.id)" v-if="hasAuth('sys:menu:update')">编辑</el-button>
 

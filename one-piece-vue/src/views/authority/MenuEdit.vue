@@ -7,7 +7,6 @@
 
                 <el-form-item label="上级菜单" prop="parentId">
                     <select-tree :props="defaultProps" :options="treeData" :value="editForm.parentId" @getValue="getValue($event)"></select-tree>
-                    <el-alert title="未选择上级菜单，则默认为添加一级菜单" :closable="false" type="info" style="line-height: 12px;"></el-alert>
                 </el-form-item>
 
                 <el-form-item label="菜单名称" prop="name" label-width="100px">
